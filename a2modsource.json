@@ -1,6 +1,7 @@
 ﻿{
     "name": "a2.modules",
-    "description": "The standard a2 script module collection."
+    "description": "The standard a2 script module collection.",
+    "news": "First version ever!!!",
     "maintainer": "ewerybody",
     "maintainer_at": "gmail.com",
     "url": "",
