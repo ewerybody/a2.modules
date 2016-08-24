@@ -1,0 +1,30 @@
+[
+  {
+    "author": "eric werner",
+    "date": "2016 8 24",
+    "description": "Simple backslash/forwardslash handling on active selection.",
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "file": "slasher.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "slasher()",
+    "functionMode": 0,
+    "key": "Win+\\",
+    "keyChange": true,
+    "label": "Call Slasher",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "Slasher_Hotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  }
+]
