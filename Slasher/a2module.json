@@ -2,7 +2,7 @@
   {
     "author": "eric werner",
     "date": "2016 8 24",
-    "description": "Simple backslash/forwardslash handling on active selection.",
+    "description": "Simple backslash/forwardslash handling on active selection. Shows a menu:\n  1.: toggle \\ to /\n  2.: single \\ to double backslash \\\\\n  3.: double \\\\ to single \\ backslash",
     "typ": "nfo",
     "url": "",
     "version": "0.1"
@@ -12,7 +12,7 @@
     "typ": "include"
   },
   {
-    "disablable": true,
+    "disablable": false,
     "enabled": true,
     "functionCode": "slasher()",
     "functionMode": 0,
