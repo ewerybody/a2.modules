@@ -10,6 +10,13 @@ from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 
 
+class HotStringsEditor(A2ItemEditor):
+    def __init__(self, parent):
+        super(HotStringsEditor, self).__init__(parent)
+        self.config_layout = QtGui.QVBoxLayout(self)
+        self.ui.item_editor_layout.addLayout(self.config_layout)
+
+
 class Draw(DrawCtrl):
     """
     The frontend widget visible to the user with options
@@ -21,8 +28,8 @@ class Draw(DrawCtrl):
 
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
-        self.item_editor = A2ItemEditor(self)
-        self.layout.addWidget(self.item_editor)
+        self.editor = HotStringsEditor(self)
+        self.layout.addWidget(self.editor)
         self.setLayout(self.layout)
 
 
