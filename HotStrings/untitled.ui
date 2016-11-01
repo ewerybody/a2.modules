@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>848</width>
+    <height>822</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
+   <item row="0" column="0" colspan="2">
+    <widget class="QPlainTextEdit" name="plainTextEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="checkBox_2">
+     <property name="text">
+      <string>Triggered Immediately (otherwise by Space, Enter ...)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>Autohotkey Command Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QCheckBox" name="checkBox_6">
+     <property name="text">
+      <string>SendPlay Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="checkBox_4">
+     <property name="text">
+      <string>replace inside words</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="checkBox_3">
+     <property name="text">
+      <string>ignore the character which causes the replacement</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="checkBox_5">
+     <property name="text">
+      <string>don't replace abbreviation but append the text</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="checkBox_7">
+     <property name="text">
+      <string>output control-commands like {Enter}{Left} as plain text</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QCheckBox" name="checkBox_8">
+     <property name="text">
+      <string>substitute !, +, ^, and # with Alt, Shift, Ctrl or Windows</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QComboBox" name="comboBox">
+     <item>
+      <property name="text">
+       <string>Ignore Case</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Case Sensitive</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Don't Conform To Typed Case</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QComboBox" name="comboBox_2">
+     <item>
+      <property name="text">
+       <string>Scope: Global</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Scope: Only In:</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Scope: Not In:</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

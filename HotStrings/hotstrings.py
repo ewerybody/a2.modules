@@ -4,6 +4,7 @@ Some element description ...
 @created: 2016 9 24
 @author: eRiC
 """
+import os
 import a2ctrl
 from PySide import QtGui
 from a2element import DrawCtrl, EditCtrl
@@ -25,6 +26,9 @@ class Draw(DrawCtrl):
     def __init__(self, main, cfg, mod):
         super(Draw, self).__init__(main, cfg, mod)
         self._setupUi()
+
+        hs_ahk = os.path.join(self.a2.paths.settings, 'hotstrings.ahk')
+        print('hs_ahk: exists %s - %s' % (os.path.exists(hs_ahk), hs_ahk))
 
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
