@@ -11,7 +11,7 @@ from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget.textfield_autoheight import TextField_AutoHeight
 from collections import OrderedDict
-from pprint import pprint
+import pprint
 
 
 hs_checkboxes = [
@@ -36,8 +36,7 @@ class HotStringsEditor(A2ItemEditor):
         super(HotStringsEditor, self).__init__(parent)
         self._drawing = True
         self.user_cfg = user_cfg
-        print('self.user_cfg:')
-        pprint(self.user_cfg)
+        print('self.user_cfg: %s' % pprint.pformat(self.user_cfg))
         self.fill_items(sorted(self.user_cfg.keys(), key=lambda s: s[0].lower()))
 
         self._current_cfg = {}
@@ -153,8 +152,7 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         DrawCtrl.check(self, *args)
-        print('self.editor.user_cfg:')
-        pprint(self.editor.user_cfg)
+        print('self.editor.user_cfg: %s' % pprint.pformat(self.editor.user_cfg))
         self.set_user_value(self.editor.user_cfg)
         self.change()
 
@@ -205,5 +203,4 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     * "includes" - a simple list with ahk script paths
     """
     stuff = a2ctrl.get_cfg_value(cfg, user_cfg, typ=dict, default={})
-    print('get_settings stuff:')
-    pprint(stuff)
+    print('get_settings stuff:' % pprint.pformat(stuff))
