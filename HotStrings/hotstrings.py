@@ -34,10 +34,12 @@ class HotStringsEditor(A2ItemEditor):
 
     def __init__(self, user_cfg, parent):
         super(HotStringsEditor, self).__init__(parent)
+        self._drawing = True
         self.user_cfg = user_cfg
         print('self.user_cfg:')
         pprint(self.user_cfg)
-        self.fill_items(self.user_cfg.get('value', {}).keys())
+        self.fill_items(sorted(self.user_cfg.keys(), key=lambda s: s[0].lower()))
+
         self._current_cfg = {}
         self._config_widgets = OrderedDict()
 
@@ -59,6 +61,7 @@ class HotStringsEditor(A2ItemEditor):
         self.ui.scope = QtGui.QComboBox(self)
         self.ui.scope.setObjectName('scope')
         self.ui.scope.addItems(['Scope: Global', 'Scope: Only In:', 'Scope: Not In:'])
+        self.ui.scope.currentIndexChanged.connect(self.toggle_scope_field)
         self._config_widgets['scope'] = self.ui.scope
 
         self.ui.scope_field = QtGui.QLineEdit(self)
@@ -69,34 +72,63 @@ class HotStringsEditor(A2ItemEditor):
             self.ui.config_layout.addWidget(widget)
 
         a2ctrl.connect.control_list(self._config_widgets.values(), self._current_cfg, self._cfg_changed)
+        self._cfg_changed.connect(self.update_config)
 
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ui.config_layout.addItem(spacer)
 
-        self._cfg_changed.connect(self.update_config)
+        self.selected_name_changed.connect(self.draw_data)
+        self.item_changed.connect(self.item_rename)
+        self.item_deleted.connect(self.item_remove)
+        self._drawing = False
 
-        self.selected_text_changed.connect(self.fill_data)
+    def item_rename(self, item_tuple):
+        old_name, new_name, _item = item_tuple
+        print('item_rename: %s > %s' % (old_name, new_name))
+        data = self.user_cfg.pop(old_name)
+        self.user_cfg[new_name] = data
+        self.hotstring_changed.emit()
+
+    def item_remove(self, name):
+        print('item_remove: %s' % name)
+        self.user_cfg.pop(name)
+        print('name in self.user_cfg: %s' % (name in self.user_cfg))
+        self.hotstring_changed.emit()
 
     def update_config(self):
+        if self._drawing:
+            return
+
+        print('update_config...')
         diff_dict = {}
         for key, value in self._current_cfg.items():
             if value != default_dict[key]:
                 diff_dict[key] = value
-        if diff_dict:
-            self.user_cfg[self.selected_text] = diff_dict
-        elif self.selected_text in self.user_cfg:
-            del self.user_cfg[self.selected_text]
+        self.user_cfg[self.selected_name] = diff_dict
         self.hotstring_changed.emit()
 
-    def fill_data(self, item):
-        print('item: %s' % item)
-        print('item in self.user_cfg: %s' % (item in self.user_cfg))
+    def draw_data(self, item):
+        self._drawing = True
+        print('%s in self.user_cfg: %s' % (item, (item in self.user_cfg)))
         cfg = self.user_cfg.get(item, default_dict)
 
         for name, widget in self._config_widgets.items():
             value = cfg.get(name, default_dict[name])
             if isinstance(default_dict[name], bool):
                 widget.setChecked(value)
+            elif isinstance(default_dict[name], str):
+                widget.setText(value)
+            elif isinstance(default_dict[name], int):
+                widget.setCurrentIndex(value)
+
+            if name == 'scope':
+                self.toggle_scope_field(value)
+
+        self._drawing = False
+
+    def toggle_scope_field(self, index):
+        """only show the scope field if not global"""
+        self.ui.scope_field.setVisible(index != 0)
 
 
 class Draw(DrawCtrl):
@@ -105,7 +137,7 @@ class Draw(DrawCtrl):
     to change the default behavior of the element.
     """
     def __init__(self, main, cfg, mod):
-        cfg.setdefault('name', 'user_hotstrings')
+        cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(main, cfg, mod)
         self._setupUi()
 
@@ -121,8 +153,9 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         DrawCtrl.check(self, *args)
-        print('self.editor.user_cfg: %s' % self.editor.user_cfg)
-        self.set_user_value(self.editor.user_cfg.get('value', {}))
+        print('self.editor.user_cfg:')
+        pprint(self.editor.user_cfg)
+        self.set_user_value(self.editor.user_cfg)
         self.change()
 
 
@@ -171,4 +204,6 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     * "includes" - a simple list with ahk script paths
     """
-    pass
+    stuff = a2ctrl.get_cfg_value(cfg, user_cfg, typ=dict, default={})
+    print('get_settings stuff:')
+    pprint(stuff)
