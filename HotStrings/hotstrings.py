@@ -13,7 +13,7 @@ from a2widget.textfield_autoheight import TextField_AutoHeight
 from collections import OrderedDict
 import pprint
 
-
+HOTSTRINGS_FILENAME = 'hotstrings.ahk'
 hs_checkboxes = [
     # key, label
     ('instant', 'Triggered Immediately (otherwise by Space, Enter ...)'),
@@ -83,9 +83,9 @@ class HotStringsEditor(A2ItemEditor):
 
     def item_rename(self, item_tuple):
         old_name, new_name, _item = item_tuple
-        print('item_rename: %s > %s' % (old_name, new_name))
-        data = self.user_cfg.pop(old_name)
+        data = self.user_cfg.pop(old_name) if old_name else {}
         self.user_cfg[new_name] = data
+        self.draw_data(new_name)
         self.hotstring_changed.emit()
 
     def item_remove(self, name):
@@ -106,10 +106,10 @@ class HotStringsEditor(A2ItemEditor):
         self.user_cfg[self.selected_name] = diff_dict
         self.hotstring_changed.emit()
 
-    def draw_data(self, item):
+    def draw_data(self, item_name):
         self._drawing = True
-        print('%s in self.user_cfg: %s' % (item, (item in self.user_cfg)))
-        cfg = self.user_cfg.get(item, default_dict)
+        print('%s in self.user_cfg: %s' % (item_name, (item_name in self.user_cfg)))
+        cfg = self.user_cfg.get(item_name, default_dict)
 
         for name, widget in self._config_widgets.items():
             value = cfg.get(name, default_dict[name])
@@ -140,9 +140,6 @@ class Draw(DrawCtrl):
         super(Draw, self).__init__(main, cfg, mod)
         self._setupUi()
 
-        hs_ahk = os.path.join(self.a2.paths.settings, 'hotstrings.ahk')
-        print('hs_ahk: exists %s - %s' % (os.path.exists(hs_ahk), hs_ahk))
-
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
         self.editor = HotStringsEditor(self.userCfg or {}, self)
@@ -154,6 +151,21 @@ class Draw(DrawCtrl):
         DrawCtrl.check(self, *args)
         print('self.editor.user_cfg: %s' % pprint.pformat(self.editor.user_cfg))
         self.set_user_value(self.editor.user_cfg)
+
+        hs_lines = []
+        # write hotstrings.ahk
+        for hs, data in self.editor.user_cfg.items():
+            text = data.get('text')
+            if not text:
+                continue
+            text = text.replace('\n', '`n')
+            hs_lines.append('::%s::%s' % (hs, text))
+
+        hs_lines = ['#IfWinActive,'] + hs_lines
+        hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
+        with open(hs_ahk_path, 'w') as fobj:
+            fobj.write('\n'.join(hs_lines))
+
         self.change()
 
 
@@ -203,4 +215,5 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     * "includes" - a simple list with ahk script paths
     """
     stuff = a2ctrl.get_cfg_value(cfg, user_cfg, typ=dict, default={})
-    print('get_settings stuff:' % pprint.pformat(stuff))
+    print('get_settings stuff: %s' % pprint.pformat(stuff))
+    db_dict.setdefault('settings_includes', []).append(HOTSTRINGS_FILENAME)
