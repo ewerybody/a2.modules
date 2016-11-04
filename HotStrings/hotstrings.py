@@ -64,6 +64,7 @@ class HotStringsEditor(A2ItemEditor):
         self._config_widgets['scope'] = self.ui.scope
 
         self.ui.scope_field = QtGui.QLineEdit(self)
+        self.ui.scope_field.setVisible(False)
         self.ui.scope_field.setObjectName('scope_field')
         self._config_widgets['scope_field'] = self.ui.scope_field
 
@@ -159,6 +160,8 @@ class Draw(DrawCtrl):
             if not text:
                 continue
             text = text.replace('\n', '`n')
+            # TODO: if not raw:
+            text = text.replace('!', '{!}')
             hs_lines.append('::%s::%s' % (hs, text))
 
         hs_lines = ['#IfWinActive,'] + hs_lines
