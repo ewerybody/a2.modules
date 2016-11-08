@@ -5,6 +5,7 @@ Some element description ...
 @author: eRiC
 """
 import os
+import codecs
 import a2ctrl
 from PySide import QtGui, QtCore
 from a2element import DrawCtrl, EditCtrl
@@ -36,7 +37,7 @@ class HotStringsEditor(A2ItemEditor):
         super(HotStringsEditor, self).__init__(parent)
         self._drawing = True
         self.user_cfg = user_cfg
-        print('self.user_cfg: %s' % pprint.pformat(self.user_cfg))
+        # print('self.user_cfg: %s' % pprint.pformat(self.user_cfg))
         self.fill_items(sorted(self.user_cfg.keys(), key=lambda s: s[0].lower()))
 
         self._current_cfg = {}
@@ -150,7 +151,7 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         DrawCtrl.check(self, *args)
-        print('self.editor.user_cfg: %s' % pprint.pformat(self.editor.user_cfg))
+        # print('self.editor.user_cfg: %s' % pprint.pformat(self.editor.user_cfg))
         self.set_user_value(self.editor.user_cfg)
 
         hs_lines = []
@@ -166,7 +167,7 @@ class Draw(DrawCtrl):
 
         hs_lines = ['#IfWinActive,'] + hs_lines
         hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
-        with open(hs_ahk_path, 'w') as fobj:
+        with codecs.open(hs_ahk_path, 'wb', encoding='utf-8-sig') as fobj:
             fobj.write('\n'.join(hs_lines))
 
         self.change()
