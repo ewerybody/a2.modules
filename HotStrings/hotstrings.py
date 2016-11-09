@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Some element description ...
 
@@ -163,7 +164,11 @@ class Draw(DrawCtrl):
             text = text.replace('\n', '`n')
             # TODO: if not raw:
             text = text.replace('!', '{!}')
-            hs_lines.append('::%s::%s' % (hs, text))
+            hs_option = ':'
+            if data.get('instant'):
+                hs_option += '*'
+            hs_option += ':'
+            hs_lines.append('%s%s::%s' % (hs_option, hs, text))
 
         hs_lines = ['#IfWinActive,'] + hs_lines
         hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
