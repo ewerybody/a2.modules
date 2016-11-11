@@ -2,7 +2,7 @@
 ; author: Oliver Lipkau
 ; created: 2016 11 11
 
-selectAll() {
+commandLine_selectAll() {
     CoordMode, Mouse, Relative
     MouseGetPos, xpos, ypos
     Click, 10, 10

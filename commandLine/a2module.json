@@ -104,7 +104,7 @@
   {
     "disablable": true,
     "enabled": true,
-    "functionCode": "selectAll()",
+    "functionCode": "commandLine_selectAll()",
     "functionMode": 0,
     "key": "Ctrl+A",
     "keyChange": false,
