@@ -64,7 +64,7 @@
   {
     "disablable": true,
     "enabled": true,
-    "functionCode": "SendInput %clipboard%",
+    "functionCode": "SendInput {raw}%clipboard%",
     "functionMode": 0,
     "key": "Ctrl+V",
     "keyChange": false,
