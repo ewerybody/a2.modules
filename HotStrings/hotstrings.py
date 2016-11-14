@@ -11,7 +11,7 @@ import a2ctrl
 from PySide import QtGui, QtCore
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
-from a2widget.textfield_autoheight import TextField_AutoHeight
+from a2widget import a2TextField
 from collections import OrderedDict
 import pprint
 
@@ -44,7 +44,7 @@ class HotStringsEditor(A2ItemEditor):
         self._current_cfg = {}
         self._config_widgets = OrderedDict()
 
-        self.ui.text = TextField_AutoHeight(self)
+        self.ui.text = a2TextField(self)
         self.ui.text.setObjectName('text')
         self._config_widgets['text'] = self.ui.text
 
@@ -184,7 +184,9 @@ class Edit(EditCtrl):
     visible when editing the module.
     """
     def __init__(self, cfg, main, parentCfg):
-        super(Edit, self).__init__(cfg, main, parentCfg, addLayout=False)
+        super(Edit, self).__init__(cfg, main, parentCfg)
+        self.mainLayout.addWidget(QtGui.QLabel('Nothing to setup on the HotStrings element.'
+                                               'This one is all for the user.'))
 
     @staticmethod
     def element_name():
