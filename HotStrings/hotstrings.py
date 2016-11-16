@@ -163,6 +163,11 @@ class Draw(DrawCtrl):
             hs_option = ':'
             if data.get('instant'):
                 hs_option += '*'
+            case = data.get('case')
+            if case == 1:
+                hs_option += 'C'
+            elif case == 2:
+                hs_option += 'C1'
             hs_option += ':'
             hs_lines.append('%s%s::%s' % (hs_option, hs, text))
 
