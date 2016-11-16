@@ -13,7 +13,6 @@ from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import a2TextField
 from collections import OrderedDict
-import pprint
 
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
 hs_checkboxes = [
@@ -38,8 +37,7 @@ class HotStringsEditor(A2ItemEditor):
         super(HotStringsEditor, self).__init__(parent)
         self._drawing = True
         self.user_cfg = user_cfg
-        # print('self.user_cfg: %s' % pprint.pformat(self.user_cfg))
-        self.fill_items(sorted(self.user_cfg.keys(), key=lambda s: s[0].lower()))
+        self.fill_items(sorted(self.user_cfg.keys(), key=str.lower))
 
         self._current_cfg = {}
         self._config_widgets = OrderedDict()
@@ -111,7 +109,6 @@ class HotStringsEditor(A2ItemEditor):
 
     def draw_data(self, item_name):
         self._drawing = True
-        print('%s in self.user_cfg: %s' % (item_name, (item_name in self.user_cfg)))
         cfg = self.user_cfg.get(item_name, default_dict)
 
         for name, widget in self._config_widgets.items():
@@ -152,14 +149,13 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         DrawCtrl.check(self, *args)
-        # print('self.editor.user_cfg: %s' % pprint.pformat(self.editor.user_cfg))
         self.set_user_value(self.editor.user_cfg)
 
         hs_lines = []
         # write hotstrings.ahk
         for hs, data in self.editor.user_cfg.items():
             text = data.get('text')
-            if not text:
+            if not text or not hs:
                 continue
             text = text.replace('\n', '`n')
             # TODO: if not raw:
