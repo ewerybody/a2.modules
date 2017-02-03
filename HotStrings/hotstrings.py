@@ -71,7 +71,12 @@ class HotStringsEditor(A2ItemEditor):
         for widget in self._config_widgets.values():
             self.ui.config_layout.addWidget(widget)
 
-        a2ctrl.connect.control_list(self._config_widgets.values(), self._current_cfg, self._cfg_changed)
+        # we connect the text field with the editing finished signal and
+        # all the other ones standard like
+        standard_controls = list(self._config_widgets.values())[1:]
+        a2ctrl.connect.control_list(standard_controls, self._current_cfg, self._cfg_changed)
+        a2ctrl.connect.control(self.ui.text, 'text', self._current_cfg, self._cfg_changed,
+                               trigger_signal=self.ui.text.editing_finished)
         self._cfg_changed.connect(self.update_config)
 
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
