@@ -2,27 +2,27 @@
 ;rearrange_session_save()
 ;rearrange_session_restore()
 
-LVM_SETITEMPOSITION := 0x1000+15
-LVM_GETITEMPOSITION := 0x1000+16
 
-ControlGet, IconList, List, , SysListView321, Program Manager ahk_class Progman
-MsgBox IconList: %IconList%
+icons := new _DesktopIcons
+;MsgBox % icons.list_all()
+;icons._test_iconmove()
 
-icon_idx := 3
-
-pos := get_desktop_icon_pos(icon_idx)
-x := pos[1]
-y := pos[2]
-MsgBox x: %x% y: %y%
-
-loop 20
+Progress, b w200, My SubText, Restoring your session ..., My Title
+for i, icon in icons.list
 {
-    x := x + 10
-    set_desktop_icon_pos(icon_idx, x, y)
-    sleep, 10
+    iprogress := (i / icons.list.maxIndex()) * 100.0
+    text := i "/" icons.list.maxIndex() ": " icon.name " " iprogress "%"
+    Progress, %iprogress%, %text%
+    Sleep, 50
 }
+Sleep, 1000
+Progress, Off
+
 
 Return ;-----------------------------------
+#include ..\..\..\
+#include lib\ahklib\functions.ahk
+#include lib\ahklib\ahk_functions.ahk
 
 
 rearrange_session_save() {
@@ -74,31 +74,78 @@ class _rearrange_win
 }
 
 
+class _DesktopIcons
 {
-
-
-get_desktop_icon_pos(icon_index) {
-    ; get the position of an icon in virtual desktop space
-    global LVM_GETITEMPOSITION
-
-    WinGet, progman_pid, PID, Program Manager ahk_class Progman
-    hp_explorer := DllCall("OpenProcess", "uint", 0x18, "int", false, "uint", progman_pid)
-    remote_buffer := DllCall("VirtualAllocEx", "uint", hp_explorer, "uint", 0, "uint", 0x1000, "uint", 0x1000, "uint", 0x4)
+    __New()
+    {
+        this.list := {}
+        ControlGet, IconList, List, , SysListView321, Program Manager ahk_class Progman
+        Loop, parse, IconList, `n
+        {
+            parts := StrSplit(A_LoopField, A_Tab)
+            this.list.push(new _DesktopIcon(A_Index - 1, parts[1]))
+        }
+    }
     
-    SendMessage, LVM_GETITEMPOSITION, % icon_index, remote_buffer, SysListView321, Program Manager ahk_class Progman
+    _test_iconmove()
+    {
+        icon_idx := 3
+        icon := this.list[icon_idx]
+
+        loop 20
+        {
+            x := icon.x + 10
+            icon.set_pos(x, icon.y)
+            sleep, 10
+        }
+    }
     
-    VarSetCapacity(rect, 16, 0)
-    DllCall("ReadProcessMemory", "uint", hp_explorer, "uint", remote_buffer, "uint", &rect, "uint", 16, "uint",0)
-    DllCall("VirtualFreeEx", "uint", hp_explorer, "uint", remote_buffer, "uint", 0, "uint", 0x8000)
-    DllCall("CloseHandle", "uint", hp_explorer)
-    
-    pos := Array(ExtractInteger(rect, 0), ExtractInteger(rect, 4))
-    Return pos
+    list_all()
+    {
+        text := ""
+        for i, icon in this.list
+        {
+            text := text icon.index ":" A_Tab icon.name " - " icon.x "," icon.y "`n"
+        }
+        return text
+    }
 }
 
 
-set_desktop_icon_pos(icon_index, x_pos, y_pos) {
+class _DesktopIcon
+{
+    static LVM_SETITEMPOSITION := 0x1000+15
+    static LVM_GETITEMPOSITION := 0x1000+16
+
+    __new(index, name)
+    {
+        this.index := index
+        this.name := name
+        this.get_pos()
+    }
+    
     ; set the position of an icon in virtual desktop space
-    global LVM_SETITEMPOSITION
-    SendMessage, LVM_SETITEMPOSITION, icon_index, (y_pos << 16) + x_pos, SysListView321, Program Manager ahk_class Progman
+    set_pos(x, y)
+    {
+        SendMessage, this.LVM_SETITEMPOSITION, this.index, (y << 16) + x, SysListView321, Program Manager ahk_class Progman
+        this.x := x
+        this.y := y
+    }
+    
+    get_pos()
+    {
+        WinGet, progman_pid, PID, Program Manager ahk_class Progman
+        hp_explorer := DllCall("OpenProcess", "uint", 0x18, "int", false, "uint", progman_pid)
+        remote_buffer := DllCall("VirtualAllocEx", "uint", hp_explorer, "uint", 0, "uint", 0x1000, "uint", 0x1000, "uint", 0x4)
+        
+        SendMessage, this.LVM_GETITEMPOSITION, % this.index, remote_buffer, SysListView321, Program Manager ahk_class Progman
+        
+        VarSetCapacity(rect, 16, 0)
+        DllCall("ReadProcessMemory", "uint", hp_explorer, "uint", remote_buffer, "uint", &rect, "uint", 16, "uint",0)
+        DllCall("VirtualFreeEx", "uint", hp_explorer, "uint", remote_buffer, "uint", 0, "uint", 0x8000)
+        DllCall("CloseHandle", "uint", hp_explorer)
+        
+        this.x := extract_integer(rect, 0)
+        this.y := extract_integer(rect, 4)
+    }
 }
