@@ -49,13 +49,31 @@ rearrange_session_save() {
 
 
 rearrange_session_restore() {
-    msgbox rearrange_session_restore ...
-    global rearrange_dict
-    For id, win_obj in rearrange_dict
-    {
-        name := win_obj.name
-        MsgBox %id%: %name%
+    ;msgbox rearrange_session_restore ...
+    ;global rearrange_dict
+    ;For id, win_obj in rearrange_dict
+    ;{
+    ;    name := win_obj.name
+    ;    MsgBox %id%: %name%
+    ;}
+    WinGet, win_ids, list
+    
+    Progress, b w200, My SubText, Restoring your session ..., My Title
+    
+    loop %win_ids% {
+        iprogress := (A_Index / win_ids) * 100.0
+        tt(iprogress, 2)
+        Progress, %iprogress%
+        this_id := win_ids%A_Index%
+        WinGetPos, x, y, w, h, ahk_id %this_id%
+        WinGetTitle, title, ahk_id %this_id%
+        WinGet, minmax, MinMax, ahk_id %this_id%
+        WinRestore, ahk_id %this_id%
+        if (minmax == -1)
+            WinMinimize, ahk_id %this_id%
+        ;rearrange_dict[this_id] := new _rearrange_win(x, y, w, h, title)
     }
+    Progress, Off
 }
 
 
