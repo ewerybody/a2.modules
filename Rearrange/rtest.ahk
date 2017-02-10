@@ -3,76 +3,24 @@
 ;rearrange_session_restore()
 
 
-icons := new _DesktopIcons
+;icons := new _DesktopIcons
 ;MsgBox % icons.list_all()
 ;icons._test_iconmove()
 
-Progress, b w200, My SubText, Restoring your session ..., My Title
-for i, icon in icons.list
-{
-    iprogress := (i / icons.list.maxIndex()) * 100.0
-    text := i "/" icons.list.maxIndex() ": " icon.name " " iprogress "%"
-    Progress, %iprogress%, %text%
-    Sleep, 50
-}
-Sleep, 1000
-Progress, Off
+rearrange_list := []
+rearrange_restore_all_windows := false
+rearrange_list.push(new _rearrange_procwin("notepad++.exe", "", "", 1563, -6, 1605, 1457))
+rearrange_list.push(new _rearrange_procwin("KeePass.exe", "", "", 0, 0, 0, 0, true))
+rearrange_session_restore()
+ExitApp
 
 
 Return ;-----------------------------------
+#include rearrange.ahk
+
 #include ..\..\..\
 #include lib\ahklib\functions.ahk
 #include lib\ahklib\ahk_functions.ahk
-
-
-rearrange_session_save() {
-    global rearrange_array
-    
-    WinGet, win_ids, list
-    loop %win_ids% {
-        this_id := win_ids%A_Index%
-        WinGet, minmax, MinMax, ahk_id %this_id%
-        if (minmax == -1)
-            WinRestore, ahk_id %this_id%
-        
-        WinGetPos, x, y, w, h, ahk_id %this_id%
-        WinGetTitle, title, ahk_id %this_id%
-        rearrange_array.push(new _rearrange_win(this_id, x, y, w, h, title, minmax))
-    }
-}
-
-
-rearrange_session_restore() {
-    msgbox rearrange_session_restore ...
-    ;WinMinimizeAll
-    global rearrange_array
-    len := rearrange_array.MaxIndex()
-    For idx, win_obj in rearrange_array
-    {
-        this_id := win_obj.id
-        ;WinRestore, ahk_id %this_id%
-        desc := "name: " win_obj.name " x,y: " win_obj.x "," win_obj.y " w,h: " win_obj.w "," win_obj.h
-        MsgBox %idx%/%len%: %desc%
-        ;WinMinimize, ahk_id %this_id%
-    }
-    
-    ;WinMinimizeAllUndo
-}
-
-class _rearrange_win
-{
-    __New(id, x, y, w, h, name, minmax)
-    {
-        this.id := id
-        this.x := x
-        this.y := y
-        this.w := w
-        this.h := h
-        this.name := name
-        this.minmax := minmax
-    }
-}
-
 
 class _DesktopIcons
 {
