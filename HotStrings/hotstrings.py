@@ -71,7 +71,12 @@ class HotStringsEditor(A2ItemEditor):
         for widget in self._config_widgets.values():
             self.ui.config_layout.addWidget(widget)
 
-        a2ctrl.connect.control_list(self._config_widgets.values(), self._current_cfg, self._cfg_changed)
+        # we connect the text field with the editing finished signal and
+        # all the other ones standard like
+        standard_controls = list(self._config_widgets.values())[1:]
+        a2ctrl.connect.control_list(standard_controls, self._current_cfg, self._cfg_changed)
+        a2ctrl.connect.control(self.ui.text, 'text', self._current_cfg, self._cfg_changed,
+                               trigger_signal=self.ui.text.editing_finished)
         self._cfg_changed.connect(self.update_config)
 
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -90,20 +95,22 @@ class HotStringsEditor(A2ItemEditor):
         self.hotstring_changed.emit()
 
     def item_remove(self, name):
-        print('item_remove: %s' % name)
         self.user_cfg.pop(name)
-        print('name in self.user_cfg: %s' % (name in self.user_cfg))
         self.hotstring_changed.emit()
 
     def update_config(self):
+        """
+        Shall always update the config but not trigger change if there was no text set
+        and text was not deleted.
+        """
         if self._drawing:
             return
 
-        print('update_config...')
         diff_dict = {}
         for key, value in self._current_cfg.items():
             if value != default_dict[key]:
                 diff_dict[key] = value
+
         self.user_cfg[self.selected_name] = diff_dict
         self.hotstring_changed.emit()
 
@@ -138,7 +145,9 @@ class Draw(DrawCtrl):
     def __init__(self, main, cfg, mod):
         cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(main, cfg, mod)
+        self._hs_lines_b4 = None
         self._setupUi()
+        self.is_expandable_widget = True
 
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
@@ -172,6 +181,9 @@ class Draw(DrawCtrl):
             hs_lines.append('%s%s::%s' % (hs_option, hs, text))
 
         hs_lines = ['#IfWinActive,'] + hs_lines
+        if hs_lines == self._hs_lines_b4:
+            return
+        self._hs_lines_b4 = hs_lines
         hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
         with codecs.open(hs_ahk_path, 'wb', encoding='utf-8-sig') as fobj:
             fobj.write('\n'.join(hs_lines))
