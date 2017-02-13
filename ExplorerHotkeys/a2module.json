@@ -4,6 +4,7 @@
     "date": "2015",
     "description": "ExplorerHotkeys does mean things to your Windows Explorer!",
     "typ": "nfo",
+    "url": "",
     "version": "0.1"
   },
   {
@@ -37,7 +38,7 @@
     "name": "callExplorer_path",
     "save_mode": false,
     "typ": "path",
-    "value": "C:/",
+    "value": "C:\\",
     "writable": false
   },
   {
@@ -51,6 +52,25 @@
     "mode": "ahk",
     "multiple": true,
     "name": "ftpExplorerCopyHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ftpExplorerCopy()",
+    "functionMode": 2,
+    "functionSend": "Send, {Alt}VN{Enter}",
+    "key": "Alt+N",
+    "keyChange": true,
+    "label": "Toggle the Navigation Panel",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "ExplorerHotkeys_NavOnOff",
     "scope": [
       "ahk_class CabinetWClass"
     ],
