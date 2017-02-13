@@ -14,5 +14,8 @@
   {
     "code": "rearrange_init()",
     "typ": "init"
+  },
+  {
+    "typ": "rearrange_lister"
   }
 ]

@@ -8,7 +8,7 @@
 ;icons._test_iconmove()
 
 rearrange_list := []
-rearrange_restore_all_windows := false
+rearrange_restore_all_windows := true
 rearrange_list.push(new _rearrange_procwin("notepad++.exe", "", "", 1563, -6, 1605, 1457))
 rearrange_list.push(new _rearrange_procwin("KeePass.exe", "", "", 0, 0, 0, 0, true))
 rearrange_session_restore()
