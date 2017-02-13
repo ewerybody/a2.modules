@@ -147,6 +147,7 @@ class Draw(DrawCtrl):
         super(Draw, self).__init__(main, cfg, mod)
         self._hs_lines_b4 = None
         self._setupUi()
+        self.is_expandable_widget = True
 
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
