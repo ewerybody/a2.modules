@@ -47,31 +47,35 @@ rearrange_session_save() {
 
 
 rearrange_session_restore() {
+    ; To avoid using the hidden windows list we need to restore all stored windows of the stored processes.
+    ; That gives us the subwindows as well without the gazillions hidden ones.
+    ; Then we we get another non hidden list again to have all the needed IDs.
+    ; this way we find any misplacements, correct them and minimize the windows again like before.
     global rearrange_list
     global rearrange_restore_all_windows
     
-    WinGet, win_ids, list
+    ; first window list. Might have our subwindows excluded
+    window_list := get_window_list()
+    
     
     Progress, b w500, My SubText, Restoring your session ..., My Title
     
-    loop %win_ids% {
+    loop % window_list.MaxIndex() {
         ; get current window stats
-        this_id := win_ids%A_Index%
-        WinGet, this_proc, ProcessName, ahk_id %this_id%
-        WinGetClass, this_class, ahk_id %this_id%
-        WinGetTitle, this_name, ahk_id %this_id%
+        win := window_list[A_Index]
+        this_id := win.id
         WinGet, this_minmax, MinMax, ahk_id %this_id%
         
         ; update progress bar
-        iprogress := (A_Index / win_ids) * 100.0
-        progress_text := A_Index "/" win_ids " " this_proc
+        iprogress := (A_Index / window_list.MaxIndex()) * 100.0
+        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
         Progress, %iprogress%, %progress_text%
         
         ; loop through saved windows
         Loop % rearrange_list.MaxIndex()
         {
             window := rearrange_list[A_Index]
-            if window.proc_name == this_proc
+            if window.proc_name == win.proc_name
             {
                 if  (window.ignore)
                     Goto continue_outer
@@ -89,9 +93,6 @@ rearrange_session_restore() {
                     this_w := window.w
                     this_h := window.h
                     WinMove, ahk_id %this_id%,, this_x, this_y, this_w, this_h
-                } else {
-                    ;text := window.proc_name " window still on saved pos!"
-                    ;msgbox, %text%
                 }
                 
                 if (this_minmax == -1)
@@ -129,5 +130,47 @@ class _rearrange_procwin
         this.y := pos_y
         this.w := size_w
         this.h := size_h
+    }
+}
+
+
+get_window_list(hidden=false) {
+    current_detect_state := DetectHiddenWindows()
+    if current_detect_state <> hidden
+        DetectHiddenWindows(hidden)
+    
+    window_list := []
+    
+    WinGet, win_ids, list
+    loop %win_ids% {
+        this_id := win_ids%A_Index%
+        WinGet, this_proc, ProcessName, ahk_id %this_id%
+        WinGetClass, this_class, ahk_id %this_id%
+        WinGetPos, x, y, w, h, ahk_id %this_id%
+        WinGetTitle, this_title, ahk_id %this_id%
+
+        window_list.push(new _rearrange_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index))
+    }
+    
+    if current_detect_state <> hidden
+        DetectHiddenWindows(current_detect_state)
+    
+    return window_list
+}
+
+
+class _rearrange_window
+{
+    __New(proc_name, win_title, win_class, x, y, w, h, id, index)
+    {
+        this.proc_name := proc_name
+        this.title := win_title
+        this.class := win_class
+        this.x := x
+        this.y := y
+        this.w := w
+        this.h := h
+        this.id := id
+        this.index := index
     }
 }

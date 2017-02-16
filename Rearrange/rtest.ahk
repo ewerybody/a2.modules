@@ -7,12 +7,34 @@
 ;MsgBox % icons.list_all()
 ;icons._test_iconmove()
 
-rearrange_list := []
-rearrange_restore_all_windows := true
-rearrange_list.push(new _rearrange_procwin("notepad++.exe", "", "", 1563, -6, 1605, 1457))
-rearrange_list.push(new _rearrange_procwin("KeePass.exe", "", "", 0, 0, 0, 0, true))
-rearrange_session_restore()
-ExitApp
+;rearrange_list := []
+;rearrange_restore_all_windows := false
+;rearrange_list.push(new _rearrange_procwin("notepad++.exe", "", "", 1563, -6, 1605, 1457))
+;rearrange_list.push(new _rearrange_procwin("KeePass.exe", "", "", 0, 0, 0, 0, true))
+;rearrange_session_restore()
+;ExitApp
+win_list := get_window_list(false)
+i := win_list.maxindex()
+MsgBox windows found: : %i%
+
+txt := ""
+
+        this.proc_name := proc_name
+        this.title := win_title
+        this.class := win_class
+        this.x := x
+        this.y := y
+        this.w := w
+        this.h := h
+        this.id := id
+        this.index := index
+
+loop, % win_list.maxindex()
+{
+    win := win_list[A_Index]
+    txt := txt win.index " " win.proc_name " " win.title " " win.class " " win.x " " win.y " " win.w " " win.h " " win.id "`n"
+}
+Clipboard := txt
 
 
 Return ;-----------------------------------
