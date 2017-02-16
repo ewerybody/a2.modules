@@ -151,7 +151,7 @@ class Draw(DrawCtrl):
 
     def _setupUi(self):
         self.layout = QtGui.QVBoxLayout(self)
-        self.editor = HotStringsEditor(self.userCfg or {}, self)
+        self.editor = HotStringsEditor(self.user_cfg or {}, self)
         self.editor.hotstring_changed.connect(self.delayed_check)
         self.layout.addWidget(self.editor)
         self.setLayout(self.layout)
