@@ -6,8 +6,50 @@ Some element description ...
 @author: Eric Werner
 """
 import a2ctrl
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from a2element import DrawCtrl, EditCtrl
+from a2widget import A2ItemEditor
+import ahk
+from functools import partial
+
+
+class SessionRestoreWindowLister(A2ItemEditor):
+#    _cfg_changed = QtCore.Signal(str)
+#    hotstring_changed = QtCore.Signal()
+
+    def __init__(self, user_cfg, parent):
+        super(SessionRestoreWindowLister, self).__init__(parent)
+        self._process_menu = QtGui.QMenu(self)
+
+        # TODO: thread it
+        self._fetch_window_process_list()
+
+    def _fetch_window_process_list(self):
+        scope_nfo = ahk.call_lib_cmd('get_scope_nfo')
+        scope_nfo = scope_nfo.split('\\n')
+        if not scope_nfo:
+            log.error('Error getting scope_nfo!! scope_nfo: %s' % scope_nfo)
+            return
+
+        processes = set()
+        num_items = len(scope_nfo)
+        num_items = num_items - (num_items % 3)
+        for i in range(0, num_items, 3):
+            if scope_nfo[i + 2]:
+                processes.add(scope_nfo[i + 2])
+        self._process_list = sorted(processes, key=lambda x: x.lower())
+
+        for name in self._process_list:
+            action = QtGui.QAction(name, self, triggered=partial(self.add_process, name))
+            self._process_menu.addAction(action)
+
+    def add_process(self, name):
+        item = self._add_and_setup_item(name)
+        # current_items.append(new_item_name)
+        a2ctrl.qlist.select_items(self.ui.item_list, item)
+
+    def add_item(self):
+        self._process_menu.popup(QtGui.QCursor.pos())
 
 
 class Draw(DrawCtrl):
@@ -17,7 +59,11 @@ class Draw(DrawCtrl):
     """
     def __init__(self, main, cfg, mod):
         super(Draw, self).__init__(main, cfg, mod)
-        pass
+        self.layout = QtGui.QVBoxLayout(self)
+        self.editor = SessionRestoreWindowLister(self.user_cfg, self)
+        #self.editor.hotstring_changed.connect(self.delayed_check)
+        self.layout.addWidget(self.editor)
+        self.setLayout(self.layout)
 
 
 class Edit(EditCtrl):
