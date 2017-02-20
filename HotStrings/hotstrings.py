@@ -150,11 +150,11 @@ class Draw(DrawCtrl):
         self.is_expandable_widget = True
 
     def _setupUi(self):
-        self.layout = QtGui.QVBoxLayout(self)
-        self.editor = HotStringsEditor(self.user_cfg or {}, self)
+        self.main_layout = QtGui.QVBoxLayout(self)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.editor = HotStringsEditor(self.user_cfg, self)
         self.editor.hotstring_changed.connect(self.delayed_check)
-        self.layout.addWidget(self.editor)
-        self.setLayout(self.layout)
+        self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
         DrawCtrl.check(self, *args)
