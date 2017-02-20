@@ -5,24 +5,52 @@ Some element description ...
 @created: 2017 2 10
 @author: Eric Werner
 """
-import a2ctrl
+from functools import partial
+from collections import OrderedDict
+
 from PySide import QtGui, QtCore
+
+import ahk
+import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor
-import ahk
-from functools import partial
+
+
+default_dict = {'title': '', 'class': '', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'ignore': False}
 
 
 class SessionRestoreWindowLister(A2ItemEditor):
-#    _cfg_changed = QtCore.Signal(str)
-#    hotstring_changed = QtCore.Signal()
+    #    _cfg_changed = QtCore.Signal(str)
+    #    hotstring_changed = QtCore.Signal()
 
     def __init__(self, user_cfg, parent):
         super(SessionRestoreWindowLister, self).__init__(parent)
+        self.user_cfg = user_cfg
         self._process_menu = QtGui.QMenu(self)
 
         # TODO: thread it
         self._fetch_window_process_list()
+        self.selected_name_changed.connect(self.draw_data)
+
+        self._config_widgets = OrderedDict()
+        labels = ['Window Title', 'Window Class', 'Position', 'Size', '']
+
+        self.ui.title_field = ButtonField()
+        self.ui.title_field.field.setPlaceholderText(labels[0])
+        self.ui.config_layout.addWidget(self.ui.title_field)
+
+        self.ui.class_field = ButtonField()
+        self.ui.class_field.field.setPlaceholderText(labels[1])
+        self.ui.config_layout.addWidget(self.ui.class_field)
+
+        self.ui.coords_field = CoordsField()
+        self.ui.config_layout.addWidget(self.ui.coords_field)
+
+        self.ui.size_field = CoordsField()
+        self.ui.config_layout.addWidget(self.ui.size_field)
+
+        spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.ui.config_layout.addItem(spacer)
 
     def _fetch_window_process_list(self):
         scope_nfo = ahk.call_lib_cmd('get_scope_nfo')
@@ -51,6 +79,24 @@ class SessionRestoreWindowLister(A2ItemEditor):
     def add_item(self):
         self._process_menu.popup(QtGui.QCursor.pos())
 
+    def draw_data(self, item_name):
+        self._drawing = True
+        cfg = self.user_cfg.get(item_name, default_dict)
+
+        for name, widget in self._config_widgets.items():
+            value = cfg.get(name, default_dict[name])
+            if isinstance(default_dict[name], bool):
+                widget.setChecked(value)
+            elif isinstance(default_dict[name], str):
+                widget.setText(value)
+            elif isinstance(default_dict[name], int):
+                widget.setCurrentIndex(value)
+
+            if name == 'scope':
+                self.toggle_scope_field(value)
+
+        self._drawing = False
+
 
 class Draw(DrawCtrl):
     """
@@ -59,18 +105,14 @@ class Draw(DrawCtrl):
     """
     def __init__(self, main, cfg, mod):
         super(Draw, self).__init__(main, cfg, mod)
-        self.layout = QtGui.QVBoxLayout(self)
+        self.main_layout = QtGui.QVBoxLayout(self)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.editor = SessionRestoreWindowLister(self.user_cfg, self)
-        #self.editor.hotstring_changed.connect(self.delayed_check)
-        self.layout.addWidget(self.editor)
-        self.setLayout(self.layout)
+        self.main_layout.addWidget(self.editor)
+        self.is_expandable_widget = True
 
 
 class Edit(EditCtrl):
-    """
-    The background widget that sets up how the user can edit the element,
-    visible when editing the module.
-    """
     def __init__(self, cfg, main, parentCfg):
         super(Edit, self).__init__(cfg, main, parentCfg)
 
@@ -82,6 +124,36 @@ class Edit(EditCtrl):
     @staticmethod
     def element_icon():
         return a2ctrl.Icons.inst().check
+
+
+class ButtonField(QtGui.QWidget):
+    def __init__(self):
+        super(ButtonField, self).__init__()
+        self.h_layout = QtGui.QHBoxLayout(self)
+        self.h_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.field = QtGui.QLineEdit(self)
+        self.h_layout.addWidget(self.field)
+
+        self.button = QtGui.QPushButton(self)
+        self.button.setMaximumSize(45, 45)
+        self.h_layout.addWidget(self.button)
+
+
+class CoordsField(QtGui.QWidget):
+    def __init__(self):
+        super(CoordsField, self).__init__()
+        self.h_layout = QtGui.QHBoxLayout(self)
+        self.h_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.x_field = QtGui.QSpinBox(self)
+        self.y_field = QtGui.QSpinBox(self)
+        self.h_layout.addWidget(self.x_field)
+        self.h_layout.addWidget(self.y_field)
+
+        self.button = QtGui.QPushButton(self)
+        self.button.setMaximumSize(45, 45)
+        self.h_layout.addWidget(self.button)
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
