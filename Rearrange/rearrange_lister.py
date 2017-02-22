@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 from PySide import QtGui, QtCore
 
-import ahk
+import a2ahk
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor
@@ -25,7 +25,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
     def __init__(self, user_cfg, parent):
         super(SessionRestoreWindowLister, self).__init__(parent)
-        self.user_cfg = user_cfg
+        self.user_cfg = user_cfg or {}
         self._process_menu = QtGui.QMenu(self)
 
         # TODO: thread it
@@ -53,7 +53,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.ui.config_layout.addItem(spacer)
 
     def _fetch_window_process_list(self):
-        scope_nfo = ahk.call_lib_cmd('get_scope_nfo')
+        scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
         scope_nfo = scope_nfo.split('\\n')
         if not scope_nfo:
             log.error('Error getting scope_nfo!! scope_nfo: %s' % scope_nfo)
@@ -183,4 +183,4 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     * "includes" - a simple list with ahk script paths
     """
-    pass
+    db_dict['variables']['SessionRestore_List'] = ["value"]
