@@ -22,11 +22,11 @@ default_dict = {'title': '', 'class': '', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'ignor
 
 class SessionRestoreWindowLister(A2ItemEditor):
     #    _cfg_changed = QtCore.Signal(str)
-    #    hotstring_changed = QtCore.Signal()
 
     def __init__(self, cfg, parent):
-        super(SessionRestoreWindowLister, self).__init__(parent)
-        self.cfg = cfg or {}
+        self.data = cfg or {}
+        super(SessionRestoreWindowLister, self).__init__(parent=parent)
+
         self._process_menu = QtGui.QMenu(self)
 
         # TODO: thread it

@@ -34,10 +34,15 @@ class HotStringsEditor(A2ItemEditor):
     hotstring_changed = QtCore.Signal()
 
     def __init__(self, user_cfg, parent):
+        self.data = user_cfg
+        self.draw_labels = False
+
+        self.data_widgets = [
+            ('text', a2TextField(self),)]
+
         super(HotStringsEditor, self).__init__(parent)
+
         self._drawing = True
-        self.user_cfg = user_cfg
-        self.fill_items(sorted(self.user_cfg.keys(), key=str.lower))
 
         self._current_cfg = {}
         self._config_widgets = OrderedDict()
