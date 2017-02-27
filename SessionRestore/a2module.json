@@ -16,6 +16,6 @@
     "typ": "init"
   },
   {
-    "typ": "rearrange_lister"
+    "typ": "srWindowLister"
   }
 ]

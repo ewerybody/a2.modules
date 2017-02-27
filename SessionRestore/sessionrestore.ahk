@@ -1,58 +1,58 @@
-; Rearrange - rearrange.ahk
+; SessionRestore - sessionrestore.ahk
 ; author: Eric Werner
 ; created: 2017 1 31
 
-rearrange_init() {
-    hw_ahk := _rearrange_FindWindowEx(0, 0, "AutoHotkey", a_ScriptFullPath " - AutoHotkey v" a_AhkVersion)
+sessionrestore_init() {
+    hw_ahk := _sessionrestore_FindWindowEx(0, 0, "AutoHotkey", a_ScriptFullPath " - AutoHotkey v" a_AhkVersion)
 
     WM_WTSSESSION_CHANGE = 0x02B1
-    OnMessage(WM_WTSSESSION_CHANGE, "rearrange_handle_session_change")
+    OnMessage(WM_WTSSESSION_CHANGE, "sessionrestore_handle_session_change")
 
     NOTIFY_FOR_THIS_SESSION = 0
     result := DllCall("Wtsapi32.dll\WTSRegisterSessionNotification", "uint", hw_ahk, "uint", NOTIFY_FOR_ALL_SESSIONS)
 
     if (!result)
     {
-        MsgBox, rearrange_init: WTSRegisterSessionNotification has failed!
+        MsgBox, sessionrestore_init: WTSRegisterSessionNotification has failed!
     }
 }
 
 
-rearrange_handle_session_change(p_w, p_l, p_m, p_hw) {
+sessionrestore_handle_session_change(p_w, p_l, p_m, p_hw) {
     WTS_SESSION_LOCK    = 0x7
     WTS_SESSION_UNLOCK  = 0x8
 
     if ( p_w = WTS_SESSION_LOCK )
     {
-        rearrange_session_save()
+        sessionrestore_session_save()
     }
     else if ( p_w = WTS_SESSION_UNLOCK )
     {
-        rearrange_session_restore()
+        sessionrestore_session_restore()
     }
 }
 
 
-rearrange_session_save() {
-    global rearrange_dict
+sessionrestore_session_save() {
+    ;global sessionrestore_dict
     
     WinGet, win_ids, list
     loop %win_ids% {
         this_id := win_ids%A_Index%
         WinGetPos, x, y, w, h, ahk_id %this_id%
         WinGetTitle, title, ahk_id %this_id%
-        rearrange_dict[this_id] := new _rearrange_win(x, y, w, h, title)
+        ;sessionrestore_dict[this_id] := new ...
     }
 }
 
 
-rearrange_session_restore() {
+sessionrestore_session_restore() {
     ; To avoid using the hidden windows list we need to restore all stored windows of the stored processes.
     ; That gives us the subwindows as well without the gazillions hidden ones.
     ; Then we we get another non hidden list again to have all the needed IDs.
     ; this way we find any misplacements, correct them and minimize the windows again like before.
-    global rearrange_list
-    global rearrange_restore_all_windows
+    global SessionRestore_List
+    global sessionrestore_restore_all_windows
     
     ; first window list. Might have our subwindows excluded
     window_list := get_window_list()
@@ -72,9 +72,9 @@ rearrange_session_restore() {
         Progress, %iprogress%, %progress_text%
         
         ; loop through saved windows
-        Loop % rearrange_list.MaxIndex()
+        Loop % SessionRestore_List.MaxIndex()
         {
-            window := rearrange_list[A_Index]
+            window := SessionRestore_List[A_Index]
             if window.proc_name == win.proc_name
             {
                 if  (window.ignore)
@@ -102,23 +102,22 @@ rearrange_session_restore() {
         }
         continue_outer:
 
-        if rearrange_restore_all_windows and this_minmax = -1
+        if sessionrestore_restore_all_windows and this_minmax = -1
         {
             WinRestore, ahk_id %this_id%
             WinMinimize, ahk_id %this_id%
-            ;rearrange_dict[this_id] := new _rearrange_win(x, y, w, h, title)
         }
     }
     Progress, Off
 }
 
 
-_rearrange_FindWindowEx(p_hw_parent, p_hw_child, p_class, p_title) {
+_sessionrestore_FindWindowEx(p_hw_parent, p_hw_child, p_class, p_title) {
     return, DllCall( "FindWindowEx", "uint", p_hw_parent, "uint", p_hw_child, "str", p_class, "str", p_title )
 }
 
 
-class _rearrange_procwin
+class _sessionrestore_procwin
 {
     __New(proc_name, win_name="", win_class="", pos_x=0, pos_y=0, size_w=0, size_h=0, ignore=false)
     {
@@ -149,7 +148,7 @@ get_window_list(hidden=false) {
         WinGetPos, x, y, w, h, ahk_id %this_id%
         WinGetTitle, this_title, ahk_id %this_id%
 
-        window_list.push(new _rearrange_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index))
+        window_list.push(new _sessionrestore_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index))
     }
     
     if current_detect_state <> hidden
@@ -159,7 +158,7 @@ get_window_list(hidden=false) {
 }
 
 
-class _rearrange_window
+class _sessionrestore_window
 {
     __New(proc_name, win_title, win_class, x, y, w, h, id, index)
     {

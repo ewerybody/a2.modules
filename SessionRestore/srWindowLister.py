@@ -14,6 +14,7 @@ import a2ahk
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor
+import a2core
 
 
 default_dict = {'title': '', 'class': '', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'ignore': False}
@@ -23,9 +24,9 @@ class SessionRestoreWindowLister(A2ItemEditor):
     #    _cfg_changed = QtCore.Signal(str)
     #    hotstring_changed = QtCore.Signal()
 
-    def __init__(self, user_cfg, parent):
+    def __init__(self, cfg, parent):
         super(SessionRestoreWindowLister, self).__init__(parent)
-        self.user_cfg = user_cfg or {}
+        self.cfg = cfg or {}
         self._process_menu = QtGui.QMenu(self)
 
         # TODO: thread it
@@ -72,7 +73,9 @@ class SessionRestoreWindowLister(A2ItemEditor):
             self._process_menu.addAction(action)
 
     def add_process(self, name):
-        item = self._add_and_setup_item(name)
+        new_name = a2core.get_next_free_number(name, self.cfg.keys(), ' ')
+        item = self._add_and_setup_item(new_name)
+        self.cfg[new_name] = [name, '', '', 0, 0, 0, 0, False]
         # current_items.append(new_item_name)
         a2ctrl.qlist.select_items(self.ui.item_list, item)
 
@@ -81,7 +84,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
     def draw_data(self, item_name):
         self._drawing = True
-        cfg = self.user_cfg.get(item_name, default_dict)
+        cfg = self.cfg.get(item_name, default_dict)
 
         for name, widget in self._config_widgets.items():
             value = cfg.get(name, default_dict[name])
