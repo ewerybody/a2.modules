@@ -31,24 +31,32 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         # TODO: thread it
         self._fetch_window_process_list()
-        self.selected_name_changed.connect(self.draw_data)
+        #self.selected_name_changed.connect(self.draw_data)
 
-        self._config_widgets = OrderedDict()
+        #self._config_widgets = OrderedDict()
         labels = ['Window Title', 'Window Class', 'Position', 'Size', '']
 
         self.ui.title_field = ButtonField()
         self.ui.title_field.field.setPlaceholderText(labels[0])
-        self.ui.config_layout.addWidget(self.ui.title_field)
+        self.add_data_widget('title', self.ui.title_field, self.ui.title_field.set_value,
+                             self.ui.title_field.changed, '', labels[0])
+        #self.ui.config_layout.addWidget(self.ui.title_field)
 
         self.ui.class_field = ButtonField()
         self.ui.class_field.field.setPlaceholderText(labels[1])
-        self.ui.config_layout.addWidget(self.ui.class_field)
+        self.add_data_widget('class', self.ui.class_field, self.ui.class_field.set_value,
+                             self.ui.class_field.changed, '', labels[1])
+        #self.ui.config_layout.addWidget(self.ui.class_field)
 
         self.ui.coords_field = CoordsField()
-        self.ui.config_layout.addWidget(self.ui.coords_field)
+        self.add_data_widget('pos', self.ui.coords_field, self.ui.coords_field.set_value,
+                             self.ui.coords_field.changed, '', labels[2])
+        #self.ui.config_layout.addWidget(self.ui.coords_field)
 
         self.ui.size_field = CoordsField()
-        self.ui.config_layout.addWidget(self.ui.size_field)
+        self.add_data_widget('size', self.ui.size_field, self.ui.size_field.set_value,
+                             self.ui.size_field.changed, '', labels[3])
+        #self.ui.config_layout.addWidget(self.ui.size_field)
 
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ui.config_layout.addItem(spacer)
@@ -82,24 +90,6 @@ class SessionRestoreWindowLister(A2ItemEditor):
     def add_item(self):
         self._process_menu.popup(QtGui.QCursor.pos())
 
-    def draw_data(self, item_name):
-        self._drawing = True
-        cfg = self.cfg.get(item_name, default_dict)
-
-        for name, widget in self._config_widgets.items():
-            value = cfg.get(name, default_dict[name])
-            if isinstance(default_dict[name], bool):
-                widget.setChecked(value)
-            elif isinstance(default_dict[name], str):
-                widget.setText(value)
-            elif isinstance(default_dict[name], int):
-                widget.setCurrentIndex(value)
-
-            if name == 'scope':
-                self.toggle_scope_field(value)
-
-        self._drawing = False
-
 
 class Draw(DrawCtrl):
     """
@@ -130,6 +120,8 @@ class Edit(EditCtrl):
 
 
 class ButtonField(QtGui.QWidget):
+    changed = QtCore.Signal(str)
+
     def __init__(self):
         super(ButtonField, self).__init__()
         self.h_layout = QtGui.QHBoxLayout(self)
@@ -142,8 +134,13 @@ class ButtonField(QtGui.QWidget):
         self.button.setMaximumSize(45, 45)
         self.h_layout.addWidget(self.button)
 
+    def set_value(self, this):
+        print('this: %s' % this)
+
 
 class CoordsField(QtGui.QWidget):
+    changed = QtCore.Signal(tuple)
+
     def __init__(self):
         super(CoordsField, self).__init__()
         self.h_layout = QtGui.QHBoxLayout(self)
@@ -157,6 +154,9 @@ class CoordsField(QtGui.QWidget):
         self.button = QtGui.QPushButton(self)
         self.button.setMaximumSize(45, 45)
         self.h_layout.addWidget(self.button)
+
+    def set_value(self, this):
+        print('this: %s' % this)
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):

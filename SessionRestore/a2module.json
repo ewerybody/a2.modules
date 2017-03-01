@@ -16,6 +16,6 @@
     "typ": "init"
   },
   {
-    "typ": "srWindowLister"
+    "typ": "sr_windowlister"
   }
 ]
