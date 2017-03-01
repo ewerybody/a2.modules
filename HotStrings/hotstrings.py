@@ -8,11 +8,11 @@ Some element description ...
 import os
 import codecs
 import a2ctrl
-from PySide import QtGui, QtCore
+from PySide import QtGui
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
-from collections import OrderedDict
+
 
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
 hs_checkboxes = [
@@ -25,8 +25,6 @@ hs_checkboxes = [
     ('substitute', 'substitute !, +, ^, and # with Alt, Shift, Ctrl or Windows'),
     ('cmdmode', 'Autohotkey Command Mode'),
     ('sendplay', 'SendPlay Mode')]
-default_dict = dict([(name, False) for name, _ in hs_checkboxes])
-default_dict.update({'case': 0, 'scope': 0, 'text': '', 'scope_field': ''})
 
 
 class HotStringsEditor(A2ItemEditor):
