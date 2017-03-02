@@ -81,9 +81,9 @@ class SessionRestoreWindowLister(A2ItemEditor):
             self._process_menu.addAction(action)
 
     def add_process(self, name):
-        new_name = a2core.get_next_free_number(name, self.cfg.keys(), ' ')
+        new_name = a2core.get_next_free_number(name, self.data.keys(), ' ')
         item = self._add_and_setup_item(new_name)
-        self.cfg[new_name] = [name, '', '', 0, 0, 0, 0, False]
+        self.data[new_name] = {}
         # current_items.append(new_item_name)
         a2ctrl.qlist.select_items(self.ui.item_list, item)
 
