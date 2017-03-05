@@ -190,4 +190,12 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     * "includes" - a simple list with ahk script paths
     """
-    db_dict['variables']['SessionRestore_List'] = ["value"]
+    print('user_cfg:')
+    pprint(user_cfg)
+
+    window_list = []
+    for process_name, data in user_cfg.items():
+        window_list.append([process_name, data.get('class', ''), data.get('title', ''),
+                            data.get('x', 0), data.get('y', 0), data.get('w', 0), data.get('h', 0),
+                            data.get('ignore', False)])
+    db_dict['variables']['SessionRestore_List'] = window_list
