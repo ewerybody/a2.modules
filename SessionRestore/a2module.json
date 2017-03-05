@@ -8,12 +8,24 @@
     "version": "0.1"
   },
   {
+    "code": "sessionrestore_init()",
+    "typ": "init"
+  },
+  {
     "file": "sessionrestore.ahk",
     "typ": "include"
   },
   {
-    "code": "sessionrestore_init()",
-    "typ": "init"
+    "label": "Restore Window Layout On Login",
+    "name": "SessionRestore_Restore_On_Login",
+    "typ": "check",
+    "value": true
+  },
+  {
+    "buttontext": "Restore Now",
+    "code": "",
+    "labeltext": "",
+    "typ": "button"
   },
   {
     "typ": "sr_windowlister"

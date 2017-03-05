@@ -51,6 +51,10 @@ class SessionRestoreWindowLister(A2ItemEditor):
             self.add_data_widget(axis, widget, widget.setValue, default_value=0,
                                  label='%s %s' % (labels[label_idx], axis.upper()))
 
+        self.ui.ignore_check = QtGui.QCheckBox('Ignore this Window')
+        self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
+                             default_value=False)
+
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ui.config_layout.addItem(spacer)
 
