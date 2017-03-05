@@ -5,18 +5,19 @@ Some element description ...
 @created: 2017 2 10
 @author: Eric Werner
 """
+from pprint import pprint
 from functools import partial
-from collections import OrderedDict
 
 from PySide import QtGui, QtCore
 
 import a2ahk
+import a2core
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor
-import a2core
 
 
+log = a2core.get_logger(__name__)
 default_dict = {'title': '', 'class': '', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'ignore': False}
 
 
@@ -31,32 +32,24 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         # TODO: thread it
         self._fetch_window_process_list()
-        #self.selected_name_changed.connect(self.draw_data)
-
-        #self._config_widgets = OrderedDict()
         labels = ['Window Title', 'Window Class', 'Position', 'Size', '']
 
-        self.ui.title_field = ButtonField()
-        self.ui.title_field.field.setPlaceholderText(labels[0])
-        self.add_data_widget('title', self.ui.title_field, self.ui.title_field.set_value,
-                             self.ui.title_field.changed, '', labels[0])
-        #self.ui.config_layout.addWidget(self.ui.title_field)
+        # self.ui.title_field = ButtonField()
+        self.ui.title_field = QtGui.QLineEdit()
+        #self.ui.title_field.field.setPlaceholderText(labels[0])
+        self.add_data_widget('title', self.ui.title_field, self.ui.title_field.setText,
+                             default_value='', label=labels[0])
 
-        self.ui.class_field = ButtonField()
-        self.ui.class_field.field.setPlaceholderText(labels[1])
-        self.add_data_widget('class', self.ui.class_field, self.ui.class_field.set_value,
-                             self.ui.class_field.changed, '', labels[1])
-        #self.ui.config_layout.addWidget(self.ui.class_field)
+        #self.ui.class_field = ButtonField()
+        #self.ui.class_field.field.setPlaceholderText(labels[1])
+        self.ui.class_field = QtGui.QLineEdit()
+        self.add_data_widget('class', self.ui.class_field, self.ui.class_field.setText,
+                             default_value='', label=labels[1])
 
-        self.ui.coords_field = CoordsField()
-        self.add_data_widget('pos', self.ui.coords_field, self.ui.coords_field.set_value,
-                             self.ui.coords_field.changed, '', labels[2])
-        #self.ui.config_layout.addWidget(self.ui.coords_field)
-
-        self.ui.size_field = CoordsField()
-        self.add_data_widget('size', self.ui.size_field, self.ui.size_field.set_value,
-                             self.ui.size_field.changed, '', labels[3])
-        #self.ui.config_layout.addWidget(self.ui.size_field)
+        for axis, label_idx in [('x', 2), ('y', 2), ('w', 3), ('h', 3)]:
+            widget = QtGui.QSpinBox()
+            self.add_data_widget(axis, widget, widget.setValue, default_value=0,
+                                 label='%s %s' % (labels[label_idx], axis.upper()))
 
         spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ui.config_layout.addItem(spacer)
@@ -70,7 +63,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         processes = set()
         num_items = len(scope_nfo)
-        num_items = num_items - (num_items % 3)
+        num_items -= num_items % 3
         for i in range(0, num_items, 3):
             if scope_nfo[i + 2]:
                 processes.add(scope_nfo[i + 2])
@@ -101,13 +94,20 @@ class Draw(DrawCtrl):
         self.main_layout = QtGui.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.editor = SessionRestoreWindowLister(self.user_cfg, self)
+        self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
         self.is_expandable_widget = True
 
+    def check(self, *args):
+        super(Draw, self).check()
+        pprint(self.editor.data)
+        self.set_user_value(self.editor.data)
+        self.change()
+
 
 class Edit(EditCtrl):
-    def __init__(self, cfg, main, parentCfg):
-        super(Edit, self).__init__(cfg, main, parentCfg)
+    def __init__(self, cfg, main, parent_cfg):
+        super(Edit, self).__init__(cfg, main, parent_cfg)
 
     @staticmethod
     def element_name():
