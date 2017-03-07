@@ -18,7 +18,6 @@ from a2widget import A2ItemEditor
 
 
 log = a2core.get_logger(__name__)
-default_dict = {'title': '', 'class': '', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'ignore': False}
 
 
 class SessionRestoreWindowLister(A2ItemEditor):
@@ -32,22 +31,30 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         # TODO: thread it
         self._fetch_window_process_list()
-        labels = ['Window Title', 'Window Class', 'Position', 'Size', '']
+        labels = ['Process Name', 'Window Title', 'Window Class', 'Position', 'Size', '']
+
+        self.ui.proc_field = QtGui.QLineEdit()
+        self.ui.proc_field.setEnabled(False)
+        #self.ui.title_field.field.setPlaceholderText(labels[0])
+        self.add_data_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
+                             default_value='', label=labels[0])
 
         # self.ui.title_field = ButtonField()
         self.ui.title_field = QtGui.QLineEdit()
         #self.ui.title_field.field.setPlaceholderText(labels[0])
         self.add_data_widget('title', self.ui.title_field, self.ui.title_field.setText,
-                             default_value='', label=labels[0])
+                             default_value='*', label=labels[1])
 
         #self.ui.class_field = ButtonField()
         #self.ui.class_field.field.setPlaceholderText(labels[1])
         self.ui.class_field = QtGui.QLineEdit()
         self.add_data_widget('class', self.ui.class_field, self.ui.class_field.setText,
-                             default_value='', label=labels[1])
+                             default_value='*', label=labels[2])
 
-        for axis, label_idx in [('x', 2), ('y', 2), ('w', 3), ('h', 3)]:
+        for axis, label_idx in [('x', 3), ('y', 3), ('w', 4), ('h', 4)]:
             widget = QtGui.QSpinBox()
+            widget.setMinimum(-16777214)
+            widget.setMaximum(16777215)
             self.add_data_widget(axis, widget, widget.setValue, default_value=0,
                                  label='%s %s' % (labels[label_idx], axis.upper()))
 
@@ -80,8 +87,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
     def add_process(self, name):
         new_name = a2core.get_next_free_number(name, self.data.keys(), ' ')
         item = self._add_and_setup_item(new_name)
-        self.data[new_name] = {}
-        # current_items.append(new_item_name)
+        self.data[new_name] = {'process': name}
         a2ctrl.qlist.select_items(self.ui.item_list, item)
 
     def add_item(self):
@@ -194,8 +200,8 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     pprint(user_cfg)
 
     window_list = []
-    for process_name, data in user_cfg.items():
-        window_list.append([process_name, data.get('class', ''), data.get('title', ''),
+    for data in user_cfg.values():
+        window_list.append([data['process'], data.get('class', ''), data.get('title', ''),
                             data.get('x', 0), data.get('y', 0), data.get('w', 0), data.get('h', 0),
                             data.get('ignore', False)])
     db_dict['variables']['SessionRestore_List'] = window_list

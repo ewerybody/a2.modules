@@ -2,6 +2,92 @@
 ; author: Eric Werner
 ; created: 2017 1 31
 
+
+sessionrestore_session_restore() {
+    ; To avoid using the hidden windows list we need to restore all stored windows of the stored processes.
+    ; That gives us the subwindows as well without the gazillions hidden ones.
+    ; Then we we get another non hidden list again to have all the needed IDs.
+    ; this way we find any misplacements, correct them and minimize the windows again like before.
+    global SessionRestore_List
+    global Sessionrestore_Restore_All_Windows
+    
+    ; first window list. Might NOT have our subwindows excluded
+    window_list := get_window_list()
+    minimzed_windows := []
+    for windex, win in window_list {
+        for sindex, swin in SessionRestore_List {
+            if (swin[1] != win.proc_name)
+                continue
+            if (win.minmax 1= -1)
+                continue
+            minimzed_windows.push(win)
+            this_id := win.id
+            WinRestore, ahk_id %this_id%
+        }
+    }
+
+    ; second window list. Will have our subwindows excluded!
+    window_list := get_window_list()
+    for windex, win in window_list {
+        for sindex, swin in SessionRestore_List {
+            if (swin[1] != win.proc_name)
+                continue
+            ; see if the class matches
+            if !_sessionrestore_class_match(win.class, swin[2])
+                continue
+            ; see if the window title matches
+            if !_sessionrestore_title_match(win.title, swin[3])
+                continue
+            ; see if the window geometry is off
+            if (swin[4] == win.x && swin[5] == win.y && swin[6] == win.w && swin[7] == win.h)
+                continue
+            
+            text := win.proc_name " - " win.id " saved geo vs current:`n" win.x " " win.y " " win.w " " win.h "`n" swin[4] " " swin[5] " " swin[6] " " swin[7]
+            msgbox %text%
+            this_id := win.id
+            this_x := swin[4]
+            this_y := swin[5]
+            this_w := swin[6]
+            this_h := swin[7]
+            WinMove, ahk_id %this_id%,, this_x, this_y, this_w, this_h
+        }
+    }
+
+    nw := window_list.MaxIndex()
+    ns := SessionRestore_List.MaxIndex()
+    nm := minimzed_windows.MaxIndex()
+    ;MsgBox nw: %nw%`nns: %ns%`nnm: %nm%
+    
+    loop % SessionRestore_List.MaxIndex() {
+        win := SessionRestore_List[A_Index]
+        p := win[1]
+        c := win[2]
+        ;MsgBox %A_Index% proc: %p%`nclass: %c%
+    }
+
+}
+
+
+_sessionrestore_class_match(win_class, match_string) {
+    if ((match_string == "") || (match_string == "*") || (win_class == match_string))
+        return true
+    if InStr(match_string, "*")
+        if RegExMatch(win_class, match_string)
+            return true
+
+    return false
+}
+_sessionrestore_title_match(win_title, match_string) {
+    if ((match_string == "*") || (win_title == match_string))
+        return true
+    if InStr(match_string, "*")
+        if RegExMatch(win_title, match_string)
+            return true
+
+    return false
+}
+
+
 sessionrestore_init() {
     hw_ahk := _sessionrestore_FindWindowEx(0, 0, "AutoHotkey", a_ScriptFullPath " - AutoHotkey v" a_AhkVersion)
 
@@ -24,7 +110,7 @@ sessionrestore_handle_session_change(p_w, p_l, p_m, p_hw) {
 
     if ( p_w = WTS_SESSION_LOCK )
     {
-        sessionrestore_session_save()
+        ;sessionrestore_session_save()
     }
     else if ( p_w = WTS_SESSION_UNLOCK )
     {
@@ -33,6 +119,7 @@ sessionrestore_handle_session_change(p_w, p_l, p_m, p_hw) {
 }
 
 
+;deprecated for now
 sessionrestore_session_save() {
     ;global sessionrestore_dict
     
@@ -43,72 +130,6 @@ sessionrestore_session_save() {
         WinGetTitle, title, ahk_id %this_id%
         ;sessionrestore_dict[this_id] := new ...
     }
-}
-
-
-sessionrestore_session_restore() {
-    ; To avoid using the hidden windows list we need to restore all stored windows of the stored processes.
-    ; That gives us the subwindows as well without the gazillions hidden ones.
-    ; Then we we get another non hidden list again to have all the needed IDs.
-    ; this way we find any misplacements, correct them and minimize the windows again like before.
-    global SessionRestore_List
-    global sessionrestore_restore_all_windows
-    
-    ; first window list. Might have our subwindows excluded
-    window_list := get_window_list()
-    
-    
-    Progress, b w500, My SubText, Restoring your session ..., My Title
-    
-    loop % window_list.MaxIndex() {
-        ; get current window stats
-        win := window_list[A_Index]
-        this_id := win.id
-        WinGet, this_minmax, MinMax, ahk_id %this_id%
-        
-        ; update progress bar
-        iprogress := (A_Index / window_list.MaxIndex()) * 100.0
-        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
-        Progress, %iprogress%, %progress_text%
-        
-        ; loop through saved windows
-        Loop % SessionRestore_List.MaxIndex()
-        {
-            window := SessionRestore_List[A_Index]
-            if window.proc_name == win.proc_name
-            {
-                if  (window.ignore)
-                    Goto continue_outer
-                
-                if (this_minmax == -1)
-                    WinRestore, ahk_id %this_id%
-                WinGetPos, x, y, w, h, ahk_id %this_id%
-
-                if (x != window.x || y != window.y || w != window.w || h != window.h)
-                {
-                    ;text := window.proc_name " - saved geo vs current:`n" window.x " " window.y " " window.w " " window.h "`n" x " " y " " w " " h
-                    ;msgbox %text%
-                    this_x := window.x
-                    this_y := window.y
-                    this_w := window.w
-                    this_h := window.h
-                    WinMove, ahk_id %this_id%,, this_x, this_y, this_w, this_h
-                }
-                
-                if (this_minmax == -1)
-                    WinMinimize, ahk_id %this_id%
-                Goto continue_outer
-            }
-        }
-        continue_outer:
-
-        if sessionrestore_restore_all_windows and this_minmax = -1
-        {
-            WinRestore, ahk_id %this_id%
-            WinMinimize, ahk_id %this_id%
-        }
-    }
-    Progress, Off
 }
 
 
@@ -147,8 +168,9 @@ get_window_list(hidden=false) {
         WinGetClass, this_class, ahk_id %this_id%
         WinGetPos, x, y, w, h, ahk_id %this_id%
         WinGetTitle, this_title, ahk_id %this_id%
-
-        window_list.push(new _sessionrestore_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index))
+        WinGet, this_minmax, MinMax, ahk_id %this_id%
+        
+        window_list.push(new _sessionrestore_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index, this_minmax))
     }
     
     if current_detect_state <> hidden
@@ -160,7 +182,7 @@ get_window_list(hidden=false) {
 
 class _sessionrestore_window
 {
-    __New(proc_name, win_title, win_class, x, y, w, h, id, index)
+    __New(proc_name, win_title, win_class, x, y, w, h, id, index, minmax)
     {
         this.proc_name := proc_name
         this.title := win_title
@@ -171,5 +193,6 @@ class _sessionrestore_window
         this.h := h
         this.id := id
         this.index := index
+        this.minmax := minmax
     }
 }

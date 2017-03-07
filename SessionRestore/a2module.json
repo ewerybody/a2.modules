@@ -23,11 +23,17 @@
   },
   {
     "buttontext": "Restore Now",
-    "code": "",
+    "code": "call_local_ahk('sessionrestore_now')",
     "labeltext": "",
     "typ": "button"
   },
   {
     "typ": "sr_windowlister"
+  },
+  {
+    "label": "Re-Render All Windows",
+    "name": "Sessionrestore_Restore_All_Windows",
+    "typ": "check",
+    "value": false
   }
 ]
