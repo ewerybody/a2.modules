@@ -5,7 +5,7 @@ winrTLDs := ["html", "com", "de", "net", "org", "co.uk"]
 winr() { ;a2CMD
     global winrProjectPaths
 	selection := getSelection()
-	selection := Trim(selection, " `n`t`r")
+	selection := trim(selection)
 	
 	if ( selection == "" ) {
 		winrCallDialog()
