@@ -5,6 +5,7 @@ Some element description ...
 @created: 2017 2 10
 @author: Eric Werner
 """
+import os
 from pprint import pprint
 from functools import partial
 
@@ -15,6 +16,7 @@ import a2core
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor
+import json
 
 
 log = a2core.get_logger(__name__)
@@ -24,6 +26,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
     #    _cfg_changed = QtCore.Signal(str)
 
     def __init__(self, cfg, parent):
+        self.draw_ctrl = parent
         self.data = cfg or {}
         super(SessionRestoreWindowLister, self).__init__(parent=parent)
 
@@ -62,8 +65,19 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
                              default_value=False)
 
-        spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.ui.config_layout.addItem(spacer)
+        self.ui.some_button = QtGui.QPushButton('some button')
+        self.ui.some_button.clicked.connect(self.some_function)
+        self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtGui.QFormLayout.FieldRole,
+                                        self.ui.some_button)
+
+    def some_function(self):
+        process_name = self.data[self.selected_name]['process']
+        this_path = self.draw_ctrl.mod.path
+        cmd = '%s' % os.path.join(this_path, 'sessionrestore_get_windows.ahk')
+        x = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
+        print('x: %s' % x)
+        win_data = json.loads(x)
+        pprint(win_data)
 
     def _fetch_window_process_list(self):
         scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
@@ -88,6 +102,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         new_name = a2core.get_next_free_number(name, self.data.keys(), ' ')
         item = self._add_and_setup_item(new_name)
         self.data[new_name] = {'process': name}
+
         a2ctrl.qlist.select_items(self.ui.item_list, item)
 
     def add_item(self):

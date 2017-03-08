@@ -12,7 +12,7 @@ sessionrestore_session_restore() {
     global Sessionrestore_Restore_All_Windows
     
     ; first window list. Might NOT have our subwindows excluded
-    window_list := get_window_list()
+    window_list := sessionrestore_get_window_list()
     minimzed_windows := []
     for windex, win in window_list {
         for sindex, swin in SessionRestore_List {
@@ -27,7 +27,7 @@ sessionrestore_session_restore() {
     }
 
     ; second window list. Will have our subwindows excluded!
-    window_list := get_window_list()
+    window_list := sessionrestore_get_window_list()
     for windex, win in window_list {
         for sindex, swin in SessionRestore_List {
             if (swin[1] != win.proc_name)
@@ -154,7 +154,7 @@ class _sessionrestore_procwin
 }
 
 
-get_window_list(hidden=false) {
+sessionrestore_get_window_list(hidden=false, process_name="") {
     current_detect_state := DetectHiddenWindows()
     if current_detect_state <> hidden
         DetectHiddenWindows(hidden)
@@ -165,6 +165,9 @@ get_window_list(hidden=false) {
     loop %win_ids% {
         this_id := win_ids%A_Index%
         WinGet, this_proc, ProcessName, ahk_id %this_id%
+        if (process_name && this_proc != process_name)
+            continue
+        
         WinGetClass, this_class, ahk_id %this_id%
         WinGetPos, x, y, w, h, ahk_id %this_id%
         WinGetTitle, this_title, ahk_id %this_id%
