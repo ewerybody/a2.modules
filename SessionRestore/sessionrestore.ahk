@@ -8,6 +8,8 @@ sessionrestore_session_restore() {
     ; That gives us the subwindows as well without the gazillions hidden ones.
     ; Then we we get another non hidden list again to have all the needed IDs.
     ; this way we find any misplacements, correct them and minimize the windows again like before.
+    Progress, b w500 c00, preparing ..., Restoring your session ..., 
+    
     global SessionRestore_List
     global Sessionrestore_Restore_All_Windows
     
@@ -15,6 +17,13 @@ sessionrestore_session_restore() {
     window_list := sessionrestore_get_window_list()
     minimzed_windows := []
     for windex, win in window_list {
+    
+        ; update progress bar
+        x := A_Index / window_list.MaxIndex()
+        iprogress := x * 200.0
+        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
+        Progress, %iprogress%, %progress_text%
+
         for sindex, swin in SessionRestore_List {
             if (swin[1] != win.proc_name)
                 continue
@@ -29,6 +38,13 @@ sessionrestore_session_restore() {
     ; second window list. Will have our subwindows excluded!
     window_list := sessionrestore_get_window_list()
     for windex, win in window_list {
+    
+        ; update progress bar
+        iprogress := (A_Index / window_list.MaxIndex()) * 100.0
+        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
+        ;sleep, 10
+        Progress, %iprogress%, %progress_text%
+    
         for sindex, swin in SessionRestore_List {
             if (swin[1] != win.proc_name)
                 continue
@@ -42,29 +58,30 @@ sessionrestore_session_restore() {
             if (swin[4] == win.x && swin[5] == win.y && swin[6] == win.w && swin[7] == win.h)
                 continue
             
-            text := win.proc_name " - " win.id " saved geo vs current:`n" win.x " " win.y " " win.w " " win.h "`n" swin[4] " " swin[5] " " swin[6] " " swin[7]
-            msgbox %text%
+            ;text := win.proc_name " - " win.id " saved geo vs current:`n" win.x " " win.y " " win.w " " win.h "`n" swin[4] " " swin[5] " " swin[6] " " swin[7]
+            ;msgbox %text%
             this_id := win.id
             this_x := swin[4]
             this_y := swin[5]
             this_w := swin[6]
             this_h := swin[7]
             WinMove, ahk_id %this_id%,, this_x, this_y, this_w, this_h
+            ;WinMove("ahk_id " this_id,, swin[4], swin[5], swin[6], swin[7])
         }
     }
 
-    nw := window_list.MaxIndex()
-    ns := SessionRestore_List.MaxIndex()
-    nm := minimzed_windows.MaxIndex()
+    ;nw := window_list.MaxIndex()
+    ;ns := SessionRestore_List.MaxIndex()
+    ;nm := minimzed_windows.MaxIndex()
     ;MsgBox nw: %nw%`nns: %ns%`nnm: %nm%
     
-    loop % SessionRestore_List.MaxIndex() {
-        win := SessionRestore_List[A_Index]
-        p := win[1]
-        c := win[2]
+    ;loop % SessionRestore_List.MaxIndex() {
+    ;    win := SessionRestore_List[A_Index]
+    ;    p := win[1]
+    ;    c := win[2]
         ;MsgBox %A_Index% proc: %p%`nclass: %c%
-    }
-
+    ;}
+    Progress, Off
 }
 
 

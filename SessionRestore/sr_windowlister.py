@@ -6,7 +6,7 @@ Some element description ...
 @author: Eric Werner
 """
 import os
-from pprint import pprint
+import json
 from functools import partial
 
 from PySide import QtGui, QtCore
@@ -15,10 +15,11 @@ import a2ahk
 import a2core
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
-from a2widget import A2ItemEditor
-import json
+from a2widget import A2ItemEditor, A2ButtonField
+from pprint import pprint
 
 
+DEFAULT_TITLE = '*'
 log = a2core.get_logger(__name__)
 
 
@@ -42,15 +43,11 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
                              default_value='', label=labels[0])
 
-        # self.ui.title_field = ButtonField()
-        self.ui.title_field = QtGui.QLineEdit()
-        #self.ui.title_field.field.setPlaceholderText(labels[0])
+        self.ui.title_field = A2ButtonField()
         self.add_data_widget('title', self.ui.title_field, self.ui.title_field.setText,
-                             default_value='*', label=labels[1])
+                             default_value=DEFAULT_TITLE, label=labels[1])
 
-        #self.ui.class_field = ButtonField()
-        #self.ui.class_field.field.setPlaceholderText(labels[1])
-        self.ui.class_field = QtGui.QLineEdit()
+        self.ui.class_field = A2ButtonField()
         self.add_data_widget('class', self.ui.class_field, self.ui.class_field.setText,
                              default_value='*', label=labels[2])
 
@@ -70,14 +67,53 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtGui.QFormLayout.FieldRole,
                                         self.ui.some_button)
 
+        action = QtGui.QAction('Set to exactly "" No Title', self.ui.title_field.menu,
+                               triggered=partial(self.ui.title_field.setText, ''))
+        self.ui.title_field.add_action(action)
+        action = QtGui.QAction('Set to "*" Any Title', self.ui.title_field.menu,
+                               triggered=partial(self.ui.title_field.setText, '*'))
+        self.ui.title_field.add_action(action)
+        action = QtGui.QAction('Insert ".*" Wildcard', self.ui.title_field.menu,
+                               triggered=partial(self.ui.title_field.insert, '.*'))
+        self.ui.title_field.add_action(action)
+        self.title_menu = QtGui.QMenu('Available Titles')
+        self.title_menu.aboutToShow.connect(self._build_title_menu)
+        self.ui.title_field.menu.addMenu(self.title_menu)
+
+        action = QtGui.QAction('Set to "*" Any Class', self.ui.class_field.menu,
+                               triggered=partial(self.ui.class_field.setText, '*'))
+        self.ui.class_field.add_action(action)
+        action = QtGui.QAction('Insert ".*" Wildcard', self.ui.class_field.menu,
+                               triggered=partial(self.ui.class_field.insert, '.*'))
+        self.ui.class_field.add_action(action)
+        self.class_menu = QtGui.QMenu('Available Class Names')
+        self.class_menu.aboutToShow.connect(self._built_classes_menu)
+        self.ui.class_field.menu.addMenu(self.class_menu)
+
+    def _built_classes_menu(self):
+        self.class_menu.clear()
+        process_name = self.data[self.selected_name]['process']
+        for class_name in set([win[0] for win in self._fetch_window_data(process_name)]):
+            action = QtGui.QAction(class_name, self, triggered=partial(self.ui.class_field.setText, class_name))
+            self.class_menu.addAction(action)
+
+    def _build_title_menu(self):
+        self.title_menu.clear()
+        process_name = self.data[self.selected_name]['process']
+        for title in set([win[1] for win in self._fetch_window_data(process_name) if win[1]]):
+            action = QtGui.QAction(title, self, triggered=partial(self.ui.title_field.setText, title))
+            self.title_menu.addAction(action)
+
     def some_function(self):
         process_name = self.data[self.selected_name]['process']
+        win_data = self._fetch_window_data(process_name)
+        pprint(win_data)
+
+    def _fetch_window_data(self, process_name):
         this_path = self.draw_ctrl.mod.path
         cmd = '%s' % os.path.join(this_path, 'sessionrestore_get_windows.ahk')
-        x = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
-        print('x: %s' % x)
-        win_data = json.loads(x)
-        pprint(win_data)
+        window_data = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
+        return json.loads(window_data)
 
     def _fetch_window_process_list(self):
         scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
@@ -99,9 +135,16 @@ class SessionRestoreWindowLister(A2ItemEditor):
             self._process_menu.addAction(action)
 
     def add_process(self, name):
+        # for now we're just filling with the data of 1st found window
+        win_data = self._fetch_window_data(name)[0]
+
         new_name = a2core.get_next_free_number(name, self.data.keys(), ' ')
         item = self._add_and_setup_item(new_name)
-        self.data[new_name] = {'process': name}
+        self.data[new_name] = {'process': name,
+                               'class': win_data[0],
+                               'title': win_data[1],
+                               'x': win_data[2], 'y': win_data[3],
+                               'w': win_data[4], 'h': win_data[5]}
 
         a2ctrl.qlist.select_items(self.ui.item_list, item)
 
@@ -125,7 +168,6 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         super(Draw, self).check()
-        pprint(self.editor.data)
         self.set_user_value(self.editor.data)
         self.change()
 
@@ -211,12 +253,9 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     * "includes" - a simple list with ahk script paths
     """
-    print('user_cfg:')
-    pprint(user_cfg)
-
     window_list = []
     for data in user_cfg.values():
-        window_list.append([data['process'], data.get('class', ''), data.get('title', ''),
+        window_list.append([data['process'], data.get('class', ''), data.get('title', DEFAULT_TITLE),
                             data.get('x', 0), data.get('y', 0), data.get('w', 0), data.get('h', 0),
                             data.get('ignore', False)])
     db_dict['variables']['SessionRestore_List'] = window_list
