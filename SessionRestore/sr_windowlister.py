@@ -112,8 +112,15 @@ class SessionRestoreWindowLister(A2ItemEditor):
     def _fetch_window_data(self, process_name):
         this_path = self.draw_ctrl.mod.path
         cmd = '%s' % os.path.join(this_path, 'sessionrestore_get_windows.ahk')
-        window_data = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
-        return json.loads(window_data)
+        window_data_str = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
+        print('window_data_str: "%s"' % window_data_str)
+        try:
+            window_data = json.loads(window_data_str)
+            return window_data
+        except Exception as error:
+            log.error('Could not get JSON data from window data string:\n  %s' % window_data_str)
+            log.error(error)
+        return []
 
     def _fetch_window_process_list(self):
         scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
@@ -184,46 +191,6 @@ class Edit(EditCtrl):
     @staticmethod
     def element_icon():
         return a2ctrl.Icons.inst().check
-
-
-class ButtonField(QtGui.QWidget):
-    changed = QtCore.Signal(str)
-
-    def __init__(self):
-        super(ButtonField, self).__init__()
-        self.h_layout = QtGui.QHBoxLayout(self)
-        self.h_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.field = QtGui.QLineEdit(self)
-        self.h_layout.addWidget(self.field)
-
-        self.button = QtGui.QPushButton(self)
-        self.button.setMaximumSize(45, 45)
-        self.h_layout.addWidget(self.button)
-
-    def set_value(self, this):
-        print('this: %s' % this)
-
-
-class CoordsField(QtGui.QWidget):
-    changed = QtCore.Signal(tuple)
-
-    def __init__(self):
-        super(CoordsField, self).__init__()
-        self.h_layout = QtGui.QHBoxLayout(self)
-        self.h_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.x_field = QtGui.QSpinBox(self)
-        self.y_field = QtGui.QSpinBox(self)
-        self.h_layout.addWidget(self.x_field)
-        self.h_layout.addWidget(self.y_field)
-
-        self.button = QtGui.QPushButton(self)
-        self.button.setMaximumSize(45, 45)
-        self.h_layout.addWidget(self.button)
-
-    def set_value(self, this):
-        print('this: %s' % this)
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
