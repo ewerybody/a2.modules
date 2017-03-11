@@ -15,7 +15,7 @@ import a2ahk
 import a2core
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
-from a2widget import A2ItemEditor, A2ButtonField
+from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField
 from pprint import pprint
 
 
@@ -51,12 +51,13 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_widget('class', self.ui.class_field, self.ui.class_field.setText,
                              default_value='*', label=labels[2])
 
-        for axis, label_idx in [('x', 3), ('y', 3), ('w', 4), ('h', 4)]:
-            widget = QtGui.QSpinBox()
-            widget.setMinimum(-16777214)
-            widget.setMaximum(16777215)
-            self.add_data_widget(axis, widget, widget.setValue, default_value=0,
-                                 label='%s %s' % (labels[label_idx], axis.upper()))
+        self.ui.pos_field = A2CoordsField()
+        self.ui.size_field = A2CoordsField()
+
+        self.add_data_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value, default_value=(0, 0),
+                             label='Coordinates')
+        self.add_data_widget('wh', self.ui.size_field, self.ui.size_field.set_value, default_value=(0, 0),
+                             label='Window Size')
 
         self.ui.ignore_check = QtGui.QCheckBox('Ignore this Window')
         self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
@@ -150,10 +151,11 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.data[new_name] = {'process': name,
                                'class': win_data[0],
                                'title': win_data[1],
-                               'x': win_data[2], 'y': win_data[3],
-                               'w': win_data[4], 'h': win_data[5]}
+                               'xy': (win_data[2], win_data[3]),
+                               'wh': (win_data[4], win_data[5])}
 
         a2ctrl.qlist.select_items(self.ui.item_list, item)
+        self.data_changed.emit()
 
     def add_item(self):
         self._process_menu.popup(QtGui.QCursor.pos())
@@ -222,7 +224,9 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     """
     window_list = []
     for data in user_cfg.values():
-        window_list.append([data['process'], data.get('class', ''), data.get('title', DEFAULT_TITLE),
-                            data.get('x', 0), data.get('y', 0), data.get('w', 0), data.get('h', 0),
+        xy, wh = data.get('xy', (0, 0)), data.get('wh', (0, 0))
+        window_list.append([data['process'], data.get('class', ''),
+                            data.get('title', DEFAULT_TITLE),
+                            xy[0], xy[1], wh[0], wh[1],
                             data.get('ignore', False)])
     db_dict['variables']['SessionRestore_List'] = window_list
