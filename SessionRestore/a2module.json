@@ -1,0 +1,39 @@
+[
+  {
+    "author": "Eric Werner",
+    "date": "2017 1 31",
+    "description": "For when Windows keeps breaking your window layout this remembers how its been and rearranges the windows when you log back in.",
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "code": "sessionrestore_init()",
+    "typ": "init"
+  },
+  {
+    "file": "sessionrestore.ahk",
+    "typ": "include"
+  },
+  {
+    "label": "Restore Window Layout On Login",
+    "name": "SessionRestore_Restore_On_Login",
+    "typ": "check",
+    "value": true
+  },
+  {
+    "label": "Re-Render All Windows",
+    "name": "Sessionrestore_Restore_All_Windows",
+    "typ": "check",
+    "value": false
+  },
+  {
+    "typ": "sr_windowlister"
+  },
+  {
+    "buttontext": "Restore Now",
+    "code": "call_local_ahk('sessionrestore_now')",
+    "labeltext": "",
+    "typ": "button"
+  }
+]
