@@ -19,8 +19,7 @@ sessionrestore_session_restore() {
     for windex, win in window_list {
     
         ; update progress bar
-        x := A_Index / window_list.MaxIndex()
-        iprogress := x * 200.0
+        iprogress := (A_Index / window_list.MaxIndex()) * 100.0
         progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
         Progress, %iprogress%, %progress_text%
 
@@ -81,6 +80,9 @@ sessionrestore_session_restore() {
     ;    c := win[2]
         ;MsgBox %A_Index% proc: %p%`nclass: %c%
     ;}
+    
+    ; to make it look like it finished correctly
+    Sleep, 250
     Progress, Off
 }
 
