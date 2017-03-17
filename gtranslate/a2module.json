@@ -1,0 +1,36 @@
+[
+  {
+    "author": "Eric Werner",
+    "date": "2017 3 17",
+    "description": "Makes use of translate.googleapis.com. WIP. So far only en > de",
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "file": "gtranslate.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "gtranslate()",
+    "functionMode": 0,
+    "key": "Ralt+L",
+    "keyChange": true,
+    "label": "Go fetch!",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "gtranslate_Hotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  },
+  {
+    "label": "Use Proxy",
+    "name": "gtranslate_use_proxy",
+    "typ": "check",
+    "value": false
+  }
+]
