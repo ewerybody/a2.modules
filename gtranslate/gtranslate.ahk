@@ -16,7 +16,7 @@ gtranslate() {
     __gtranslate_search := Trim(sel, " `n`t`r")
     if (__gtranslate_search == "")
     {
-        InputBox, UserInput, gtranslate, Enter something to translate..., , 640
+        InputBox, UserInput, gtranslate, Enter something to translate..., , 640, 150
         if ErrorLevel
             return
         else
