@@ -2,12 +2,13 @@
   {
     "author": "eRiC",
     "date": "2016 10 23",
-    "description": "Because none existed before this temporary description was created for \"HotStrings\". Change it to describe what it does with a couple of words.",
+    "description": "Typing triggered actions! Mostly to correct typing or to insert longer texts by writing shortcuts. But this can also trigger any Autohotkey action.\nWIP! Currently only the \"Case\" option and the \"Trigger Immediately\" checkbox work.",
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/wiki/Hotstrings",
     "version": "0.1"
   },
   {
+    "name": "hotstrings",
     "typ": "hotstrings"
   }
 ]

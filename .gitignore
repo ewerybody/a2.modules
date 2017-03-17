@@ -1,1 +1,5 @@
 _config_backups/
+
+# Exclude all starting with . or _
+_ *
+.*

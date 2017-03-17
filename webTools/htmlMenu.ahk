@@ -11,6 +11,7 @@ HtmlMenu() {
     Menu, MyMenu, Add, i, HtmlMenuHandler
     Menu, MyMenu, Add, li, HtmlMenuHandler
     Menu, MyMenu, Add, img, HtmlMenuHandler
+    Menu, MyMenu, Add, video, HtmlMenuHandler
     Menu, MyMenu, Add, testHTML, HtmlMenuHandler
     Menu, MyMenu, Show
 	Menu, MyMenu, DeleteAll
@@ -22,7 +23,6 @@ Return
 HtmlMenuHandler() {
     textClip := Clipboard
 	sel := getSelection()
-    
 
     if (A_ThisMenuItem == "a") {
         ; if selection contains http* put that into the href, point cursor between >< then
@@ -54,6 +54,10 @@ HtmlMenuHandler() {
         FileDelete %fileName%
         FileAppend, %sel%, %fileName%
         Run, %fileName%,,Hide
+    }
+    Else If (A_ThisMenuItem == "video") {
+        code = <video width="960" height="540" controls>`n<source src="%sel%" type="video/mp4">`n</video>
+        paste(code)
     }
     Else {
         ; handle simple surrounding with the tags:
