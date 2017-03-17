@@ -1,26 +1,69 @@
-#include lib\ahklib\uri_encode.ahk
+﻿; https://translate.google.com/#en/de/hallo
+; https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=
+; &edit-text=&act=url
+
+
+__gtranslation := ""
+__gtranslate_search := ""
+
 
 gtranslate() {
+    icon_path := A_ScriptDir "\..\modules\a2.modules\gtranslate\a2icon.png"
+    
     WriteDebug("triggered", "", "debug", "gtranslate")
-
+    global __gtranslate_search
     sel := getSelection() ; get selected text
-    tranlation := gtranslate_fetch(sel, "en", "de") ; translate
+    __gtranslate_search := Trim(sel, " `n`t`r")
+    if (__gtranslate_search == "")
+    {
+        InputBox, UserInput, gtranslate, Enter something to translate..., , 640
+        if ErrorLevel
+            return
+        else
+            __gtranslate_search := Trim(UserInput)
+    }
+    else if is_web_adress(__gtranslate_search) {
+        global gtranslate_ask_website_translate
+        if gtranslate_ask_website_translate {
+            MsgBox, 1, Translate the web adress with translate.google.com?
+            IfMsgBox No
+                return
+        }
+        url := "https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u="
+        url .= LC_UrlEncode(__gtranslate_search)
+        url .= "&edit-text=&act=url"
+        Run, %url%
+        return
+    }
 
-    MsgBox % "Translation: " tranlation
+    global __gtranslation
+    __gtranslation := gtranslate_fetch(__gtranslate_search, "auto", "de") ; translate
+
+    if (__gtranslation == "")
+        MsgBox No tranlation found for "%__gtranslate_search%".
+    else {
+        Menu, gtranslate_menu, Add, %__gtranslation%, gtranslate_insert
+        Menu, gtranslate_menu, Icon, %__gtranslation%, %icon_path%
+        Menu, gtranslate_menu, Add, Show in web browser, gtranslate_open_webpage
+        Menu, gtranslate_menu, Icon, Show in web browser, %icon_path%
+        Menu, gtranslate_menu, Show
+        Menu, gtranslate_menu, DeleteAll
+    }
 }
 
 
-gtranslate_fetch(srcTxt, srcLng, transLng)
-{
+gtranslate_fetch(srcTxt, srcLng, transLng) {
     global gtranslate_use_proxy
 
     WriteDebug("Text to translate:", srcTxt, "debug", gtranslate)
 
+    encoded := LC_UriEncode(srcTxt)
+    
     ApiURi := "https://translate.googleapis.com/translate_a/single?client=gtx"
     ApiURi .= "&sl=" srcLng
     ApiURi .= "&tl=" transLng
     ApiURi .= "&dt=t"
-    ApiURi .= "&q=" LC_UrlEncode(srcTxt)
+    ApiURi .= "&q=" encoded ;srcTxt
     WriteDebug("Calling URL:", ApiURi, "debug", gtranslate)
 
     Headers := "Content-Type: application/json`n"
@@ -44,5 +87,20 @@ gtranslate_fetch(srcTxt, srcLng, transLng)
     WriteDebug("HTTPRequest response BODY:", response, "debug", "gtranslate")
 
     RegExMatch(response, "\[\""(.+?)\""", match)
+    ;tranlation := LC_UriDecode(match1)
+    ;return tranlation
     return match1
+}
+
+
+gtranslate_insert(ItemName, ItemPos, MenuName) {
+    global __gtranslation
+    paste(__gtranslation)
+}
+
+
+gtranslate_open_webpage(ItemName, ItemPos, MenuName) {
+    global __gtranslate_search
+    url := "https://translate.google.com/#en/de/" __gtranslate_search
+    Run, %url%
 }

@@ -32,5 +32,11 @@
     "name": "gtranslate_use_proxy",
     "typ": "check",
     "value": false
+  },
+  {
+    "label": "Ask me before translating a website",
+    "name": "gtranslate_ask_website_translate",
+    "typ": "check",
+    "value": true
   }
 ]
