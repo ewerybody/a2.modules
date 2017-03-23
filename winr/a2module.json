@@ -3,6 +3,10 @@
     "author": "eric",
     "date": "2015",
     "description": "Super Windows+R that checks your selection and opens up according Browsers with the given locations/urls.",
+    "tags": [
+      "web",
+      "file"
+    ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2/wiki/winr",
     "version": "0.1"
@@ -22,7 +26,7 @@
     "mode": "ahk",
     "multiple": true,
     "name": "winrhotkey",
-    "scope": "",
+    "scope": [],
     "scopeChange": true,
     "scopeMode": 0,
     "typ": "hotkey"

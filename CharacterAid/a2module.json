@@ -3,7 +3,11 @@
     "author": "eric",
     "date": "2015",
     "description": "Because none existed before this temporary description was created for \"CharacterAid\". Change it to describe what it does with a couple of words.",
+    "tags": [
+      "text"
+    ],
     "typ": "nfo",
+    "url": "",
     "version": "0.1"
   },
   {

@@ -3,6 +3,10 @@
     "author": "Eric Werner",
     "date": "2017 1 31",
     "description": "For when Windows keeps breaking your window layout this remembers how its been and rearranges the windows when you log back in.",
+    "tags": [
+      "window",
+      "wip"
+    ],
     "typ": "nfo",
     "url": "",
     "version": "0.1"

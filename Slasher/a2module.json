@@ -3,6 +3,11 @@
     "author": "eric werner",
     "date": "2016 8 24",
     "description": "Simple backslash/forwardslash handling on active selection. Shows a menu:\n  1.: toggle \\ to /\n  2.: single \\ to double backslash \\\\\n  3.: double \\\\ to single \\ backslash",
+    "tags": [
+      "code",
+      "file",
+      "text"
+    ],
     "typ": "nfo",
     "url": "",
     "version": "0.1"

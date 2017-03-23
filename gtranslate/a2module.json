@@ -3,6 +3,10 @@
     "author": "Eric Werner",
     "date": "2017 3 17",
     "description": "Makes use of translate.googleapis.com. WIP. So far only en > de",
+    "tags": [
+      "lookup",
+      "text"
+    ],
     "typ": "nfo",
     "url": "",
     "version": "0.1"

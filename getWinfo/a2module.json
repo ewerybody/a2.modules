@@ -3,6 +3,10 @@
     "author": "eric werner",
     "date": "2016 8 24",
     "description": "Gathers title, process Id, handle, class, size, positon and controls information in a menu that you can click to get the item in the clipboard.",
+    "tags": [
+      "window",
+      "code"
+    ],
     "typ": "nfo",
     "url": "",
     "version": "0.1"
