@@ -1,0 +1,99 @@
+[
+  {
+    "author": "Eric Werner",
+    "date": "2017 3 28",
+    "description": "A module to support german users on english keyboards.",
+    "tags": [
+      "text"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "children": [
+      {
+        "disablable": true,
+        "enabled": false,
+        "functionCode": "Send, @",
+        "functionMode": 0,
+        "key": "Ralt+Q",
+        "keyChange": true,
+        "label": "Write an @ symbol",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_at_hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": false,
+        "functionCode": "Send, \u20ac",
+        "functionMode": 0,
+        "key": "Ralt+E",
+        "keyChange": true,
+        "label": "Write a \u20acuro currency symbol",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_euro_hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": true,
+        "functionCode": "Send, \u00b0",
+        "functionMode": 0,
+        "key": "Alt+`",
+        "keyChange": true,
+        "label": "Write a \u00b0 degree symbol",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_degree_hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "Some symbols on their respective places",
+    "name": "tastatur_GroupBox",
+    "typ": "group"
+  },
+  {
+    "children": [
+      {
+        "file": "tastatur_umlaut.ahk",
+        "typ": "include"
+      },
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "tastatur_umlaut()",
+        "functionMode": 0,
+        "key": "Win+'",
+        "keyChange": true,
+        "label": "Show the umlaut tool",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_umlaut_hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "umlaut - tool to write german umlauts",
+    "name": "tastatur_umlaut_group",
+    "typ": "group"
+  }
+]

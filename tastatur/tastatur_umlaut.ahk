@@ -1,4 +1,4 @@
-﻿charAid_umlaut() {
+﻿tastatur_umlaut() {
     ; trying to avoid modifier key to trigger while listening to Input
     Hotkey, # UP, charAid_umlaut_dummy
     tt("umlaut...")
