@@ -3,6 +3,9 @@
     "author": "eric",
     "date": "2015",
     "description": "ExplorerHotkeys does mean things to your Windows Explorer!",
+    "tags": [
+      "file"
+    ],
     "typ": "nfo",
     "url": "",
     "version": "0.1"
