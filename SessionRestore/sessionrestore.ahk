@@ -8,24 +8,26 @@ sessionrestore_session_restore() {
     ; That gives us the subwindows as well without the gazillions hidden ones.
     ; Then we we get another non hidden list again to have all the needed IDs.
     ; this way we find any misplacements, correct them and minimize the windows again like before.
-    Progress, b w500 c00, preparing ..., Restoring your session ..., 
-    
+
     global SessionRestore_List
     global Sessionrestore_Restore_All_Windows
-    
+
     GetVirtualScreenCoordinates(_x, _y, vs_width, vs_height)
     this_vs_size := vs_width "," vs_height
     this_vs_size_list := SessionRestore_List[this_vs_size]
     if !IsObject(this_vs_size_list) {
+        ; TODO: remove this later:
         MsgBox this_vs_size: "%this_vs_size%" is not listed!
         return
     }
-    
+
+    Progress, b w500 c00, preparing ..., Restoring your session ...,
+
     ; first window list. Might NOT have our subwindows excluded
     window_list := sessionrestore_get_window_list()
     minimzed_windows := []
     for windex, win in window_list {
-    
+
         ; update progress bar
         iprogress := (A_Index / window_list.MaxIndex()) * 100.0
         progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
@@ -45,13 +47,13 @@ sessionrestore_session_restore() {
     ; second window list. Will have our subwindows excluded!
     window_list := sessionrestore_get_window_list()
     for windex, win in window_list {
-    
+
         ; update progress bar
         iprogress := (A_Index / window_list.MaxIndex()) * 100.0
         progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
         ;sleep, 10
         Progress, %iprogress%, %progress_text%
-    
+
         for sindex, swin in this_vs_size_list {
             if (swin[1] != win.proc_name)
                 continue
@@ -64,7 +66,7 @@ sessionrestore_session_restore() {
             ; see if the window geometry is off
             if (swin[4] == win.x && swin[5] == win.y && swin[6] == win.w && swin[7] == win.h)
                 continue
-            
+
             ;text := win.proc_name " - " win.id " saved geo vs current:`n" win.x " " win.y " " win.w " " win.h "`n" swin[4] " " swin[5] " " swin[6] " " swin[7]
             ;msgbox %text%
             this_id := win.id
@@ -81,14 +83,14 @@ sessionrestore_session_restore() {
     ;ns := this_vs_size_list.MaxIndex()
     ;nm := minimzed_windows.MaxIndex()
     ;MsgBox nw: %nw%`nns: %ns%`nnm: %nm%
-    
+
     ;loop % this_vs_size_list.MaxIndex() {
     ;    win := this_vs_size_list[A_Index]
     ;    p := win[1]
     ;    c := win[2]
         ;MsgBox %A_Index% proc: %p%`nclass: %c%
     ;}
-    
+
     ; to make it look like it finished correctly
     Sleep, 250
     Progress, Off
@@ -149,7 +151,7 @@ sessionrestore_handle_session_change(p_w, p_l, p_m, p_hw) {
 ;deprecated for now
 sessionrestore_session_save() {
     ;global sessionrestore_dict
-    
+
     WinGet, win_ids, list
     loop %win_ids% {
         this_id := win_ids%A_Index%
@@ -185,27 +187,27 @@ sessionrestore_get_window_list(hidden=false, process_name="") {
     current_detect_state := DetectHiddenWindows()
     if current_detect_state <> hidden
         DetectHiddenWindows(hidden)
-    
+
     window_list := []
-    
+
     WinGet, win_ids, list
     loop %win_ids% {
         this_id := win_ids%A_Index%
         WinGet, this_proc, ProcessName, ahk_id %this_id%
         if (process_name && this_proc != process_name)
             continue
-        
+
         WinGetClass, this_class, ahk_id %this_id%
         WinGetPos, x, y, w, h, ahk_id %this_id%
         WinGetTitle, this_title, ahk_id %this_id%
         WinGet, this_minmax, MinMax, ahk_id %this_id%
-        
+
         window_list.push(new _sessionrestore_window(this_proc, this_title, this_class, x, y, w, h, this_id, A_Index, this_minmax))
     }
-    
+
     if current_detect_state <> hidden
         DetectHiddenWindows(current_detect_state)
-    
+
     return window_list
 }
 
