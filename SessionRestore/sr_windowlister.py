@@ -7,6 +7,7 @@ Some element description ...
 """
 import os
 import json
+import pprint
 from functools import partial
 
 from PySide import QtGui, QtCore
@@ -16,7 +17,7 @@ import a2core
 import a2ctrl
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField
-from pprint import pprint
+from copy import deepcopy
 
 
 DEFAULT_TITLE = '*'
@@ -108,7 +109,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
     def some_function(self):
         process_name = self.data[self.selected_name]['process']
         win_data = self._fetch_window_data(process_name)
-        pprint(win_data)
+        print(pprint.pformat(win_data))
 
     def _fetch_window_data(self, process_name):
         this_path = self.draw_ctrl.mod.path
@@ -170,15 +171,75 @@ class Draw(DrawCtrl):
         super(Draw, self).__init__(main, cfg, mod)
         self.main_layout = QtGui.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.editor = SessionRestoreWindowLister(self.user_cfg, self)
+
+        self.size_combobox = QtGui.QComboBox()
+        size_label = QtGui.QLabel('Virtual Desktop Size:')
+        size_layout = QtGui.QHBoxLayout()
+        size_layout.addWidget(size_label)
+        size_layout.addWidget(self.size_combobox)
+        size_add_button = QtGui.QPushButton('Add Size')
+        size_add_button.setEnabled(False)
+        size_layout.addWidget(size_add_button)
+        self.main_layout.addLayout(size_layout)
+
+        self.desktop_icons_check = QtGui.QCheckBox('Restore Desktop Icons')
+        self.desktop_icons_check.setEnabled(False)
+        self.main_layout.addWidget(self.desktop_icons_check)
+
+        self.editor = SessionRestoreWindowLister({}, self)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
+
         self.is_expandable_widget = True
+
+        self._validate_setups()
+
+        self.size_combobox.textChanged.connect(self._size_selected)
+        self.size_combobox.addItems(self._size_keys)
+        self._size_selected()
+
+    def _validate_setups(self):
+        if not self.user_cfg:
+            return
+
+        first_key_name = list(self.user_cfg.keys())[0].lower()
+        if '.exe' in first_key_name:
+            print('updating the dictionary ...')
+            this_path = self.mod.path
+            cmd = os.path.join(this_path, 'sessionrestore_get_virtual_screen_size.ahk')
+            virtual_screen_size = a2ahk.call_cmd(cmd, cwd=this_path)
+            print('  virtual_screen_size: %s' % virtual_screen_size)
+
+            if virtual_screen_size in self.user_cfg:
+                del self.user_cfg[virtual_screen_size]
+
+            self.user_cfg = {virtual_screen_size: deepcopy(self.user_cfg)}
+            self.set_user_value(self.user_cfg)
+
+            print('  current element cfg:')
+            pprint(self.user_cfg)
+
 
     def check(self, *args):
         super(Draw, self).check()
-        self.set_user_value(self.editor.data)
+        self.user_cfg[self._size_key] = self.editor.data
+        self.set_user_value(self.user_cfg)
         self.change()
+
+    @property
+    def _size_keys(self):
+        return sorted(self.user_cfg.keys())
+
+    @property
+    def _size_key(self):
+        text = self.size_combobox.currentText()
+        return text
+
+    def _size_selected(self, value=None):
+        if value is None:
+            value = self._size_keys[0]
+        self.editor.data = self.user_cfg[value]
+        self.editor.fill_item_list()
 
 
 class Edit(EditCtrl):
@@ -222,11 +283,14 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     * "includes" - a simple list with ahk script paths
     """
-    window_list = []
-    for data in user_cfg.values():
-        xy, wh = data.get('xy', (0, 0)), data.get('wh', (0, 0))
-        window_list.append([data['process'], data.get('class', ''),
-                            data.get('title', DEFAULT_TITLE),
-                            xy[0], xy[1], wh[0], wh[1],
-                            data.get('ignore', False)])
-    db_dict['variables']['SessionRestore_List'] = window_list
+    window_dict = {}
+    for size_key, this_size_dict in user_cfg.items():
+        window_list = []
+        for this_win_dict in this_size_dict.values():
+            xy, wh = this_win_dict.get('xy', (0, 0)), this_win_dict.get('wh', (0, 0))
+            window_list.append([this_win_dict['process'], this_win_dict.get('class', ''),
+                                this_win_dict.get('title', DEFAULT_TITLE),
+                                xy[0], xy[1], wh[0], wh[1],
+                                this_win_dict.get('ignore', False)])
+        window_dict[size_key] = window_list
+    db_dict['variables']['SessionRestore_List'] = window_dict

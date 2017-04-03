@@ -13,6 +13,14 @@ sessionrestore_session_restore() {
     global SessionRestore_List
     global Sessionrestore_Restore_All_Windows
     
+    GetVirtualScreenCoordinates(_x, _y, vs_width, vs_height)
+    this_vs_size := vs_width "," vs_height
+    this_vs_size_list := SessionRestore_List[this_vs_size]
+    if !IsObject(this_vs_size_list) {
+        MsgBox this_vs_size: "%this_vs_size%" is not listed!
+        return
+    }
+    
     ; first window list. Might NOT have our subwindows excluded
     window_list := sessionrestore_get_window_list()
     minimzed_windows := []
@@ -23,7 +31,7 @@ sessionrestore_session_restore() {
         progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
         Progress, %iprogress%, %progress_text%
 
-        for sindex, swin in SessionRestore_List {
+        for sindex, swin in this_vs_size_list {
             if (swin[1] != win.proc_name)
                 continue
             if (win.minmax 1= -1)
@@ -44,7 +52,7 @@ sessionrestore_session_restore() {
         ;sleep, 10
         Progress, %iprogress%, %progress_text%
     
-        for sindex, swin in SessionRestore_List {
+        for sindex, swin in this_vs_size_list {
             if (swin[1] != win.proc_name)
                 continue
             ; see if the class matches
@@ -70,12 +78,12 @@ sessionrestore_session_restore() {
     }
 
     ;nw := window_list.MaxIndex()
-    ;ns := SessionRestore_List.MaxIndex()
+    ;ns := this_vs_size_list.MaxIndex()
     ;nm := minimzed_windows.MaxIndex()
     ;MsgBox nw: %nw%`nns: %ns%`nnm: %nm%
     
-    ;loop % SessionRestore_List.MaxIndex() {
-    ;    win := SessionRestore_List[A_Index]
+    ;loop % this_vs_size_list.MaxIndex() {
+    ;    win := this_vs_size_list[A_Index]
     ;    p := win[1]
     ;    c := win[2]
         ;MsgBox %A_Index% proc: %p%`nclass: %c%
