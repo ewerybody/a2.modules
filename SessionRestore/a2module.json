@@ -12,48 +12,66 @@
     "version": "0.1"
   },
   {
-    "code": "sessionrestore_init()",
-    "typ": "init"
-  },
-  {
-    "file": "sessionrestore.ahk",
-    "typ": "include"
-  },
-  {
-    "label": "Restore Window Layout On Login",
-    "name": "SessionRestore_Restore_On_Login",
-    "typ": "check",
-    "value": true
-  },
-  {
-    "label": "Re-Render All Windows",
-    "name": "Sessionrestore_Restore_All_Windows",
-    "typ": "check",
-    "value": false
-  },
-  {
-    "typ": "sr_windowlister"
-  },
-  {
-    "buttontext": "Restore Now",
-    "code": "call_local_ahk('sessionrestore_now')",
-    "labeltext": "",
-    "typ": "button"
-  },
-  {
-    "disablable": true,
+    "children": [
+      {
+        "disablable": true,
+        "enabled": true,
+        "functionCode": "sessionrestore_session_restore()",
+        "functionMode": 0,
+        "key": "Win+Shift+S",
+        "keyChange": true,
+        "label": "Restore via Hotkey",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "SessionRestore_Hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      },
+      {
+        "buttontext": "Restore Now",
+        "code": "call_local_ahk('sessionrestore_now')",
+        "labeltext": "",
+        "typ": "button"
+      },
+      {
+        "code": "sessionrestore_init()",
+        "typ": "init"
+      },
+      {
+        "file": "sessionrestore.ahk",
+        "typ": "include"
+      },
+      {
+        "label": "Restore Window Layout On Login",
+        "name": "SessionRestore_Restore_On_Login",
+        "typ": "check",
+        "value": true
+      },
+      {
+        "label": "Re-Render All Windows",
+        "name": "Sessionrestore_Restore_All_Windows",
+        "typ": "check",
+        "value": false
+      }
+    ],
+    "disablable": false,
     "enabled": true,
-    "functionCode": "sessionrestore_session_restore()",
-    "functionMode": 0,
-    "key": "Win+Shift+S",
-    "keyChange": true,
-    "label": "Restore via Hotkey",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "SessionRestore_Hotkey",
-    "scope": [],
-    "scopeChange": true,
-    "scopeMode": 0,
-    "typ": "hotkey"
+    "label": "Basic Settings",
+    "name": "SessionRestore_GroupBox1",
+    "typ": "group"
+  },
+  {
+    "children": [
+      {
+        "typ": "sr_windowlister"
+      }
+    ],
+    "disablable": false,
+    "enabled": true,
+    "label": "Listed Layouts",
+    "name": "SessionRestore_GroupBox",
+    "typ": "group"
   }
 ]
