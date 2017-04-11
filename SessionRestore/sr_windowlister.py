@@ -183,7 +183,7 @@ class Draw(DrawCtrl):
         self.main_layout.addLayout(size_layout)
 
         self.desktop_icons_check = QtGui.QCheckBox('Restore Desktop Icons')
-        self.desktop_icons_check.setEnabled(False)
+        self.desktop_icons_check.clicked[bool].connect(self.desktop_icons_checked)
         self.main_layout.addWidget(self.desktop_icons_check)
 
         self.editor = SessionRestoreWindowLister({}, self)
@@ -197,6 +197,21 @@ class Draw(DrawCtrl):
         self.size_combobox.textChanged.connect(self._size_selected)
         self.size_combobox.addItems(self._size_keys)
         self._size_selected()
+
+    def desktop_icons_checked(self, value=None):
+        if self._drawing:
+            return
+
+        change = False
+        if value and 'icons' not in self.user_cfg.get(self._size_key, {}):
+            self.user_cfg.setdefault(self._size_key, {})['icons'] = True
+            change = True
+        elif not value and 'icons' in self.user_cfg.get(self._size_key, {}):
+            del self.user_cfg[self._size_key]['icons']
+            change = True
+
+        if change:
+            self.delayed_check()
 
     def _validate_setups(self):
         if not self.user_cfg:
@@ -213,16 +228,28 @@ class Draw(DrawCtrl):
             if virtual_screen_size in self.user_cfg:
                 del self.user_cfg[virtual_screen_size]
 
-            self.user_cfg = {virtual_screen_size: deepcopy(self.user_cfg)}
+            self.user_cfg = {virtual_screen_size: {'setups': deepcopy(self.user_cfg)}}
             self.set_user_value(self.user_cfg)
 
             print('  current element cfg:')
             pprint(self.user_cfg)
 
+        change = False
+        for virtual_screen_size in list(self.user_cfg.keys()):
+            setups = self.user_cfg[virtual_screen_size]
+            if 'setups' not in setups:
+                del self.user_cfg[virtual_screen_size]
+                self.user_cfg = {virtual_screen_size: {'setups': deepcopy(setups)}}
+                change = True
+
+        if change:
+            self.set_user_value(self.user_cfg)
 
     def check(self, *args):
         super(Draw, self).check()
-        self.user_cfg[self._size_key] = self.editor.data
+        self.user_cfg.setdefault(self._size_key, {}).update({'setups': self.editor.data})
+        #self.user_cfg[self._size_key] = self.editor.data
+
         self.set_user_value(self.user_cfg)
         self.change()
 
@@ -236,10 +263,13 @@ class Draw(DrawCtrl):
         return text
 
     def _size_selected(self, value=None):
+        self._drawing = True
         if value is None:
             value = self._size_keys[0]
-        self.editor.data = self.user_cfg[value]
+        self.editor.data = self.user_cfg[value]['setups']
+        self.desktop_icons_check.setChecked(self.user_cfg[value].get('icons', False))
         self.editor.fill_item_list()
+        self._drawing = False
 
 
 class Edit(EditCtrl):
@@ -284,8 +314,9 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     * "includes" - a simple list with ahk script paths
     """
     window_dict = {}
-    for size_key, this_size_dict in user_cfg.items():
+    for size_key, this_dict in user_cfg.items():
         window_list = []
+        this_size_dict = this_dict.get('setups', {})
         for this_win_dict in this_size_dict.values():
             xy, wh = this_win_dict.get('xy', (0, 0)), this_win_dict.get('wh', (0, 0))
             window_list.append([this_win_dict['process'], this_win_dict.get('class', ''),
@@ -293,4 +324,7 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
                                 xy[0], xy[1], wh[0], wh[1],
                                 this_win_dict.get('ignore', False)])
         window_dict[size_key] = window_list
+        if this_dict.get('icons', False):
+            icons_flag = '%s_icons' % size_key
+            window_dict[icons_flag] = True
     db_dict['variables']['SessionRestore_List'] = window_dict
