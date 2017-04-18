@@ -21,7 +21,7 @@ sessionrestore_session_restore() {
         return
     }
 
-    Progress, b w500 c00, preparing ..., Restoring your session ...,
+    Progress, b h100 w500 c00, preparing ..., Restoring your session ...,
 
     ; first window list. Might NOT have our subwindows excluded
     window_list := sessionrestore_get_window_list()
@@ -30,7 +30,7 @@ sessionrestore_session_restore() {
 
         ; update progress bar
         iprogress := (A_Index / window_list.MaxIndex()) * 100.0
-        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
+        progress_text := "Preparing ...`n" A_Index "/" window_list.MaxIndex() " " win.proc_name
         Progress, %iprogress%, %progress_text%
 
         for sindex, swin in this_vs_size_list {
@@ -50,7 +50,7 @@ sessionrestore_session_restore() {
 
         ; update progress bar
         iprogress := (A_Index / window_list.MaxIndex()) * 100.0
-        progress_text := A_Index "/" window_list.MaxIndex() " " win.proc_name
+        progress_text := "Arranging ...`n" A_Index "/" window_list.MaxIndex() " " win.proc_name
         ;sleep, 10
         Progress, %iprogress%, %progress_text%
 
