@@ -15,6 +15,7 @@ from PySide import QtGui, QtCore
 import a2ahk
 import a2core
 import a2ctrl
+import a2util
 from a2element import DrawCtrl, EditCtrl
 from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField
 from copy import deepcopy
@@ -147,7 +148,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         # for now we're just filling with the data of 1st found window
         win_data = self._fetch_window_data(name)[0]
 
-        new_name = a2core.get_next_free_number(name, self.data.keys(), ' ')
+        new_name = a2util.get_next_free_number(name, self.data.keys(), ' ')
         item = self._add_and_setup_item(new_name)
         self.data[new_name] = {'process': name,
                                'class': win_data[0],
