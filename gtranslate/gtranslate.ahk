@@ -81,7 +81,9 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     WriteDebug("HTTPRequest request HEADER:", Headers, "debug", "gtranslate")
     WriteDebug("HTTPRequest request Options:", Options, "debug", "gtranslate")
 
+    tt("gtranslate looking up '" srcTxt "' ...")
     HTTPRequest(ApiURi , response, Headers, Options)
+    tt()
 
     WriteDebug("HTTPRequest response HEADER:", Headers, "debug", "gtranslate")
     WriteDebug("HTTPRequest response BODY:", response, "debug", "gtranslate")
