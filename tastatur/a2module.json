@@ -7,7 +7,7 @@
       "text"
     ],
     "typ": "nfo",
-    "url": "",
+    "url": "https://github.com/ewerybody/a2.modules/wiki/tastatur",
     "version": "0.1"
   },
   {
@@ -16,7 +16,8 @@
         "disablable": true,
         "enabled": false,
         "functionCode": "Send, @",
-        "functionMode": 0,
+        "functionMode": 2,
+        "functionSend": "Send, @",
         "key": "Ralt+Q",
         "keyChange": true,
         "label": "Write an @ symbol",
@@ -32,7 +33,8 @@
         "disablable": true,
         "enabled": false,
         "functionCode": "Send, \u20ac",
-        "functionMode": 0,
+        "functionMode": 2,
+        "functionSend": "Send, \u20ac",
         "key": "Ralt+E",
         "keyChange": true,
         "label": "Write a \u20acuro currency symbol",
@@ -48,7 +50,8 @@
         "disablable": true,
         "enabled": true,
         "functionCode": "Send, \u00b0",
-        "functionMode": 0,
+        "functionMode": 2,
+        "functionSend": "Send, \u00b0",
         "key": "Alt+`",
         "keyChange": true,
         "label": "Write a \u00b0 degree symbol",
