@@ -1,0 +1,33 @@
+[
+  {
+    "author": "Eric Werner",
+    "date": "2017 7 6",
+    "description": "See a Autohotkey snippet you'd like to try?\nSelect it, hit the Shortcut, BAM!",
+    "tags": [
+      "code"
+    ],
+    "typ": "nfo",
+    "url": "https://github.com/ewerybody/a2.modules/wiki/TestAHK",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "testahk()",
+    "functionMode": 0,
+    "key": "Win+Shift+H",
+    "keyChange": true,
+    "label": "Run selected code in Autohotkey",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "TestAHK_Hotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  },
+  {
+    "file": "testahk.ahk",
+    "typ": "include"
+  }
+]
