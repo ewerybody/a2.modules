@@ -5,7 +5,7 @@
 commandLine_selectAll() {
     CoordMode, Mouse, Relative
     MouseGetPos, xpos, ypos
-    Click, 10, 10
+    Click Right 10, 10
     Send, {up}{up}{up}{right}{up}{up}{up}{enter}
     MouseMove, %xpos%, %ypos%
 }
