@@ -12,6 +12,12 @@ sessionrestore_session_restore() {
     global SessionRestore_List
     global Sessionrestore_Restore_All_Windows
 
+    if !IsObject(SessionRestore_List) {
+        ; MsgBox SessionRestore: Nothing stored yet!
+        ; TODO: use logging!
+        return
+    }
+
     GetVirtualScreenCoordinates(_x, _y, vs_width, vs_height)
     this_vs_size := vs_width "," vs_height
     this_vs_size_list := SessionRestore_List[this_vs_size]
