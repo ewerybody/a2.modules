@@ -267,8 +267,9 @@ class Draw(DrawCtrl):
         self._drawing = True
         if value is None:
             value = self._size_keys[0]
-        self.editor.data = self.user_cfg[value]['setups']
-        self.desktop_icons_check.setChecked(self.user_cfg[value].get('icons', False))
+
+        self.editor.data = self.user_cfg.get(value, {}).get('setups', {})
+        self.desktop_icons_check.setChecked(self.user_cfg.get(value, {}).get('icons', False))
         self.editor.fill_item_list()
         self._drawing = False
 
