@@ -15,5 +15,7 @@ Return ;-----------------------------------
 #include sessionrestore.ahk
 #include ..\..\..\
 #include lib\ahklib\jxon.ahk
+#include lib\ahklib\func_string.ahk
+#include lib\ahklib\func_file.ahk
 #include lib\ahklib\functions.ahk
 #include lib\ahklib\ahk_functions.ahk
