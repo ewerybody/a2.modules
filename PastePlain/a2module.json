@@ -1,0 +1,41 @@
+[
+  {
+    "author": "Eric Werner",
+    "date": "2017 10 20",
+    "description": "Removes <b>formatting</b> from copied text or pastes <b>file paths</b> instead of the actual files.",
+    "tags": [],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "paste_plain_paste()",
+    "functionMode": 0,
+    "key": "Win+V",
+    "keyChange": true,
+    "label": "make some awesome stuff",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "PastePlain_Hotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  },
+  {
+    "file": "paste_plain.ahk",
+    "typ": "include"
+  },
+  {
+    "text": "If files are in the clipboard:",
+    "typ": "label"
+  },
+  {
+    "label": "Show Menu",
+    "name": "PastePlain_ShowFileMenuCheckBox",
+    "typ": "check",
+    "value": true
+  }
+]
