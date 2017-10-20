@@ -13,9 +13,6 @@ BBCodeMenu(){
 	Menu, BBCodeMenu, DeleteAll
 }
 
-BBCodeMenuHandler:
-	BBCodeMenuHandler() 
-Return
 BBCodeMenuHandler() {
 	sel := getSelection()
 	if (A_ThisMenuItem == "URL")
