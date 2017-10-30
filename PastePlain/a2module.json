@@ -2,10 +2,10 @@
   {
     "author": "Eric Werner",
     "date": "2017 10 20",
-    "description": "Removes <b>formatting</b> from copied text or pastes <b>file paths</b> instead of the actual files.",
+    "description": "To paste text without <b>formatting</b> and <b>file paths or names</b> instead of the actual files.",
     "tags": [],
     "typ": "nfo",
-    "url": "",
+    "url": "https://github.com/ewerybody/a2.modules/wiki/PastePlain",
     "version": "0.1"
   },
   {
