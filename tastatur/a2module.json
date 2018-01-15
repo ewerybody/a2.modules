@@ -62,6 +62,38 @@
         "scopeChange": true,
         "scopeMode": 0,
         "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": true,
+        "functionMode": 2,
+        "functionSend": "Send, \u00b2",
+        "key": "Ralt+2",
+        "keyChange": true,
+        "label": "make some awesome stuff",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_Hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": true,
+        "functionMode": 2,
+        "functionSend": "Send, \u00b3",
+        "key": "Ralt+3",
+        "keyChange": true,
+        "label": "make some awesome stuff",
+        "mode": "ahk",
+        "multiple": true,
+        "name": "tastatur_Hotkey",
+        "scope": [],
+        "scopeChange": true,
+        "scopeMode": 0,
+        "typ": "hotkey"
       }
     ],
     "disablable": true,
