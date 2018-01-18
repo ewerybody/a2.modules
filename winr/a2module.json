@@ -32,6 +32,10 @@
     "typ": "hotkey"
   },
   {
+    "browse_type": "0",
+    "label": "Look up relative paths:",
+    "max_items": 99,
+    "name": "winr_paths",
     "typ": "pathlist"
   }
 ]

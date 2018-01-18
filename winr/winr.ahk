@@ -3,7 +3,7 @@ winrTLDs := ["html", "com", "de", "net", "org", "co.uk"]
 ;winr
 
 winr() { ;a2CMD
-    global winrProjectPaths
+    global winr_paths
 	selection := getSelection()
 	selection := Trim(selection, " `n`t`r")
 	
@@ -27,10 +27,10 @@ winr() { ;a2CMD
 	else {
         ; loop set up project paths, if combination with selection fits: run it
         StringReplace, slashed, selection, /, \, All
-        for i, ppath in winrProjectPaths {
+        for i, ppath in winr_paths {
             ppath = %ppath%\%slashed%
             if FileExist(ppath) {
-                tt("project path exists...",0.5)
+                tt("Found relative path ...",0.5)
                 winrCatchedCallRun(ppath)
                 Return
             }
