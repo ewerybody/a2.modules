@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "author": "eric",
     "date": "2015",
@@ -65,9 +65,9 @@
   {
     "disablable": true,
     "enabled": true,
-    "functionCode": "ftpExplorerCopy()",
+    "functionCode": "ExplorerHotkeys_NavOnOff()",
     "functionMode": 2,
-    "functionSend": "Send, {Alt}VN{Enter}",
+    "functionSend": "Send, {Alt}vn{Enter}",
     "key": "Alt+N",
     "keyChange": true,
     "label": "Toggle the Navigation Panel",
@@ -80,5 +80,9 @@
     "scopeChange": true,
     "scopeMode": 1,
     "typ": "hotkey"
+  },
+  {
+    "file": "navOnOff.ahk",
+    "typ": "include"
   }
 ]
