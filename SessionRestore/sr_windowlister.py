@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Some element description ...
-
-@created: 2017 2 10
-@author: Eric Werner
-"""
 import os
 import json
 import pprint
@@ -22,6 +16,7 @@ from copy import deepcopy
 
 
 DEFAULT_TITLE = '*'
+NO_AVAILABLE_TXT = 'No a available %s for process "%s"'
 log = a2core.get_logger(__name__)
 
 
@@ -81,20 +76,22 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.class_menu.aboutToShow.connect(self._built_classes_menu)
         self.ui.class_field.menu.addMenu(self.class_menu)
 
-    # TODO: show the user if the process is not running
     def _built_classes_menu(self):
-        self.class_menu.clear()
-        process_name = self.data[self.selected_name]['process']
-        for class_name in set([win[0] for win in self._fetch_window_data(process_name)]):
-            action = QtGui.QAction(class_name, self, triggered=partial(self.ui.class_field.setText, class_name))
-            self.class_menu.addAction(action)
+        self._build_availables_menu(self.class_menu, 0, 'classes', self.ui.class_field)
 
     def _build_title_menu(self):
-        self.title_menu.clear()
+        self._build_availables_menu(self.title_menu, 1, 'titles', self.ui.title_field)
+
+    def _build_availables_menu(self, menu, data_index, name, widget):
+        menu.clear()
         process_name = self.data[self.selected_name]['process']
-        for title in set([win[1] for win in self._fetch_window_data(process_name) if win[1]]):
-            action = QtGui.QAction(title, self, triggered=partial(self.ui.title_field.setText, title))
-            self.title_menu.addAction(action)
+        proc_win_data = self._fetch_window_data(process_name)
+        if proc_win_data:
+            for title in set([win[data_index] for win in proc_win_data if win[data_index]]):
+                menu.addAction(title, partial(widget.setText, title))
+        else:
+            action = menu.addAction(NO_AVAILABLE_TXT % (name, process_name))
+            action.setEnabled(False)
 
     def some_function(self):
         process_name = self.data[self.selected_name]['process']
@@ -277,32 +274,6 @@ class Edit(EditCtrl):
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
-    """
-    Called by the module on "change" to get an elements data thats
-    eventually written into the runtime includes.
-
-    Passed into is all you might need:
-    :param str module_key: "module_source_name|module_name" combo used to identify module in db
-    :param dict cfg: Standard element configuration dictionary.
-    :param dict db_dict: Dictionary that's used to write the include data with "hotkeys", "variables" and "includes" keys
-    :param dict user_cfg: This elements user edits saved in the db
-
-    To make changes to the:
-    * "variables" - a simple key, value dictionary in db_dict
-
-    Get the current value via get_cfg_value() given the default cfg and user_cfg.
-    If value name is found it takes the value from there, otherwise from cfg or given default.
-
-        value = a2ctrl.get_cfg_value(cfg, user_cfg, typ=bool, default=False)
-
-    write the key and value to the "variables" dict:
-
-        db_dict['variables'][cfg['name']] = value
-
-    * "hotkeys" - a dictionary with scope identifiers
-
-    * "includes" - a simple list with ahk script paths
-    """
     window_dict = {}
     for size_key, this_dict in user_cfg.items():
         window_list = []
