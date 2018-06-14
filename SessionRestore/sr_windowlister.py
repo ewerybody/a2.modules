@@ -10,7 +10,7 @@ import json
 import pprint
 from functools import partial
 
-from PySide import QtGui, QtCore
+from PySide import QtGui
 
 import a2ahk
 import a2core
@@ -26,8 +26,6 @@ log = a2core.get_logger(__name__)
 
 
 class SessionRestoreWindowLister(A2ItemEditor):
-    #    _cfg_changed = QtCore.Signal(str)
-
     def __init__(self, cfg, parent):
         self.draw_ctrl = parent
         self.data = cfg or {}
@@ -41,11 +39,11 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         self.ui.proc_field = QtGui.QLineEdit()
         self.ui.proc_field.setEnabled(False)
-        #self.ui.title_field.field.setPlaceholderText(labels[0])
         self.add_data_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
                              default_value='', label=labels[0])
 
         self.ui.title_field = A2ButtonField()
+        self.ui.title_field.setPlaceholderText('No Title')
         self.add_data_widget('title', self.ui.title_field, self.ui.title_field.setText,
                              default_value=DEFAULT_TITLE, label=labels[1])
 
@@ -70,29 +68,20 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtGui.QFormLayout.FieldRole,
                                         self.ui.some_button)
 
-        action = QtGui.QAction('Set to exactly "" No Title', self.ui.title_field.menu,
-                               triggered=partial(self.ui.title_field.setText, ''))
-        self.ui.title_field.add_action(action)
-        action = QtGui.QAction('Set to "*" Any Title', self.ui.title_field.menu,
-                               triggered=partial(self.ui.title_field.setText, '*'))
-        self.ui.title_field.add_action(action)
-        action = QtGui.QAction('Insert ".*" Wildcard', self.ui.title_field.menu,
-                               triggered=partial(self.ui.title_field.insert, '.*'))
-        self.ui.title_field.add_action(action)
+        self.ui.title_field.add_action('Set to exactly "" No Title', partial(self.ui.title_field.setText, ''))
+        self.ui.title_field.add_action('Set to "*" Any Title', partial(self.ui.title_field.setText, '*'))
+        self.ui.title_field.add_action('Insert ".*" Wildcard', partial(self.ui.title_field.insert, '.*'))
         self.title_menu = QtGui.QMenu('Available Titles')
         self.title_menu.aboutToShow.connect(self._build_title_menu)
         self.ui.title_field.menu.addMenu(self.title_menu)
 
-        action = QtGui.QAction('Set to "*" Any Class', self.ui.class_field.menu,
-                               triggered=partial(self.ui.class_field.setText, '*'))
-        self.ui.class_field.add_action(action)
-        action = QtGui.QAction('Insert ".*" Wildcard', self.ui.class_field.menu,
-                               triggered=partial(self.ui.class_field.insert, '.*'))
-        self.ui.class_field.add_action(action)
+        self.ui.class_field.add_action('Set to "*" Any Class', partial(self.ui.class_field.setText, '*'))
+        self.ui.class_field.add_action('Insert ".*" Wildcard', partial(self.ui.class_field.insert, '.*'))
         self.class_menu = QtGui.QMenu('Available Class Names')
         self.class_menu.aboutToShow.connect(self._built_classes_menu)
         self.ui.class_field.menu.addMenu(self.class_menu)
 
+    # TODO: show the user if the process is not running
     def _built_classes_menu(self):
         self.class_menu.clear()
         process_name = self.data[self.selected_name]['process']
@@ -114,9 +103,8 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
     def _fetch_window_data(self, process_name):
         this_path = self.draw_ctrl.mod.path
-        cmd = '%s' % os.path.join(this_path, 'sessionrestore_get_windows.ahk')
+        cmd = os.path.join(this_path, 'sessionrestore_get_windows.ahk')
         window_data_str = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
-        print('window_data_str: "%s"' % window_data_str)
         try:
             window_data = json.loads(window_data_str)
             return window_data
