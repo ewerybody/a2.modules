@@ -47,9 +47,12 @@ winrCallDialog() {
 	runWindow = Run ahk_class #32770
 	Send #r
 	WinWaitActive, %runWindow%
-	CoordMode, Mouse, Screen
-	MouseGetPos, clq_mousex, clq_mousey
-	WinMove, %runWindow%, ,(clq_mousex - 30), (clq_mousey - 10)
+    global winr_move_to_cursor
+    if (winr_move_to_cursor) {
+        CoordMode, Mouse, Screen
+        MouseGetPos, clq_mousex, clq_mousey
+        WinMove, %runWindow%, ,(clq_mousex - 30), (clq_mousey - 10)
+    }
 }
 
 winrCatchedCallRun(ppath) {

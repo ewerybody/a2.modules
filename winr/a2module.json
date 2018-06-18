@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "author": "eric",
     "date": "2015",
@@ -30,6 +30,12 @@
     "scopeChange": true,
     "scopeMode": 0,
     "typ": "hotkey"
+  },
+  {
+    "label": "Move Run dialog to cursor",
+    "name": "winr_move_to_cursor",
+    "typ": "check",
+    "value": true
   },
   {
     "browse_type": "0",
