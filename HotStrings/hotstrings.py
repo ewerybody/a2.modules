@@ -8,7 +8,7 @@ Some element description ...
 import os
 import codecs
 import a2ctrl
-from PySide import QtGui
+from PySide2 import QtWidgets
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
@@ -41,28 +41,28 @@ class HotStringsEditor(A2ItemEditor):
                              default_value='')
 
         for name, label in hs_checkboxes:
-            checkbox = QtGui.QCheckBox(self)
+            checkbox = QtWidgets.QCheckBox(self)
             checkbox.setText(label)
             self.add_data_widget(name, checkbox, checkbox.setChecked,
                                  default_value=False)
 
-        self.ui.case = QtGui.QComboBox(self)
+        self.ui.case = QtWidgets.QComboBox(self)
         self.ui.case.addItems(['Ignore Case', 'Case Sensitive', 'Don\'t Conform To Typed Case'])
         self.add_data_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
                              default_value=0)
 
-        self.ui.scope = QtGui.QComboBox(self)
+        self.ui.scope = QtWidgets.QComboBox(self)
         self.ui.scope.addItems(['Scope: Global', 'Scope: Only In:', 'Scope: Not In:'])
         self.ui.scope.currentIndexChanged.connect(self.toggle_scope_field)
         self.add_data_widget('scope', self.ui.scope, self.ui.scope.setCurrentIndex,
                              default_value=0)
 
-        self.ui.scope_field = QtGui.QLineEdit(self)
+        self.ui.scope_field = QtWidgets.QLineEdit(self)
         self.ui.scope_field.setVisible(False)
         self.add_data_widget('scope_field', self.ui.scope_field, self.ui.scope_field.setText,
                              default_value='')
 
-        spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.ui.config_layout.addItem(spacer)
 
     def toggle_scope_field(self, index=None):
@@ -83,7 +83,7 @@ class Draw(DrawCtrl):
         self.is_expandable_widget = True
 
     def _setupUi(self):
-        self.main_layout = QtGui.QVBoxLayout(self)
+        self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.editor = HotStringsEditor(self.user_cfg, self)
         self.editor.data_changed.connect(self.delayed_check)
@@ -131,7 +131,7 @@ class Edit(EditCtrl):
     """
     def __init__(self, cfg, main, parentCfg):
         super(Edit, self).__init__(cfg, main, parentCfg)
-        self.mainLayout.addWidget(QtGui.QLabel('Nothing to setup on the HotStrings element.'
+        self.mainLayout.addWidget(QtWidgets.QLabel('Nothing to setup on the HotStrings element.'
                                                'This one is all for the user.'))
 
     @staticmethod

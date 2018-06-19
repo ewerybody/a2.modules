@@ -4,7 +4,7 @@ import json
 import pprint
 from functools import partial
 
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 import a2ahk
 import a2core
@@ -26,13 +26,13 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.data = cfg or {}
         super(SessionRestoreWindowLister, self).__init__(parent=parent)
 
-        self._process_menu = QtGui.QMenu(self)
+        self._process_menu = QtWidgets.QMenu(self)
 
         # TODO: thread it
         self._fetch_window_process_list()
         labels = ['Process Name', 'Window Title', 'Window Class', 'Position', 'Size', '']
 
-        self.ui.proc_field = QtGui.QLineEdit()
+        self.ui.proc_field = QtWidgets.QLineEdit()
         self.ui.proc_field.setEnabled(False)
         self.add_data_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
                              default_value='', label=labels[0])
@@ -54,25 +54,25 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_widget('wh', self.ui.size_field, self.ui.size_field.set_value, default_value=(0, 0),
                              label='Window Size')
 
-        self.ui.ignore_check = QtGui.QCheckBox('Ignore this Window')
+        self.ui.ignore_check = QtWidgets.QCheckBox('Ignore this Window')
         self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
                              default_value=False)
 
-        self.ui.some_button = QtGui.QPushButton('some button')
+        self.ui.some_button = QtWidgets.QPushButton('some button')
         self.ui.some_button.clicked.connect(self.some_function)
-        self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtGui.QFormLayout.FieldRole,
+        self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtWidgets.QFormLayout.FieldRole,
                                         self.ui.some_button)
 
         self.ui.title_field.add_action('Set to exactly "" No Title', partial(self.ui.title_field.setText, ''))
         self.ui.title_field.add_action('Set to "*" Any Title', partial(self.ui.title_field.setText, '*'))
         self.ui.title_field.add_action('Insert ".*" Wildcard', partial(self.ui.title_field.insert, '.*'))
-        self.title_menu = QtGui.QMenu('Available Titles')
+        self.title_menu = QtWidgets.QMenu('Available Titles')
         self.title_menu.aboutToShow.connect(self._build_title_menu)
         self.ui.title_field.menu.addMenu(self.title_menu)
 
         self.ui.class_field.add_action('Set to "*" Any Class', partial(self.ui.class_field.setText, '*'))
         self.ui.class_field.add_action('Insert ".*" Wildcard', partial(self.ui.class_field.insert, '.*'))
-        self.class_menu = QtGui.QMenu('Available Class Names')
+        self.class_menu = QtWidgets.QMenu('Available Class Names')
         self.class_menu.aboutToShow.connect(self._built_classes_menu)
         self.ui.class_field.menu.addMenu(self.class_menu)
 
@@ -126,8 +126,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self._process_list = sorted(processes, key=lambda x: x.lower())
 
         for name in self._process_list:
-            action = QtGui.QAction(name, self, triggered=partial(self.add_process, name))
-            self._process_menu.addAction(action)
+            self._process_menu.addAction(name, partial(self.add_process, name))
 
     def add_process(self, name):
         # for now we're just filling with the data of 1st found window
@@ -145,7 +144,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.data_changed.emit()
 
     def add_item(self):
-        self._process_menu.popup(QtGui.QCursor.pos())
+        self._process_menu.popup(QtWidgets.QCursor.pos())
 
 
 class Draw(DrawCtrl):
@@ -155,20 +154,20 @@ class Draw(DrawCtrl):
     """
     def __init__(self, main, cfg, mod):
         super(Draw, self).__init__(main, cfg, mod)
-        self.main_layout = QtGui.QVBoxLayout(self)
+        self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.size_combobox = QtGui.QComboBox()
-        size_label = QtGui.QLabel('Virtual Desktop Size:')
-        size_layout = QtGui.QHBoxLayout()
+        self.size_combobox = QtWidgets.QComboBox()
+        size_label = QtWidgets.QLabel('Virtual Desktop Size:')
+        size_layout = QtWidgets.QHBoxLayout()
         size_layout.addWidget(size_label)
         size_layout.addWidget(self.size_combobox)
-        size_add_button = QtGui.QPushButton('Add Size')
+        size_add_button = QtWidgets.QPushButton('Add Size')
         size_add_button.setEnabled(False)
         size_layout.addWidget(size_add_button)
         self.main_layout.addLayout(size_layout)
 
-        self.desktop_icons_check = QtGui.QCheckBox('Restore Desktop Icons')
+        self.desktop_icons_check = QtWidgets.QCheckBox('Restore Desktop Icons')
         self.desktop_icons_check.clicked[bool].connect(self.desktop_icons_checked)
         self.main_layout.addWidget(self.desktop_icons_check)
 
@@ -180,7 +179,7 @@ class Draw(DrawCtrl):
 
         self._validate_setups()
 
-        self.size_combobox.textChanged.connect(self._size_selected)
+        self.size_combobox.currentTextChanged.connect(self._size_selected)
         self.size_combobox.addItems(self._size_keys)
         self._size_selected()
 
