@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Some element description ...
-
-@created: 2016 9 24
-@author: eRiC
-"""
 import os
 import codecs
+import a2util
 import a2ctrl
 from PySide2 import QtWidgets
 from a2element import DrawCtrl, EditCtrl
@@ -90,7 +85,6 @@ class Draw(DrawCtrl):
         self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
-        DrawCtrl.check(self, *args)
         self.set_user_value(self.editor.data)
 
         hs_lines = []
@@ -118,8 +112,7 @@ class Draw(DrawCtrl):
             return
         self._hs_lines_b4 = hs_lines
         hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
-        with codecs.open(hs_ahk_path, 'wb', encoding='utf-8-sig') as fobj:
-            fobj.write('\n'.join(hs_lines))
+        a2util.write_utf8(hs_ahk_path, '\n'.join(hs_lines))
 
         self.change()
 
