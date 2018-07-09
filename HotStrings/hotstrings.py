@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import codecs
 import a2util
 import a2ctrl
 from PySide2 import QtWidgets
@@ -111,8 +110,9 @@ class Draw(DrawCtrl):
         if hs_lines == self._hs_lines_b4:
             return
         self._hs_lines_b4 = hs_lines
-        hs_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
-        a2util.write_utf8(hs_ahk_path, '\n'.join(hs_lines))
+        os.makedirs(self.paths.mod_data, exist_ok=True)
+        hotstrings_file_path = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
+        a2util.write_utf8(hotstrings_file_path, '\n'.join(hs_lines))
 
         self.change()
 
@@ -122,10 +122,10 @@ class Edit(EditCtrl):
     The background widget that sets up how the user can edit the element,
     visible when editing the module.
     """
-    def __init__(self, cfg, main, parentCfg):
-        super(Edit, self).__init__(cfg, main, parentCfg)
-        self.mainLayout.addWidget(QtWidgets.QLabel('Nothing to setup on the HotStrings element.'
-                                               'This one is all for the user.'))
+    def __init__(self, cfg, main, parent_cfg):
+        super(Edit, self).__init__(cfg, main, parent_cfg)
+        self.mainLayout.addWidget(QtWidgets.QLabel(
+            'Nothing to setup on the HotStrings element. This one is all for the user.'))
 
     @staticmethod
     def element_name():
@@ -137,8 +137,8 @@ class Edit(EditCtrl):
         return a2ctrl.Icons.inst().check
 
 
-def get_settings(module_key, cfg, db_dict, user_cfg):
+def get_settings(_module_key, _cfg, db_dict, _user_cfg):
     """
     So far this only adds the hotstrings.ahk to includes.
     """
-    db_dict.setdefault('settings_includes', []).append(HOTSTRINGS_FILENAME)
+    db_dict.setdefault('data_includes', []).append(HOTSTRINGS_FILENAME)
