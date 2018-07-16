@@ -89,7 +89,7 @@ paste_plain_link_paths() {
 _paste_plain_basenames() {
     txt := ""
     for i, item in files_in_clipboard()
-        txt := txt basename(item) "`n"
+        txt := txt file_basename(item) "`n"
     StringTrimRight, txt, txt, 1
     return txt
 }
