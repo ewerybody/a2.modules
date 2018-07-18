@@ -22,7 +22,7 @@ HtmlMenuHandler:
 Return
 HtmlMenuHandler() {
     textClip := Clipboard
-	sel := getSelection()
+	sel := get_selection()
 
     if (A_ThisMenuItem == "a") {
         ; if selection contains http* put that into the href, point cursor between >< then

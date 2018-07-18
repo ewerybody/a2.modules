@@ -9,10 +9,10 @@ __gtranslate_search := ""
 
 gtranslate() {
     icon_path := A_ScriptDir "\..\modules\a2.modules\gtranslate\a2icon.png"
-    
+
     WriteDebug("triggered", "", "debug", "gtranslate")
     global __gtranslate_search
-    sel := getSelection() ; get selected text
+    sel := get_selection() ; get selected text
     __gtranslate_search := Trim(sel, " `n`t`r")
     if (__gtranslate_search == "")
     {
@@ -30,7 +30,7 @@ gtranslate() {
                 return
         }
         url := "https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u="
-        url .= LC_UrlEncode(__gtranslate_search)
+        url .= lc_url_encode(__gtranslate_search)
         url .= "&edit-text=&act=url"
         Run, %url%
         return
@@ -57,7 +57,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
 
     WriteDebug("Text to translate:", srcTxt, "debug", gtranslate)
 
-    encoded := LC_UriEncode(srcTxt)
+    encoded := lc_uri_encode(srcTxt)
     
     ApiURi := "https://translate.googleapis.com/translate_a/single?client=gtx"
     ApiURi .= "&sl=" srcLng
@@ -74,7 +74,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
 
     if gtranslate_use_proxy
     {
-        Headers .= Settings.Proxy.Authentication.Username && Settings.Proxy.Authentication.Password ? "Proxy-Authorization: Basic " Base64Encode(Settings.Proxy.Authentication.Username ":" Settings.Proxy.Authentication.Password) : ""  ; TODO decrypt pw?
+        Headers .= Settings.Proxy.Authentication.Username && Settings.Proxy.Authentication.Password ? "Proxy-Authorization: Basic " base64_encode(Settings.Proxy.Authentication.Username ":" Settings.Proxy.Authentication.Password) : ""  ; TODO decrypt pw?
         Options .= Settings.Proxy.Enabled ? "Proxy: " Settings.Proxy.Address ":" Settings.Proxy.Port "`n" : ""
     }
 

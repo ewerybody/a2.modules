@@ -1,5 +1,5 @@
 ﻿wordCount() {
-	txt := getSelection()
+	txt := get_selection()
     words := StrSplit(txt, [A_Tab, A_Space, "`n", "`r"])
 	StringLen, length, txt
     

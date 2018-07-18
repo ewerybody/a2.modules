@@ -3,7 +3,7 @@
 ; created: 2017 7 6
 
 testahk() {
-    sel := getSelection()
+    sel := get_selection()
     
     if (sel == "") {
         tt("testahk: Nothing selected!", 1)

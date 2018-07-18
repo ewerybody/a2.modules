@@ -4,7 +4,7 @@ winrTLDs := ["html", "com", "de", "net", "org", "co.uk"]
 
 winr() { ;a2CMD
     global winr_paths
-	selection := getSelection()
+	selection := get_selection()
 	selection := Trim(selection, " `n`t`r")
 	
 	if ( selection == "" ) {

@@ -14,7 +14,7 @@ BBCodeMenu(){
 }
 
 BBCodeMenuHandler() {
-	sel := getSelection()
+	sel := get_selection()
 	if (A_ThisMenuItem == "URL")
 	{
 		If (isURL(sel))

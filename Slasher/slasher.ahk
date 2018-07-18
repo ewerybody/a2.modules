@@ -12,7 +12,7 @@ slasher() {
 }
 
 slasher_menu_handler:
-    Selection := getSelection()
+    Selection := get_selection()
     if (A_ThisMenuItemPos == 1) {
         IfInString, Selection, /
             outstr := StrReplace(Selection, "/" , "\")

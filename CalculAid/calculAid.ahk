@@ -13,7 +13,7 @@
 calculAid_open() {
     tt("CalculAid...", 1)
     global calculAid_openAtCursor, calculAid_AlwaysOnTop
-    sel := getSelection()
+    sel := get_selection()
     RegExMatch(sel, "[0-9.,+/*=-]+", numbers)
     ;tt(numbers)
     
