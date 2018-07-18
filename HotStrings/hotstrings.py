@@ -69,14 +69,17 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
-    def __init__(self, main, cfg, mod):
-        cfg.setdefault('name', 'hotstrings')
-        super(Draw, self).__init__(main, cfg, mod)
+    def __init__(self, *args):
+        # cfg.setdefault('name', 'hotstrings')
+        super(Draw, self).__init__(*args)
         self._hs_lines_b4 = None
-        self._setupUi()
+        self._setup_ui()
         self.is_expandable_widget = True
 
-    def _setupUi(self):
+        self.hotstrings_file = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
+        self._check_hs_include_file()
+
+    def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.editor = HotStringsEditor(self.user_cfg, self)
@@ -84,6 +87,7 @@ class Draw(DrawCtrl):
         self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
+        print('check')
         self.set_user_value(self.editor.data)
 
         hs_lines = []
@@ -109,12 +113,18 @@ class Draw(DrawCtrl):
         hs_lines = ['#IfWinActive,'] + hs_lines
         if hs_lines == self._hs_lines_b4:
             return
+
         self._hs_lines_b4 = hs_lines
-        os.makedirs(self.paths.mod_data, exist_ok=True)
-        hotstrings_file_path = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
-        a2util.write_utf8(hotstrings_file_path, '\n'.join(hs_lines))
+        a2util.write_utf8(self.hotstrings_file, '\n'.join(hs_lines))
 
         self.change()
+
+    def _check_hs_include_file(self):
+        # make sure at least an empty file is there to be included
+        os.makedirs(self.paths.mod_data, exist_ok=True)
+        if not os.path.isfile(self.hotstrings_file):
+            with open(self.hotstrings_file, 'w') as fobj:
+                fobj.write('')
 
 
 class Edit(EditCtrl):
