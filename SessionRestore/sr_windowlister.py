@@ -152,8 +152,8 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
-    def __init__(self, main, cfg, mod):
-        super(Draw, self).__init__(main, cfg, mod)
+    def __init__(self, *args):
+        super(Draw, self).__init__(*args)
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -233,7 +233,7 @@ class Draw(DrawCtrl):
     def check(self, *args):
         super(Draw, self).check()
         self.user_cfg.setdefault(self._size_key, {}).update({'setups': self.editor.data})
-        #self.user_cfg[self._size_key] = self.editor.data
+        # self.user_cfg[self._size_key] = self.editor.data
 
         self.set_user_value(self.user_cfg)
         self.change()
@@ -250,6 +250,8 @@ class Draw(DrawCtrl):
     def _size_selected(self, value=None):
         self._drawing = True
         if value is None:
+            if not self._size_keys:
+                return
             value = self._size_keys[0]
 
         self.editor.data = self.user_cfg.get(value, {}).get('setups', {})
