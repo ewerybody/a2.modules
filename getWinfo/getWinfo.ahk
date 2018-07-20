@@ -1,6 +1,7 @@
 ﻿; getWinfo - window information tool
 ; gathers title, process Id, handle, class, size, positon and controls information
 ; in a menu that you can click to get the item in your clipboard 
+
 getWinfo() {
 	tt("getting Winfo ...")
 	global getWinfoID
@@ -8,13 +9,15 @@ getWinfo() {
 	WinGetTitle, this_title, ahk_id %getWinfoID%
 	WinGetClass, this_class, ahk_id %getWinfoID%
 	WinGet, thisPID, PID, ahk_id %getWinfoID%
-	WinGet, thisProcess, ProcessName, ahk_id %getWinfoID%
+	WinGet, this_process, ProcessName, ahk_id %getWinfoID%
+    WinGet, this_path, ProcessPath, ahk_id %getWinfoID%
 
 	Menu, wInfoMenu, Add, title: %this_title%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, class: %this_class%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, hwnd: %getWinfoID%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, PID: %thisPID%, getWinfoMenuHandler
-	Menu, wInfoMenu, Add, process: %thisProcess%, getWinfoMenuHandler
+	Menu, wInfoMenu, Add, process: %this_process%, getWinfoMenuHandler
+    Menu, wInfoMenu, Add, path: %this_path%, getWinfoGotoPath
 
 	ctrlList := getWinfoCtrls()
 	if (ctrlList.MaxIndex()) {
@@ -129,4 +132,11 @@ getWinfoCopyCtrlsHandler(getWinfoID) {
         texttmp = %texttmp%%ctrl% %thisCtrlID% %thisCtrlText%`n
 	}
     Clipboard := texttmp
+}
+
+getWinfoGotoPath() {
+    global getWinfoID
+    WinGet, this_path, ProcessPath, ahk_id %getWinfoID%
+    cmd = explorer.exe /select, "%this_path%"
+    Run, %cmd%
 }
