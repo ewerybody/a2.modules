@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "author": "eric",
     "date": "2015",
@@ -30,5 +30,17 @@
     "scopeChange": true,
     "scopeMode": 0,
     "typ": "hotkey"
+  },
+  {
+    "decimals": 0,
+    "label": "How long to show the tooltip:",
+    "max": 15.0,
+    "min": 1.0,
+    "name": "wordCount_tooltip_timeout",
+    "slider": true,
+    "step_len": 1.0,
+    "suffix": "s",
+    "typ": "number",
+    "value": 3
   }
 ]
