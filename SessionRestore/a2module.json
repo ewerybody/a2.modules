@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "author": "Eric Werner",
     "date": "2017 1 31",
@@ -73,5 +73,20 @@
     "label": "Listed Layouts",
     "name": "SessionRestore_GroupBox",
     "typ": "group"
+  },
+  {
+    "code": "file_path, _ = QtWidgets.QFileDialog.getOpenFileName(None, 'Import SessionRestore Data', a2path, 'JSON (*.json)')\nif file_path:\n    name = 'sr_windowlister'\n    import a2util\n    current_data = module.get_user_data().get(name, {})\n    import_data = {}\n    for size_key, size_data in a2util.json_read(file_path).items():\n        try:\n            x, y = map(int, size_key.split(','))\n            import_data[size_key] = size_data\n            print('importing \"%s\"' % str(size_key))\n        except (ValueError, AttributeError):\n            print('Skipping importing \"%s\"' % str(size_key))\n    current_data.update(import_data)\n    module.set_user_cfg({'name': name}, current_data)\n\n    new_data = module.get_user_data().get('sr_windowlister', {})\n    print('new_data: %s' %  current_data)",
+    "label": "Import Settings",
+    "typ": "menu_item"
+  },
+  {
+    "code": "file_path, _ = QtWidgets.QFileDialog.getSaveFileName(None, 'Save SessionRestore Data', a2path, 'JSON (*.json)')\nimport a2util\nif file_path:\n    data = module.get_user_data().get('sr_windowlister')\n    a2util.json_write(file_path, data)",
+    "label": "Export Settings",
+    "typ": "menu_item"
+  },
+  {
+    "code": "call_local_ahk('sessionrestore_now')",
+    "label": "Restore Now",
+    "typ": "menu_item"
   }
 ]
