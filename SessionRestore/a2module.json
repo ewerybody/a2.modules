@@ -30,12 +30,6 @@
         "typ": "hotkey"
       },
       {
-        "buttontext": "Restore Now",
-        "code": "call_local_ahk('sessionrestore_now')",
-        "labeltext": "",
-        "typ": "button"
-      },
-      {
         "code": "sessionrestore_init()",
         "typ": "init"
       },

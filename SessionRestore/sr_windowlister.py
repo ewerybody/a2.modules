@@ -58,10 +58,9 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
                              default_value=False)
 
-        self.ui.some_button = QtWidgets.QPushButton('some button')
-        self.ui.some_button.clicked.connect(self.some_function)
-        self.ui.config_layout.setWidget(self.ui.config_layout.rowCount(), QtWidgets.QFormLayout.FieldRole,
-                                        self.ui.some_button)
+        # self.ui.some_button = QtWidgets.QPushButton('some button')
+        # self.ui.some_button.clicked.connect(self.some_function)
+        # self.ui.config_layout.addWidget(self.ui.some_button)
 
         self.ui.title_field.add_action('Set to exactly "" No Title', partial(self.ui.title_field.setText, ''))
         self.ui.title_field.add_action('Set to "*" Any Title', partial(self.ui.title_field.setText, '*'))
@@ -233,7 +232,7 @@ class Draw(DrawCtrl):
     def check(self, *args):
         super(Draw, self).check()
         self.user_cfg.setdefault(self._size_key, {}).update({'setups': self.editor.data})
-        #self.user_cfg[self._size_key] = self.editor.data
+        # self.user_cfg[self._size_key] = self.editor.data
 
         self.set_user_value(self.user_cfg)
         self.change()
