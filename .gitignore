@@ -3,3 +3,4 @@ _config_backups/
 # Exclude all starting with . or _
 _ *
 .*
+*.pyc
