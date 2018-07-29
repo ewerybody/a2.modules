@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
+import codecs
 import enum
-import os
-import a2util
-import a2ctrl
-from PySide2 import QtWidgets
-from a2element import DrawCtrl, EditCtrl
-from a2widget.a2item_editor import A2ItemEditor
-from a2widget import A2TextField
 
 
 # for the on/off options
@@ -66,8 +60,20 @@ def dict_to_hotstrings(hotstrings_data):
     return '\n'.join(lines)
 
 
-def hotstrings_to_dict(hotstrings_code):
-    for line in hotstrings_code.split('\n'):
-        if not line.startswith(':'):
-            continue
+def hotstrings_file_to_dict(path):
+    hotstrings = {}
+    current_scope = '#IfWinActive,'
+    with codecs.open(path, encoding='utf-8-sig') as fobj:
+        for line in fobj:
+            line = line.strip()
+            if line.lower().startswith('#ifwin'):
+                current_scope = line
+            if line.startswith(':'):
+                hotstrings[current_scope] = line
+                print('line:', line)
 
+
+if __name__ == '__main__':
+    # p = 'hotstrings.ahk'
+    # hotstrings_file_to_dict(p)
+    pass
