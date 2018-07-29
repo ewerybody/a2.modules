@@ -9,25 +9,25 @@ from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
 
-
-print('__file__: %s' % __file__)
 this_dir = os.path.dirname(__file__)
 if this_dir not in sys.path:
     sys.path.append(this_dir)
 import hotstrings_io
+from hotstrings_io import Options
 
 
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
-hs_checkboxes = [
-    # key, label
-    ('instant', 'Triggered Immediately (otherwise by Space, Enter ...)'),
-    ('ignore', 'Ignore Characters Causing Replacement'),
-    ('inside', 'Replace Inside Words'),
-    ('append', 'Don\'t Replace Abbreviation, Just append'),
-    ('raw', 'Output Control-Characters as Plain Text (like {Enter})'),
-    ('textmode', 'Text mode - Sends replacement text raw'),
-    ('origmode', 'Let !, +, ^, # throw Alt, Shift, Ctrl, Win keystrokes')]
-    # ('cmdmode', 'Autohotkey Command Mode'),
+HS_CHECKBOXES = [
+    (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
+    (Options.ignore.name, 'Ignore Characters Causing Replacement'),
+    (Options.inside.name, 'Replace Inside Words'),
+    (Options.append.name, 'Don\'t Replace Abbreviation, Just append')]
+
+MODES = ['a2 default - escape "!+^#"',
+         'Execute as Autohotkey code',
+         'Let !+^# press Ctrl, Shift, Alt, Win',
+         'Raw - Control-Characters as Plain Text',
+         'Text - new. Similar to raw mode.']
 
 
 class HotStringsEditor(A2ItemEditor):
@@ -43,31 +43,34 @@ class HotStringsEditor(A2ItemEditor):
         self.add_data_widget('text', self.ui.text, self.ui.text.setText, self.ui.text.editing_finished,
                              default_value='')
 
-        for name, label in hs_checkboxes:
+        for name, label in HS_CHECKBOXES:
             checkbox = QtWidgets.QCheckBox(self)
             checkbox.setText(label)
-            self.add_data_widget(name, checkbox, checkbox.setChecked,
-                                 default_value=False)
+            self.add_data_widget(name, checkbox, checkbox.setChecked, default_value=False)
 
-        # WIP: not done yet!
-        self.ui.sendmode = QtWidgets.QComboBox(self)
-        self.ui.sendmode.setEnabled(False)
-        self.ui.sendmode.addItems(['SendEvent', 'SendInput', ' SendPlay'])
-        self.add_data_label_widget('sendmode', self.ui.sendmode, self.ui.sendmode.setCurrentIndex,
-                                   default_value=0, label='Send Mode')
+        self.ui.mode = QtWidgets.QComboBox(self)
+        self.ui.mode.addItems(MODES)
+        self.add_data_label_widget('mode', self.ui.mode, self.ui.mode.setCurrentIndex,
+                                   default_value=0, label='Mode')
 
         self.ui.case = QtWidgets.QComboBox(self)
         self.ui.case.addItems(['Forward to text', 'Sensitive', 'Keep original'])
         self.add_data_label_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
                                    default_value=0)
 
+        self.ui.sendmode = QtWidgets.QComboBox(self)
+        self.ui.sendmode.addItems(['Default', 'SendInput', 'SendPlay', 'SendEvent'])
+        self.add_data_label_widget('send', self.ui.sendmode, self.ui.sendmode.setCurrentIndex,
+                                   default_value=0, label='Send Method')
+
         # WIP: not done yet!
         self.ui.scope = QtWidgets.QComboBox(self)
         self.ui.scope.setEnabled(False)
-        self.ui.scope.addItems(['Scope: Global', 'Scope: Only In:', 'Scope: Not In:'])
+        self.ui.scope.addItems(['Global', 'Only In:', 'Not In:'])
         self.ui.scope.currentIndexChanged.connect(self.toggle_scope_field)
         self.add_data_label_widget('scope', self.ui.scope, self.ui.scope.setCurrentIndex,
                                    default_value=0)
+
         self.ui.scope_field = QtWidgets.QLineEdit(self)
         self.ui.scope_field.setVisible(False)
         self.add_data_widget('scope_field', self.ui.scope_field, self.ui.scope_field.setText,
@@ -102,6 +105,7 @@ class Draw(DrawCtrl):
         self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
+        print('check...')
         self.set_user_value(self.editor.data)
 
         hotstrings_code = hotstrings_io.dict_to_hotstrings(self.editor.data)

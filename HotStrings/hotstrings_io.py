@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import enum
 import os
 import a2util
 import a2ctrl
@@ -8,12 +9,17 @@ from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
 
 
-KEY_MAP = {'instant': '*',
-           'ignore': 'O',
-           'inside': '?',
-           'append': 'B0',
-           'raw': 'R',
-           'textmode': 'T'}
+# for the on/off options
+class Options(enum.Enum):
+    instant = '*'
+    ignore = 'O'
+    inside = '?'
+    append = 'B0'
+
+# for the dropdown menus
+OPTION_LISTS = {
+    'case': ['C', 'C1'],
+    'send': ['SI', 'SP', 'SE']}
 
 
 def dict_to_hotstrings(hotstrings_data):
@@ -23,27 +29,38 @@ def dict_to_hotstrings(hotstrings_data):
         if not text or not hotstring:
             continue
 
-        raw_mode = False
-        option = ':'
-        for key, char in KEY_MAP.items():
-            if data.get(key, False):
-                if key in ['raw', 'textmode']:
-                    raw_mode = True
-                option += char
-        case = data.get('case')
-        if case == 1:
-            option += 'C'
-        elif case == 2:
-            option += 'C1'
+        options = ':'
+        for op in Options:
+            if data.get(op.name, False):
+                options += op.value
 
-        option += ':'
+        for name, option_list in OPTION_LISTS.items():
+            value = data.get(name)
+            if value:
+                options += option_list[value - 1]
 
         text = text.replace('\n', '`n')
-        if not data.get('origmode', False) and not raw_mode:
+        mode = data.get('mode')
+        if mode is None:
             for char in '!+#^':
                 text = text.replace(char, '{%s}' % char)
+        elif mode == 1:
+            text = text.strip()
+            if '`n' in text:
+                indent = '\n  '
+                text = indent + indent.join(text.split('`n'))
+                text += '\nReturn'
+            else:
+                options += 'X'
+        elif mode == 2:
+            # This is actually the default mode! Nothing to do!
+            pass
+        elif mode == 3:
+            options += 'R'
+        elif mode == 4:
+            options += 't'
 
-        lines.append(f'{option}{hotstring}::{text}')
+        lines.append(f'{options}:{hotstring}::{text}')
 
     lines = ['#IfWinActive,'] + lines
     return '\n'.join(lines)
