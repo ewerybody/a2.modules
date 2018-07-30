@@ -11,8 +11,9 @@ testahk() {
     }
     
     tt("testahk...", 1)
-    testfile = %A_Temp%\_test_ahk.ahk
+    sel := "#SingleInstance force`n" sel
+    testfile = %A_Temp%\_a2_test_ahk.ahk
     FileDelete, %testfile%
-    FileAppend, %sel%, %testfile%
+    FileAppend, %sel%, %testfile%, UTF-8
     Run, %A_AhkPath% %testfile%
 }

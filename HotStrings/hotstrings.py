@@ -1,24 +1,33 @@
 # -*- coding: utf-8 -*-
 import os
+import codecs
 import a2util
 import a2ctrl
+import a2runtime
 from PySide2 import QtWidgets
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
 
+this_dir = os.path.dirname(__file__)
+if this_dir not in sys.path:
+    sys.path.append(this_dir)
+import hotstrings_io
+from hotstrings_io import Options
+
 
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
-hs_checkboxes = [
-    # key, label
-    ('instant', 'Triggered Immediately (otherwise by Space, Enter ...)'),
-    ('ignore', 'Ignore Characters Causing Replacement'),
-    ('inside', 'Replace Inside Words'),
-    ('append', 'Don\'t Replace Abbreviation, Just append'),
-    ('raw', 'Output Control-Characters as Plain Text (like {Enter})'),
-    ('substitute', 'substitute !, +, ^, and # with Alt, Shift, Ctrl or Windows'),
-    ('cmdmode', 'Autohotkey Command Mode'),
-    ('sendplay', 'SendPlay Mode')]
+HS_CHECKBOXES = [
+    (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
+    (Options.ignore.name, 'Ignore Characters Causing Replacement'),
+    (Options.inside.name, 'Replace Inside Words'),
+    (Options.append.name, 'Don\'t Replace Abbreviation, Just append')]
+
+MODES = ['a2 default - escape "!+^#"',
+         'Execute as Autohotkey code',
+         'Let !+^# press Ctrl, Shift, Alt, Win',
+         'Raw - Control-Characters as Plain Text',
+         'Text - new. Similar to raw mode.']
 
 
 class HotStringsEditor(A2ItemEditor):
@@ -34,22 +43,33 @@ class HotStringsEditor(A2ItemEditor):
         self.add_data_widget('text', self.ui.text, self.ui.text.setText, self.ui.text.editing_finished,
                              default_value='')
 
-        for name, label in hs_checkboxes:
+        for name, label in HS_CHECKBOXES:
             checkbox = QtWidgets.QCheckBox(self)
             checkbox.setText(label)
-            self.add_data_widget(name, checkbox, checkbox.setChecked,
-                                 default_value=False)
+            self.add_data_widget(name, checkbox, checkbox.setChecked, default_value=False)
+
+        self.ui.mode = QtWidgets.QComboBox(self)
+        self.ui.mode.addItems(MODES)
+        self.add_data_label_widget('mode', self.ui.mode, self.ui.mode.setCurrentIndex,
+                                   default_value=0, label='Mode')
 
         self.ui.case = QtWidgets.QComboBox(self)
-        self.ui.case.addItems(['Ignore Case', 'Case Sensitive', 'Don\'t Conform To Typed Case'])
-        self.add_data_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
-                             default_value=0)
+        self.ui.case.addItems(['Forward to text', 'Sensitive', 'Keep original'])
+        self.add_data_label_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
+                                   default_value=0)
 
+        self.ui.sendmode = QtWidgets.QComboBox(self)
+        self.ui.sendmode.addItems(['Default', 'SendInput', 'SendPlay', 'SendEvent'])
+        self.add_data_label_widget('send', self.ui.sendmode, self.ui.sendmode.setCurrentIndex,
+                                   default_value=0, label='Send Method')
+
+        # WIP: not done yet!
         self.ui.scope = QtWidgets.QComboBox(self)
-        self.ui.scope.addItems(['Scope: Global', 'Scope: Only In:', 'Scope: Not In:'])
+        self.ui.scope.setEnabled(False)
+        self.ui.scope.addItems(['Global', 'Only In:', 'Not In:'])
         self.ui.scope.currentIndexChanged.connect(self.toggle_scope_field)
-        self.add_data_widget('scope', self.ui.scope, self.ui.scope.setCurrentIndex,
-                             default_value=0)
+        self.add_data_label_widget('scope', self.ui.scope, self.ui.scope.setCurrentIndex,
+                                   default_value=0)
 
         self.ui.scope_field = QtWidgets.QLineEdit(self)
         self.ui.scope_field.setVisible(False)
@@ -75,6 +95,7 @@ class Draw(DrawCtrl):
         self._hs_lines_b4 = None
         self._setup_ui()
         self.is_expandable_widget = True
+        self._hotstrings_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
 
         self.hotstrings_file = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
@@ -87,35 +108,15 @@ class Draw(DrawCtrl):
         self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
-        print('check')
         self.set_user_value(self.editor.data)
 
-        hs_lines = []
-        # write hotstrings.ahk
-        for hs, data in self.editor.data.items():
-            text = data.get('text')
-            if not text or not hs:
-                continue
-            text = text.replace('\n', '`n')
-            # TODO: if not raw:
-            text = text.replace('!', '{!}')
-            hs_option = ':'
-            if data.get('instant'):
-                hs_option += '*'
-            case = data.get('case')
-            if case == 1:
-                hs_option += 'C'
-            elif case == 2:
-                hs_option += 'C1'
-            hs_option += ':'
-            hs_lines.append('%s%s::%s' % (hs_option, hs, text))
-
-        hs_lines = ['#IfWinActive,'] + hs_lines
-        if hs_lines == self._hs_lines_b4:
+        hotstrings_code = hotstrings_io.dict_to_hotstrings(self.editor.data)
+        if hotstrings_code == self._hs_code_b4:
             return
+        self._hs_code_b4 = hotstrings_code
 
-        self._hs_lines_b4 = hs_lines
-        a2util.write_utf8(self.hotstrings_file, '\n'.join(hs_lines))
+        hotstrings_code = a2runtime.EDIT_DISCLAIMER % 'hotstrings' + '\n' + hotstrings_code
+        a2util.write_utf8(self._hotstrings_ahk_path, hotstrings_code)
 
         self.change()
 
@@ -128,12 +129,8 @@ class Draw(DrawCtrl):
 
 
 class Edit(EditCtrl):
-    """
-    The background widget that sets up how the user can edit the element,
-    visible when editing the module.
-    """
-    def __init__(self, cfg, main, parent_cfg):
-        super(Edit, self).__init__(cfg, main, parent_cfg)
+    def __init__(self, *args):
+        super(Edit, self).__init__(*args)
         self.mainLayout.addWidget(QtWidgets.QLabel(
             'Nothing to setup on the HotStrings element. This one is all for the user.'))
 
@@ -144,7 +141,7 @@ class Edit(EditCtrl):
 
     @staticmethod
     def element_icon():
-        return a2ctrl.Icons.inst().check
+        return a2ctrl.Icons.inst().hotkey
 
 
 def get_settings(_module_key, _cfg, db_dict, _user_cfg):
