@@ -69,12 +69,12 @@
     "typ": "group"
   },
   {
-    "code": "file_path, _ = QtWidgets.QFileDialog.getOpenFileName(None, 'Import SessionRestore Data', a2path, 'JSON (*.json)')\nif file_path:\n    name = 'sr_windowlister'\n    import a2util\n    current_data = module.get_user_cfg().get(name, {})\n    import_data = {}\n    for size_key, size_data in a2util.json_read(file_path).items():\n        try:\n            x, y = map(int, size_key.split(','))\n            import_data[size_key] = size_data\n            print('importing \"%s\"' % str(size_key))\n        except (ValueError, AttributeError):\n            print('Skipping importing \"%s\"' % str(size_key))\n    current_data.update(import_data)\n    module.set_user_cfg({'name': name}, current_data)\n    module.change()\n    call_reload()",
+    "code": "file_path, _ = QtWidgets.QFileDialog.getOpenFileName(\n    None, 'Import SessionRestore Data', module.path, 'JSON (*.json)')\nif file_path:\n    name = 'sr_windowlister'\n    import a2util\n    current_data = module.get_user_cfg().get(name, {})\n    import_data = {}\n    for size_key, size_data in a2util.json_read(file_path).items():\n        try:\n            x, y = map(int, size_key.split(','))\n            import_data[size_key] = size_data\n            print('importing \"%s\"' % str(size_key))\n        except (ValueError, AttributeError):\n            print('Skipping importing \"%s\"' % str(size_key))\n    current_data.update(import_data)\n    module.set_user_cfg({'name': name}, current_data)\n    module.change()\n    call_reload()",
     "label": "Import Settings",
     "typ": "menu_item"
   },
   {
-    "code": "file_path, _ = QtWidgets.QFileDialog.getSaveFileName(None, 'Save SessionRestore Data', a2path, 'JSON (*.json)')\nimport a2util\nif file_path:\n    data = module.get_user_cfg().get('sr_windowlister')\n    a2util.json_write(file_path, data)",
+    "code": "file_path, _ = QtWidgets.QFileDialog.getSaveFileName(\n    None, 'Export SessionRestore Data', module.path, 'JSON (*.json)')\nimport a2util\nif file_path:\n    data = module.get_user_cfg().get('sr_windowlister')\n    a2util.json_write(file_path, data)",
     "label": "Export Settings",
     "typ": "menu_item"
   },
