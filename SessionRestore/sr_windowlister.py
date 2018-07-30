@@ -4,7 +4,7 @@ import json
 import pprint
 from functools import partial
 
-from PySide2 import QtWidgets
+from PySide2 import QtWidgets, QtGui
 
 import a2ahk
 import a2core
@@ -143,7 +143,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.data_changed.emit()
 
     def add_item(self):
-        self._process_menu.popup(QtWidgets.QCursor.pos())
+        self._process_menu.popup(QtGui.QCursor.pos())
 
 
 class Draw(DrawCtrl):
