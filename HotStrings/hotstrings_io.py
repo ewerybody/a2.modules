@@ -111,6 +111,7 @@ def hotstrings_file_to_dict(path):
 
 
 if __name__ == '__main__':
+    # test back and forth conversion
     this_dir = os.path.dirname(__file__)
     test_file = os.path.join(this_dir, 'test', 'teststrings.ahk')
     from pprint import pprint
