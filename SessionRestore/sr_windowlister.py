@@ -34,29 +34,29 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         self.ui.proc_field = QtWidgets.QLineEdit()
         self.ui.proc_field.setEnabled(False)
-        self.add_data_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
-                             default_value='', label=labels[0])
+        self.add_data_label_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
+                                   default_value='', label=labels[0])
 
         self.ui.title_field = A2ButtonField()
         self.ui.title_field.setPlaceholderText('No Title')
-        self.add_data_widget('title', self.ui.title_field, self.ui.title_field.setText,
-                             default_value=DEFAULT_TITLE, label=labels[1])
+        self.add_data_label_widget('title', self.ui.title_field, self.ui.title_field.setText,
+                                   default_value=DEFAULT_TITLE, label=labels[1])
 
         self.ui.class_field = A2ButtonField()
-        self.add_data_widget('class', self.ui.class_field, self.ui.class_field.setText,
-                             default_value='*', label=labels[2])
+        self.add_data_label_widget('class', self.ui.class_field, self.ui.class_field.setText,
+                                   default_value='*', label=labels[2])
 
         self.ui.pos_field = A2CoordsField()
         self.ui.size_field = A2CoordsField()
 
-        self.add_data_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value, default_value=(0, 0),
-                             label='Coordinates')
-        self.add_data_widget('wh', self.ui.size_field, self.ui.size_field.set_value, default_value=(0, 0),
-                             label='Window Size')
+        self.add_data_label_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value,
+                                   default_value=(0, 0), label='Coordinates')
+        self.add_data_label_widget('wh', self.ui.size_field, self.ui.size_field.set_value,
+                                   default_value=(0, 0), label='Window Size')
 
         self.ui.ignore_check = QtWidgets.QCheckBox('Ignore this Window')
-        self.add_data_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
-                             default_value=False)
+        self.add_data_label_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
+                                   default_value=False)
 
         # self.ui.some_button = QtWidgets.QPushButton('some button')
         # self.ui.some_button.clicked.connect(self.some_function)
