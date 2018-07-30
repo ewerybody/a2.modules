@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-import codecs
+import sys
 import a2util
 import a2ctrl
 import a2runtime
@@ -95,8 +95,6 @@ class Draw(DrawCtrl):
         self._hs_lines_b4 = None
         self._setup_ui()
         self.is_expandable_widget = True
-        self._hotstrings_ahk_path = os.path.join(self.a2.paths.settings, HOTSTRINGS_FILENAME)
-
         self.hotstrings_file = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
@@ -116,7 +114,7 @@ class Draw(DrawCtrl):
         self._hs_code_b4 = hotstrings_code
 
         hotstrings_code = a2runtime.EDIT_DISCLAIMER % 'hotstrings' + '\n' + hotstrings_code
-        a2util.write_utf8(self._hotstrings_ahk_path, hotstrings_code)
+        a2util.write_utf8(self.hotstrings_file, hotstrings_code)
 
         self.change()
 
