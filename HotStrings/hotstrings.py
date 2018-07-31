@@ -25,9 +25,9 @@ HS_CHECKBOXES = [
 
 MODES = ['a2 default - escape "!+^#"',
          'Execute as Autohotkey code',
-         'Let !+^# press Ctrl, Shift, Alt, Win',
+         'Let !+^# press Alt, Shift, Ctrl, Win',
          'Raw - Control-Characters as Plain Text',
-         'Text - new. Similar to raw mode.']
+         'Text - new. Similar to raw mode']
 
 
 class HotStringsEditor(A2ItemEditor):
