@@ -16,9 +16,16 @@ OPTION_LISTS = {
     'case': ['C', 'C1'],
     'send': ['SI', 'SP', 'SE']}
 
+DIRECTIVE_INCL = '#IfWinActive'
+DIRECTIVE_EXCL = '#IfWinNotActive'
+KEY_INCL = 'scope_incl'
+KEY_EXCL = 'scope_excl'
 
 def dict_to_hotstrings(hotstrings_data):
-    lines = []
+    hs_global = []
+    scope_incl = {}
+    scope_excl = {}
+
     for hotstring, data in hotstrings_data.items():
         text = data.get('text')
         if not text or not hotstring:
@@ -35,6 +42,7 @@ def dict_to_hotstrings(hotstrings_data):
                 options += option_list[value - 1]
 
         text = text.replace('\n', '`n')
+        text = text.replace(':', '`:')
         mode = data.get('mode')
         if mode is None:
             for char in '!+#^':
@@ -55,18 +63,31 @@ def dict_to_hotstrings(hotstrings_data):
         elif mode == 4:
             options += 'T'
 
-        lines.append(f'{options}:{hotstring}::{text}')
+        line = f'{options}:{hotstring}::{text}'
+        if KEY_INCL in data:
+            scope_incl.setdefault(data.get(KEY_INCL), []).append(line)
+        elif KEY_EXCL in data:
+            scope_excl.setdefault(data.get(KEY_EXCL), []).append(line)
+        else:
+            hs_global.append(line)
 
-    lines = ['#IfWinActive,'] + lines
-    return '\n'.join(lines)
+    code = f'{DIRECTIVE_INCL},\n' + '\n'.join(hs_global)
+    for directive, scope_dict in [(DIRECTIVE_INCL, scope_incl), (DIRECTIVE_EXCL, scope_excl)]:
+        for scope, scope_lines in scope_dict.items():
+            code += f'{directive}, {scope}\n' + '\n'.join(scope_lines)
+    return code
 
 
 def hotstrings_file_to_dict(path):
     hs_dict = {}
-    current_scope = '#IfWinActive,'
+    current_scope = ''
     with codecs.open(path, encoding='utf-8-sig') as fobj:
         for line in fobj:
-            line = line.strip()
+            # cut away comments and strip of whitespace
+            line = line.split(';', 1)[0].strip()
+            if not line:
+                continue
+
             if line.lower().startswith('#ifwin'):
                 current_scope = line
             if line.startswith(':'):
@@ -77,7 +98,21 @@ def hotstrings_file_to_dict(path):
                 this_hs = {}
                 options, rest = line[1:].split(':', 1)
 
-                # if the shurtcut does not start with :: its easy
+                # disassemble the options
+                options = options.lower()
+                for op in Options:
+                    if op.value.lower() in options:
+                        this_hs[op.name] = True
+                for name, option_list in OPTION_LISTS.items():
+                    for i, op in enumerate(option_list):
+                        # we do not break because found "C" can still be "C1"
+                        if op in options:
+                            this_hs[name] = i + 1
+                for op, mode_index in [('x', 1,), ('r', 3), ('t', 4)]:
+                    if op in options:
+                        this_hs['mode'] = mode_index
+
+                # if shurtcut does not start with :: its easy
                 if not rest.startswith('::'):
                     shortcut, text = rest.split('::', 1)
                 # otherwise we need to search for the first non-":"
@@ -92,19 +127,6 @@ def hotstrings_file_to_dict(path):
                     shortcut = rest[:pos + i]
                     text = rest[pos + i + 2:]
                 this_hs['text'] = text
-
-                # disassemble the options
-                for op in Options:
-                    if op.value in options:
-                        this_hs[op.name] = True
-                for name, option_list in OPTION_LISTS.items():
-                    for i, op in enumerate(option_list):
-                        # we do not break because found "C" can still be "C1"
-                        if op in options:
-                            this_hs[name] = i + 1
-                for op, mode_index in [('x', 1,), ('r', 3), ('t', 4)]:
-                    if op in options:
-                        this_hs['mode'] = mode_index
 
                 hs_dict.setdefault(current_scope, {})[shortcut] = this_hs
     return hs_dict
