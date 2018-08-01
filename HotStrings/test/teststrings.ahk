@@ -11,9 +11,7 @@
 ::voila::voilà
 :*:np.::no problem
 :*C:eRiC::ëRiC
-:C:AHK::Autohotkey
 :*::fp::🤦
-::ts.::tatsächlich
 :*:eig.::eigentlich
 :*:aucg::auch
 :*:auc h::auch{space}
@@ -33,3 +31,6 @@
 ::gruse::grüße
 ::dont::don't
 :*:::dd::ColonDouble:
+#IfWinActive, ahk_class Notepad++ ; will be ignored
+#IfWinActive ahk_class Chrome_WidgetWin_1
+:C:AHK::Autohotkey
