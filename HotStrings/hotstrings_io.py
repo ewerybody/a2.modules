@@ -16,10 +16,11 @@ OPTION_LISTS = {
     'case': ['C', 'C1'],
     'send': ['SI', 'SP', 'SE']}
 
-DIRECTIVE_INCL = '#IfWinActive'
-DIRECTIVE_EXCL = '#IfWinNotActive'
+DIRECTIVE_INCL = '#ifwinactive'
+DIRECTIVE_EXCL = '#ifwinnotactive'
 KEY_INCL = 'scope_incl'
 KEY_EXCL = 'scope_excl'
+
 
 def dict_to_hotstrings(hotstrings_data):
     hs_global = []
@@ -79,58 +80,117 @@ def dict_to_hotstrings(hotstrings_data):
 
 
 def hotstrings_file_to_dict(path):
-    hs_dict = {}
-    current_scope = ''
-    with codecs.open(path, encoding='utf-8-sig') as fobj:
-        for line in fobj:
-            # cut away comments and strip of whitespace
-            line = line.split(';', 1)[0].strip()
-            if not line:
-                continue
+    parser = HotstringsParser(path)
+    return parser.hs_dict
 
-            if line.lower().startswith('#ifwin'):
-                current_scope = line
-            if line.startswith(':'):
-                if not '::' in line or not ':' in line[1:]:
-                    print('Not a hotstring? "%s"' % line)
+
+class HotstringsParser(object):
+    def __init__(self, path):
+        self.hs_dict = {}
+        self.hs_buffer = []
+        self.gather_lines = False
+
+        self.this_scope = ''
+        self.this_directive = DIRECTIVE_INCL
+        self.this_hs = {}
+        self.this_shortcut = ''
+
+        self.parse_lines(path)
+
+    def parse_lines(self, path):
+        with codecs.open(path, encoding='utf-8-sig') as fobj:
+            for line in fobj:
+                # cut away comments and strip of whitespace
+                line = line.split(';', 1)[0].strip()
+                if not line:
                     continue
 
-                this_hs = {}
-                options, rest = line[1:].split(':', 1)
-
-                # disassemble the options
-                options = options.lower()
-                for op in Options:
-                    if op.value.lower() in options:
-                        this_hs[op.name] = True
-                for name, option_list in OPTION_LISTS.items():
-                    for i, op in enumerate(option_list):
-                        # we do not break because found "C" can still be "C1"
-                        if op in options:
-                            this_hs[name] = i + 1
-                for op, mode_index in [('x', 1,), ('r', 3), ('t', 4)]:
-                    if op in options:
-                        this_hs['mode'] = mode_index
-
-                # if shurtcut does not start with :: its easy
-                if not rest.startswith('::'):
-                    shortcut, text = rest.split('::', 1)
-                # otherwise we need to search for the first non-":"
-                else:
-                    for i, l in enumerate(rest):
-                        if l != ':':
-                            break
-                    pos = rest[i:].find('::')
-                    if pos == -1:
-                        print('Not a hotstring? "%s"' % line)
+                if line.startswith('#'):
+                    self.handle_scope(line)
+                elif line.startswith(':'):
+                    self.handle_hotstring(line)
+                elif self.gather_lines:
+                    if line.lower().startswith('return'):
+                        self.this_hs['mode'] = 1
+                        self.work_buffer()
                         continue
-                    shortcut = rest[:pos + i]
-                    text = rest[pos + i + 2:]
-                this_hs['text'] = text
+                    self.hs_buffer.append(line)
 
-                hs_dict.setdefault(current_scope, {})[shortcut] = this_hs
-    return hs_dict
+    def handle_scope(self, line):
+        self.work_buffer()
+        lowline = line.lower()
+        if lowline.startswith(DIRECTIVE_INCL):
+            self.this_directive = DIRECTIVE_INCL
+        elif lowline.startswith(DIRECTIVE_EXCL):
+            self.this_directive = DIRECTIVE_EXCL
 
+        scope = line[len(self.this_directive):].strip()
+        if scope.startswith(','):
+            scope = scope[1:].strip()
+        self.this_scope = scope
+
+    def handle_hotstring(self, line):
+        self.work_buffer()
+        if not '::' in line or not ':' in line[1:]:
+            print('Not a hotstring? "%s"' % line)
+            return
+
+        self.this_hs = {}
+        options, rest = line[1:].split(':', 1)
+
+        # disassemble the options
+        options = options.lower()
+        for op in Options:
+            if op.value.lower() in options:
+                self.this_hs[op.name] = True
+        for name, option_list in OPTION_LISTS.items():
+            for i, op in enumerate(option_list):
+                # we do not break because found "C" can still be "C1"
+                if op in options:
+                    self.this_hs[name] = i + 1
+        for op, mode_index in [('x', 1,), ('r', 3), ('t', 4)]:
+            if op in options:
+                self.this_hs['mode'] = mode_index
+
+        # if shurtcut does not start with :: its easy
+        if not rest.startswith('::'):
+            self.this_shortcut, text = rest.split('::', 1)
+        # otherwise we need to search for the first non-":"
+        else:
+            for i, l in enumerate(rest):
+                if l != ':':
+                    break
+            pos = rest[i:].find('::')
+            if pos == -1:
+                print('Not a hotstring? "%s"' % line)
+                return
+            self.this_shortcut = rest[:pos + i]
+            text = rest[pos + i + 2:]
+
+        if not text.strip():
+            self.gather_lines = True
+            self.hs_buffer = []
+            return
+
+        self.this_hs['text'] = text
+        self.collect()
+
+    def work_buffer(self):
+        self.gather_lines = False
+        if not self.hs_buffer:
+            return
+        self.this_hs['text'] = '\n'.join(self.hs_buffer)
+        self.collect()
+
+    def collect(self):
+        if self.this_scope:
+            if self.this_directive == DIRECTIVE_EXCL:
+                self.this_hs[KEY_EXCL] = self.this_scope
+            else:
+                self.this_hs[KEY_INCL] = self.this_scope
+        self.hs_dict[self.this_shortcut] = self.this_hs
+        self.this_hs = {}
+        self.hs_buffer = []
 
 if __name__ == '__main__':
     # test back and forth conversion
@@ -140,5 +200,5 @@ if __name__ == '__main__':
     hs_dict = hotstrings_file_to_dict(test_file)
     pprint(hs_dict)
 
-    hs_code = dict_to_hotstrings(hs_dict['#IfWinActive,'])
+    hs_code = dict_to_hotstrings(hs_dict)
     print('hs_code:\n%s' % hs_code)

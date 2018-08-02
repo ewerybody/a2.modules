@@ -1,36 +1,34 @@
-﻿#IfWinActive,
-:*:aucgh::auch
+﻿ ; Some initial comment ...
+#IfWinActive,
+:*:aucgh::auch ; a comment!
 :*:Geb.::Geburtstag
 :*:machne::machen
 :*:irg.::irgendwie
+
+:*:.lrg::
+    msgbox
+return
 ::xxx::s👍👍{!}
 :*:shcon::schon
-:*:ka.::keine Ahnung
-:*:ws.::wahrscheinlich
-:*:mom.::Moment
-::voila::voilà
-:*:np.::no problem
-:*C:eRiC::ëRiC
-:*::fp::🤦
-:*:eig.::eigentlich
-:*:aucg::auch
-:*:auc h::auch{space}
-:*:viell.::vielleicht
-:*:ggf.::gegebenenfalls
-:*:we.::Wochenende
-::Andre::André
-:*C::bug::🐛
-::didnt::didn't
 :*C:aA::ac'tivAid
 ::arent::aren't
 :*::flip::(╯°□°)╯︵ ┻━┻
 ::Strala::Stråla
 :*:nat.::natürlich
+:r:.raw::Raw Rest{!}
+::#code::
+    MsgBox CodeTest!
+    MsgBox works!
+return
+:*x:#code2::MsgBox CodeTest2 works2!
 :*:acuh::auch
 :*::ck::✔
 ::gruse::grüße
 ::dont::don't
-:*:::dd::ColonDouble:
+:*:::dd::ColonDouble`:
 #IfWinActive, ahk_class Notepad++ ; will be ignored
 #IfWinActive ahk_class Chrome_WidgetWin_1
 :C:AHK::Autohotkey
+
+#IfWinNotActive,
+::.sx::SomeHotstring
