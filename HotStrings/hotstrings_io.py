@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import codecs
-import enum
 import os
+import enum
+import codecs
 
 
 # for the on/off options
@@ -22,7 +22,7 @@ KEY_INCL = 'scope_incl'
 KEY_EXCL = 'scope_excl'
 
 
-def dict_to_hotstrings(hotstrings_data):
+def dict_to_ahkcode(hotstrings_data):
     hs_global = []
     scope_incl = {}
     scope_excl = {}
@@ -79,17 +79,38 @@ def dict_to_hotstrings(hotstrings_data):
     return code
 
 
-def hotstrings_file_to_dict(path):
+def file_to_dict(path):
     parser = HotstringsParser(path)
     return parser.hs_dict
 
 
 class HotstringsParser(object):
     def __init__(self, path):
-        self.hs_dict = {}
-        self.hs_buffer = []
-        self.gather_lines = False
+        """
+        the resulting hotstrings dict::
 
+            # '' is the global scope
+            {'': {
+                'shortcut1': {
+                    'text': some_string,
+                    'ignore' True,
+                    'mode': ...},
+                'shortcut2': {...}}
+
+             'scope_incl': {
+                'scope_string1': {
+                    'shortcut1': {...},
+                    'shortcut2': {...}},
+                'scope_string2': {
+                    'shortcut': {...}}},
+
+             'scope_excl': {...}
+        """
+        self.hs_dict = {}
+
+        # while parsing parameters
+        self.gather_lines = False
+        self.hs_buffer = []
         self.this_scope = ''
         self.this_directive = DIRECTIVE_INCL
         self.this_hs = {}
@@ -101,19 +122,20 @@ class HotstringsParser(object):
         with codecs.open(path, encoding='utf-8-sig') as fobj:
             for line in fobj:
                 # cut away comments and strip of whitespace
-                line = line.split(';', 1)[0].strip()
-                if not line:
+                stripped = line.split(';', 1)[0].strip()
+                if not stripped:
                     continue
 
-                if line.startswith('#'):
+                if stripped.startswith('#'):
                     self.handle_scope(line)
-                elif line.startswith(':'):
+                elif stripped.startswith(':'):
                     self.handle_hotstring(line)
                 elif self.gather_lines:
-                    if line.lower().startswith('return'):
+                    if stripped.lower().startswith('return'):
                         self.this_hs['mode'] = 1
                         self.work_buffer()
                         continue
+                    # collect the unstripped line
                     self.hs_buffer.append(line)
 
     def handle_scope(self, line):
@@ -139,16 +161,16 @@ class HotstringsParser(object):
         options, rest = line[1:].split(':', 1)
 
         # disassemble the options
-        options = options.lower()
+        options = options.upper()
         for op in Options:
-            if op.value.lower() in options:
+            if op.value in options:
                 self.this_hs[op.name] = True
         for name, option_list in OPTION_LISTS.items():
             for i, op in enumerate(option_list):
                 # we do not break because found "C" can still be "C1"
                 if op in options:
                     self.this_hs[name] = i + 1
-        for op, mode_index in [('x', 1,), ('r', 3), ('t', 4)]:
+        for op, mode_index in [('X', 1,), ('R', 3), ('T', 4)]:
             if op in options:
                 self.this_hs['mode'] = mode_index
 

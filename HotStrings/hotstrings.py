@@ -108,7 +108,7 @@ class Draw(DrawCtrl):
     def check(self, *args):
         self.set_user_value(self.editor.data)
 
-        hotstrings_code = hotstrings_io.dict_to_hotstrings(self.editor.data)
+        hotstrings_code = hotstrings_io.dict_to_ahkcode(self.editor.data)
         if hotstrings_code == self._hs_code_b4:
             return
         self._hs_code_b4 = hotstrings_code
