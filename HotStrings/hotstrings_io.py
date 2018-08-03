@@ -192,13 +192,7 @@ class HotstringsParser(object):
         self.this_hs = {}
         self.hs_buffer = []
 
-if __name__ == '__main__':
-    # test back and forth conversion
-    this_dir = os.path.dirname(__file__)
-    test_file = os.path.join(this_dir, 'test', 'teststrings.ahk')
-    from pprint import pprint
-    hs_dict = hotstrings_file_to_dict(test_file)
-    pprint(hs_dict)
 
-    hs_code = dict_to_hotstrings(hs_dict)
-    print('hs_code:\n%s' % hs_code)
+if __name__ == '__main__':
+    import test.test_hotstrings
+
