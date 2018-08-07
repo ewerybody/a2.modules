@@ -16,6 +16,11 @@ OPTION_LISTS = {
     'case': ['C', 'C1'],
     'send': ['SI', 'SP', 'SE']}
 
+RAW_MODES = {
+    'X': 1,  # code
+    'R': 3, # raw
+    'T': 4} # text
+
 DIRECTIVE_INCL = '#ifwinactive'
 DIRECTIVE_EXCL = '#ifwinnotactive'
 KEY_INCL = 'scope_incl'
@@ -127,9 +132,9 @@ class HotstringsParser(object):
                     continue
 
                 if stripped.startswith('#'):
-                    self.handle_scope(line)
+                    self.handle_scope(stripped)
                 elif stripped.startswith(':'):
-                    self.handle_hotstring(line)
+                    self.handle_hotstring(stripped)
                 elif self.gather_lines:
                     if stripped.lower().startswith('return'):
                         self.this_hs['mode'] = 1
@@ -170,11 +175,12 @@ class HotstringsParser(object):
                 # we do not break because found "C" can still be "C1"
                 if op in options:
                     self.this_hs[name] = i + 1
-        for op, mode_index in [('X', 1,), ('R', 3), ('T', 4)]:
+        for op, mode_index in RAW_MODES.items():
             if op in options:
                 self.this_hs['mode'] = mode_index
+                break
 
-        # if shurtcut does not start with :: its easy
+        # if shortcut does not start with :: its easy
         if not rest.startswith('::'):
             self.this_shortcut, text = rest.split('::', 1)
         # otherwise we need to search for the first non-":"
@@ -216,5 +222,6 @@ class HotstringsParser(object):
 
 
 if __name__ == '__main__':
+    import unittest
     import test.test_hotstrings
-
+    unittest.main(test.test_hotstrings, verbosity=2)
