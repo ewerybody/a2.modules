@@ -18,8 +18,8 @@ OPTION_LISTS = {
 
 RAW_MODES = {
     'X': 1,  # code
-    'R': 3, # raw
-    'T': 4} # text
+    'R': 3,  # raw
+    'T': 4}  # text
 
 DIRECTIVE_INCL = '#ifwinactive'
 DIRECTIVE_EXCL = '#ifwinnotactive'
@@ -32,56 +32,62 @@ def dict_to_ahkcode(hotstrings_data):
     scope_incl = {}
     scope_excl = {}
 
-    for hotstring, data in hotstrings_data.items():
-        text = data.get('text')
-        if not text or not hotstring:
-            continue
-
-        options = ':'
-        for op in Options:
-            if data.get(op.name, False):
-                options += op.value
-
-        for name, option_list in OPTION_LISTS.items():
-            value = data.get(name)
-            if value:
-                options += option_list[value - 1]
-
-        text = text.replace('\n', '`n')
-        text = text.replace(':', '`:')
-        mode = data.get('mode')
-        if mode is None:
-            for char in '!+#^':
-                text = text.replace(char, '{%s}' % char)
-        elif mode == 1:
-            text = text.strip()
-            if '`n' in text:
-                indent = '\n  '
-                text = indent + indent.join(text.split('`n'))
-                text += '\nReturn'
-            else:
-                options += 'X'
-        elif mode == 2:
-            # This is actually the default mode! Nothing to do!
-            pass
-        elif mode == 3:
-            options += 'R'
-        elif mode == 4:
-            options += 'T'
-
-        line = f'{options}:{hotstring}::{text}'
-        if KEY_INCL in data:
-            scope_incl.setdefault(data.get(KEY_INCL), []).append(line)
-        elif KEY_EXCL in data:
-            scope_excl.setdefault(data.get(KEY_EXCL), []).append(line)
-        else:
+    for hotstring, data in hotstrings_data.get('', {}).items():
+        line = _make_hotstrings_line(hotstring, data)
+        if line:
             hs_global.append(line)
+
+    for key, scope_dict in [(KEY_INCL, scope_incl), (KEY_EXCL, scope_excl)]:
+        for scope, scopes in hotstrings_data.get(key, {}).items():
+            for hotstring, data in scopes.items():
+                line = _make_hotstrings_line(hotstring, data)
+                if line:
+                    scope_dict.setdefault(scope, []).append(line)
 
     code = f'{DIRECTIVE_INCL},\n' + '\n'.join(hs_global)
     for directive, scope_dict in [(DIRECTIVE_INCL, scope_incl), (DIRECTIVE_EXCL, scope_excl)]:
         for scope, scope_lines in scope_dict.items():
-            code += f'{directive}, {scope}\n' + '\n'.join(scope_lines)
+            code += f'\n{directive}, {scope}\n' + '\n'.join(scope_lines)
     return code
+
+
+def _make_hotstrings_line(hotstring, data):
+    text = data.get('text')
+    if not text or not hotstring:
+        return
+
+    options = ':'
+    for op in Options:
+        if data.get(op.name, False):
+            options += op.value
+
+    for name, option_list in OPTION_LISTS.items():
+        value = data.get(name)
+        if value:
+            options += option_list[value - 1]
+
+    text = text.replace('\n', '`n')
+    text = text.replace(':', '`:')
+    mode = data.get('mode')
+    if mode is None:
+        for char in '!+#^':
+            text = text.replace(char, '{%s}' % char)
+        text = text.replace(':', '`:')
+    elif mode == 1:
+        if '`n' in text:
+            text = '\n' + text.replace('`n', '\n')
+            text += '\nReturn'
+        else:
+            options += 'X'
+    elif mode == 2:
+        # This is actually the default mode! Nothing to do!
+        pass
+    elif mode == 3:
+        options += 'R'
+    elif mode == 4:
+        options += 'T'
+
+    return f'{options}:{hotstring}::{text}'
 
 
 def file_to_dict(path):
@@ -111,7 +117,7 @@ class HotstringsParser(object):
 
              'scope_excl': {...}
         """
-        self.hs_dict = {}
+        self.hs_dict = {'': {}}
 
         # while parsing parameters
         self.gather_lines = False
@@ -141,7 +147,7 @@ class HotstringsParser(object):
                         self.work_buffer()
                         continue
                     # collect the unstripped line
-                    self.hs_buffer.append(line)
+                    self.hs_buffer.append(line.rstrip())
 
     def handle_scope(self, line):
         self.work_buffer()
@@ -207,16 +213,25 @@ class HotstringsParser(object):
         self.gather_lines = False
         if not self.hs_buffer:
             return
-        self.this_hs['text'] = '\n'.join(self.hs_buffer)
+        text = '\n'.join(self.hs_buffer)
+
+        self.this_hs['text'] = text.replace('\r\n', '\n')
         self.collect()
 
     def collect(self):
+        if self.this_hs.get('mode') is None:
+            text = self.this_hs['text']
+            text = text.replace('`:', ':')
+            for char in '!+#^':
+                text = text.replace('{%s}' % char, char)
+            self.this_hs['text'] = text
+
         if self.this_scope:
-            if self.this_directive == DIRECTIVE_EXCL:
-                self.this_hs[KEY_EXCL] = self.this_scope
-            else:
-                self.this_hs[KEY_INCL] = self.this_scope
-        self.hs_dict[self.this_shortcut] = self.this_hs
+            mode = KEY_EXCL if self.this_directive == DIRECTIVE_EXCL else KEY_INCL
+            self.hs_dict.setdefault(mode, {}).setdefault(
+                self.this_scope, {})[self.this_shortcut] = self.this_hs
+        else:
+            self.hs_dict[''][self.this_shortcut] = self.this_hs
         self.this_hs = {}
         self.hs_buffer = []
 
