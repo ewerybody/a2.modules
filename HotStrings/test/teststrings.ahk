@@ -10,9 +10,7 @@
 return
 ::xxx::s👍👍{!}
 :*:shcon::schon
-:*C:aA::ac'tivAid
 ::arent::aren't
-:*::flip::(╯°□°)╯︵ ┻━┻
 ::Strala::Stråla
 :*:nat.::natürlich
 :r:.raw::Raw Rest{!}
@@ -29,6 +27,10 @@ return
 #IfWinActive, ahk_class Notepad++ ; will be ignored
 #IfWinActive ahk_class Chrome_WidgetWin_1
 :C:AHK::Autohotkey
-
+:*C:aA::ac'tivAid ; 2 hotstrings with different setup!
+#IfWinActive ahk_class MozillaWindowClass
+:Ct:aA::ACTIVEAID!!
+#IfWinNotActive, ahk_class Notepad++
+:*::flip::(╯°□°)╯︵ ┻━┻
 #IfWinNotActive,
 ::.sx::SomeHotstring
