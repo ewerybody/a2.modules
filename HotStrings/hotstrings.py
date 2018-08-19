@@ -95,7 +95,7 @@ class Draw(DrawCtrl):
         self._hs_lines_b4 = None
         self._setup_ui()
         self.is_expandable_widget = True
-        self.hotstrings_file = os.path.join(self.paths.mod_data, HOTSTRINGS_FILENAME)
+        self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
     def _setup_ui(self):
@@ -120,7 +120,7 @@ class Draw(DrawCtrl):
 
     def _check_hs_include_file(self):
         # make sure at least an empty file is there to be included
-        os.makedirs(self.paths.mod_data, exist_ok=True)
+        os.makedirs(self.mod.data_path, exist_ok=True)
         if not os.path.isfile(self.hotstrings_file):
             with open(self.hotstrings_file, 'w') as fobj:
                 fobj.write('')
