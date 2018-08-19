@@ -31,12 +31,8 @@ MODES = ['a2 default - escape "!+^#"',
 
 
 class HotStringsEditor(A2ItemEditor):
-
     def __init__(self, user_cfg, parent):
-
         self.data = user_cfg
-        self.draw_labels = False
-
         super(HotStringsEditor, self).__init__(parent)
 
         self.ui.text = A2TextField(self)
@@ -63,25 +59,18 @@ class HotStringsEditor(A2ItemEditor):
         self.add_data_label_widget('send', self.ui.sendmode, self.ui.sendmode.setCurrentIndex,
                                    default_value=0, label='Send Method')
 
-        # WIP: not done yet!
-        self.ui.scope = QtWidgets.QComboBox(self)
-        self.ui.scope.setEnabled(False)
-        self.ui.scope.addItems(['Global', 'Only In:', 'Not In:'])
-        self.ui.scope.currentIndexChanged.connect(self.toggle_scope_field)
-        self.add_data_label_widget('scope', self.ui.scope, self.ui.scope.setCurrentIndex,
-                                   default_value=0)
+        self.enable_search_field(False)
+        self.ui.scope_combo = QtWidgets.QComboBox(self)
+        self.ui.scope_combo.addItem(a2ctrl.Icons.inst().scope_global, 'global')
+        self.ui.scope_combo.setEnabled(False)
+        # self.ui.scope_combo.addItem(a2ctrl.Icons.inst().list_add, 'add scope')
+        # self.ui.scope_combo.currentTextChanged.connect(self.on_scope_change)
+        self.ui.list_layout.insertWidget(0, self.ui.scope_combo)
 
-        self.ui.scope_field = QtWidgets.QLineEdit(self)
-        self.ui.scope_field.setVisible(False)
-        self.add_data_widget('scope_field', self.ui.scope_field, self.ui.scope_field.setText,
-                             default_value='')
 
-        spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.ui.config_layout.addItem(spacer)
+    def on_scope_change(self, text):
+        print(text)
 
-    def toggle_scope_field(self, index=None):
-        """only show the scope field if not global"""
-        self.ui.scope_field.setVisible(index != 0)
 
 
 class Draw(DrawCtrl):
@@ -92,7 +81,9 @@ class Draw(DrawCtrl):
     def __init__(self, *args):
         # cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(*args)
-        self._hs_lines_b4 = None
+        self._hs_code_b4 = None
+        # getting global hotstrings on init
+        self.current_scope = self.user_cfg.get('', {})
         self._setup_ui()
         self.is_expandable_widget = True
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
@@ -101,14 +92,21 @@ class Draw(DrawCtrl):
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.editor = HotStringsEditor(self.user_cfg, self)
+        self.editor = HotStringsEditor(self.current_scope, self)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
 
     def check(self, *args):
-        self.set_user_value(self.editor.data)
+        # TODO: figure out how to implement this from ui
+        scope_key, scope = None, ''
 
-        hotstrings_code = hotstrings_io.dict_to_ahkcode(self.editor.data)
+        if scope == '':
+            self.user_cfg[''] = self.editor.data
+        else:
+            self.user_cfg[scope_key][scope] = self.editor.data
+        self.set_user_value(self.user_cfg)
+
+        hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
         if hotstrings_code == self._hs_code_b4:
             return
         self._hs_code_b4 = hotstrings_code
