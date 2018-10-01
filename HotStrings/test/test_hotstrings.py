@@ -16,7 +16,6 @@ class Test(unittest.TestCase):
         hs_dict = hotstrings_io.file_to_dict(test_file)
         print(pprint.pformat(hs_dict))
 
-
         hs_code = hotstrings_io.dict_to_ahkcode(hs_dict)
         print('hs_code:\n%s' % hs_code)
 

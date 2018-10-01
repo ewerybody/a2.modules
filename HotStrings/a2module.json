@@ -1,8 +1,8 @@
-[
+﻿[
   {
     "author": "eRiC",
     "date": "2016 10 23",
-    "description": "Typing triggered actions! Mostly to correct typing or to insert longer texts by writing shortcuts. But this can also trigger any Autohotkey action.\nWIP! Currently only the \"Case\" option and the \"Trigger Immediately\" checkbox work.",
+    "description": "Typing triggered actions! Mostly to correct typing or to insert longer texts by writing shortcuts. But this can also trigger any Autohotkey action.\nWIP! Everything but scoped Hotstrings should work! Go give it a try!",
     "tags": [
       "text"
     ],
