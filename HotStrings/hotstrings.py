@@ -16,6 +16,7 @@ import hotstrings_io
 from hotstrings_io import Options
 
 
+ADD_SCOPE_TXT = 'add scope'
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
 HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
@@ -62,15 +63,20 @@ class HotStringsEditor(A2ItemEditor):
         self.enable_search_field(False)
         self.ui.scope_combo = QtWidgets.QComboBox(self)
         self.ui.scope_combo.addItem(a2ctrl.Icons.inst().scope_global, 'global')
-        self.ui.scope_combo.setEnabled(False)
-        # self.ui.scope_combo.addItem(a2ctrl.Icons.inst().list_add, 'add scope')
-        # self.ui.scope_combo.currentTextChanged.connect(self.on_scope_change)
+        # self.ui.scope_combo.setEnabled(False)
+        self.ui.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
+        self.ui.scope_combo.currentTextChanged.connect(self.on_scope_change)
         self.ui.list_layout.insertWidget(0, self.ui.scope_combo)
 
-
     def on_scope_change(self, text):
-        print(text)
+        if text == ADD_SCOPE_TXT:
+            from a2widget.a2hotkey import scope_dialog
+            dialog = scope_dialog.get_dialog_changable_no_global(self)
+            dialog.okayed.connect(self.scope_edit_done)
+            dialog.show()
 
+    def scope_edit_done(self, scope_cfg):
+        print(scope_cfg)
 
 
 class Draw(DrawCtrl):
