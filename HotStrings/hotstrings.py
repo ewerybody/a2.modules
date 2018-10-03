@@ -29,6 +29,7 @@ MODES = ['a2 default - escape "!+^#"',
          'Let !+^# press Ctrl, Shift, Alt, Win',
          'Raw - Control-Characters as Plain Text',
          'Text - new. Similar to raw mode.']
+CASE_ITEMS = ['Forward to text', 'Sensitive', 'Keep original']
 
 
 class HotStringsEditor(A2ItemEditor):
@@ -51,7 +52,7 @@ class HotStringsEditor(A2ItemEditor):
                                    default_value=0, label='Mode')
 
         self.ui.case = QtWidgets.QComboBox(self)
-        self.ui.case.addItems(['Forward to text', 'Sensitive', 'Keep original'])
+        self.ui.case.addItems(CASE_ITEMS)
         self.add_data_label_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
                                    default_value=0)
 
@@ -61,22 +62,9 @@ class HotStringsEditor(A2ItemEditor):
                                    default_value=0, label='Send Method')
 
         self.enable_search_field(False)
-        self.ui.scope_combo = QtWidgets.QComboBox(self)
-        self.ui.scope_combo.addItem(a2ctrl.Icons.inst().scope_global, 'global')
-        # self.ui.scope_combo.setEnabled(False)
-        self.ui.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
-        self.ui.scope_combo.currentTextChanged.connect(self.on_scope_change)
-        self.ui.list_layout.insertWidget(0, self.ui.scope_combo)
 
-    def on_scope_change(self, text):
-        if text == ADD_SCOPE_TXT:
-            from a2widget.a2hotkey import scope_dialog
-            dialog = scope_dialog.get_dialog_changable_no_global(self)
-            dialog.okayed.connect(self.scope_edit_done)
-            dialog.show()
-
-    def scope_edit_done(self, scope_cfg):
-        print(scope_cfg)
+    def insert_scope_ui(self, widget):
+        self.ui.list_layout.insertWidget(0, widget)
 
 
 class Draw(DrawCtrl):
@@ -102,14 +90,54 @@ class Draw(DrawCtrl):
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
 
+        self.scope_combo = QtWidgets.QComboBox(self)
+        self.fill_scope_combo()
+        self.scope_combo.currentTextChanged.connect(self.on_scope_change)
+        self.editor.insert_scope_ui(self.scope_combo)
+
+    def fill_scope_combo(self):
+        self.scope_combo.addItem(a2ctrl.Icons.inst().scope_global, 'global')
+        # for scope_key, scope_data in self.user_cfg.items():
+        #     if scope_key == '':
+        #         continue
+        #     if scope_key is hotstrings_io.KEY_INCL:
+        #         icon = a2ctrl.Icons.inst().scope
+        #     elif scope_key is hotstrings_io.KEY_EXCL:
+        #         icon = a2ctrl.Icons.inst().scope_exclude
+        #     else:
+        #         print('scope_key', scope_key)
+        #
+        #     for scope_string in scope_data.items():
+        #         self.scope_combo.addItem(icon, scope_string)
+        self.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
+
+    def on_scope_change(self, text):
+        if text == ADD_SCOPE_TXT:
+            from a2widget.a2hotkey import scope_dialog
+            dialog = scope_dialog.get_changable_no_global(self)
+            dialog.okayed.connect(self.scope_add_done)
+            dialog.show()
+
+    def scope_add_done(self, scope_cfg):
+        # {'scopeChange': True, 'scopeMode': 1, 'scope': ['Qt Designer ahk_class QWidget ahk_exe designer.exe']}
+        from a2widget.a2hotkey.hotkey_common import Vars
+        scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
+        if scope_string:
+            print('scope_string: %s' % scope_string)
+            mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
+            scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
+            print('scope_mode: %s' % scope_key)
+            self.user_cfg[scope_key][scope_string] = {}
+            self.fill_scope_combo()
+
     def check(self, *args):
         # TODO: figure out how to implement this from ui
-        scope_key, scope = None, ''
+        scope_key, scope_string = None, ''
 
-        if scope == '':
+        if scope_string == '':
             self.user_cfg[''] = self.editor.data
         else:
-            self.user_cfg[scope_key][scope] = self.editor.data
+            self.user_cfg[scope_key][scope_string] = self.editor.data
         self.set_user_value(self.user_cfg)
 
         hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
