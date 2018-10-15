@@ -95,17 +95,16 @@ class Draw(DrawCtrl):
         layout = QtWidgets.QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
         self.scope_combo = QtWidgets.QComboBox(self)
-        # self.scope_combo.currentTextChanged.connect(self.on_scope_change)
         self.scope_combo.currentIndexChanged.connect(self.on_scope_change)
         layout.addWidget(self.scope_combo)
         self.edit_scope_button = QtWidgets.QToolButton()
         self.edit_scope_button.setAutoRaise(True)
         self.edit_scope_button.setVisible(False)
         self.edit_scope_button.setIcon(a2ctrl.Icons.inst().edit)
+        self.edit_scope_button.clicked.connect(self.edit_scope)
         layout.addWidget(self.edit_scope_button)
 
         self.editor.insert_scope_ui(widget)
-        # self.fill_scope_combo()
         self._last_scope_index = 0
         QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
@@ -175,6 +174,48 @@ class Draw(DrawCtrl):
             mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
             scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
             self.user_cfg.setdefault(scope_key, {})[scope_string] = {}
+            self.fill_scope_combo()
+            self.select_scope(scope_key, scope_string)
+
+    def edit_scope(self):
+        from a2widget.a2hotkey import scope_dialog, Vars
+        scope_key, scope_string = self._scope_combo_items[self.scope_combo.currentIndex()]
+        print('current_scope:', self.current_scope)
+        print('scope_key:', scope_key)
+        print('scope_string:', scope_string)
+
+        scope_dict = {}
+        scope_dict[Vars.scope_mode] = {
+            hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[scope_key]
+        scope_dict[Vars.scope] = scope_string.split('\n')
+
+        dialog = scope_dialog.get_changable_no_global(self, scope_dict)
+        dialog.okayed.connect(self.scope_edit_done)
+        dialog.show()
+        return
+
+    def scope_edit_done(self, scope_cfg):
+        from a2widget.a2hotkey.hotkey_common import Vars
+        scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
+        if scope_string:
+            current_index = self.scope_combo.currentIndex()
+            current_key, current_string = self._scope_combo_items[current_index]
+            current_cfg = self.user_cfg[current_key][current_string]
+
+            mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
+            scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
+
+            if scope_key == current_key and scope_string == current_string:
+                return
+
+            # remove the current setting and the mode key if changed and empty
+            del self.user_cfg[current_key][current_string]
+            if scope_key != current_key and not len(self.user_cfg[current_key]):
+                del self.user_cfg[current_key]
+
+            print('current_cfg:', current_cfg)
+
+            self.user_cfg.setdefault(scope_key, {})[scope_string] = current_cfg
             self.fill_scope_combo()
             self.select_scope(scope_key, scope_string)
 
