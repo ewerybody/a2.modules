@@ -8,6 +8,7 @@ from PySide2 import QtWidgets, QtCore
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget import A2TextField
+from a2widget.a2more_button import A2MoreButton
 
 this_dir = os.path.dirname(__file__)
 if this_dir not in sys.path:
@@ -97,12 +98,9 @@ class Draw(DrawCtrl):
         self.scope_combo = QtWidgets.QComboBox(self)
         self.scope_combo.currentIndexChanged.connect(self.on_scope_change)
         layout.addWidget(self.scope_combo)
-        self.edit_scope_button = QtWidgets.QToolButton()
-        self.edit_scope_button.setAutoRaise(True)
-        self.edit_scope_button.setVisible(False)
-        self.edit_scope_button.setIcon(a2ctrl.Icons.inst().edit)
-        self.edit_scope_button.clicked.connect(self.edit_scope)
-        layout.addWidget(self.edit_scope_button)
+        self.scope_more_button = A2MoreButton(self)
+        self.scope_more_button.menu_called.connect(self.build_scope_edit_menu)
+        layout.addWidget(self.scope_more_button)
 
         self.editor.insert_scope_ui(widget)
         self._last_scope_index = 0
@@ -140,18 +138,18 @@ class Draw(DrawCtrl):
                 self.scope_combo.setCurrentIndex(index)
                 break
 
+    def add_scope_dialog(self):
+        from a2widget.a2hotkey import scope_dialog
+        dialog = scope_dialog.get_changable_no_global(self)
+        dialog.okayed.connect(self.scope_add_done)
+        dialog.rejected.connect(self._unselect_add_option)
+        dialog.show()
+
     def on_scope_change(self, index):
-        if index == 0:
-            self.edit_scope_button.setVisible(False)
-        elif index == self.scope_combo.count() - 1:
-            from a2widget.a2hotkey import scope_dialog
-            dialog = scope_dialog.get_changable_no_global(self)
-            dialog.okayed.connect(self.scope_add_done)
-            dialog.rejected.connect(self._unselect_add_option)
-            dialog.show()
+        if index == self.scope_combo.count() - 1:
+            self.add_scope_dialog()
             return
-        else:
-            self.edit_scope_button.setVisible(True)
+
         self._last_scope_index = index
 
         scope_key, scope_string = self._scope_combo_items[index]
@@ -245,6 +243,15 @@ class Draw(DrawCtrl):
         if not os.path.isfile(self.hotstrings_file):
             with open(self.hotstrings_file, 'w') as fobj:
                 fobj.write('')
+
+    def build_scope_edit_menu(self, menu):
+        if self.scope_combo.currentIndex() == 0:
+            menu.addAction(a2ctrl.Icons.inst().list_add,
+                           'Add Scope', self.add_scope_dialog)
+        else:
+            menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
+            menu.addAction(a2ctrl.Icons.inst().delete,
+                           'Remove Scope', self.edit_scope)
 
 
 class Edit(EditCtrl):
