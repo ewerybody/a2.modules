@@ -38,11 +38,12 @@ def dict_to_ahkcode(hotstrings_data):
             hs_global.append(line)
 
     for key, scope_dict in [(KEY_INCL, scope_incl), (KEY_EXCL, scope_excl)]:
-        for scope, scopes in hotstrings_data.get(key, {}).items():
-            for hotstring, data in scopes.items():
-                line = _make_hotstrings_line(hotstring, data)
-                if line:
-                    scope_dict.setdefault(scope, []).append(line)
+        for scope_string, hs_dict in hotstrings_data.get(key, {}).items():
+            for scope in scope_string.split('\n'):
+                for hotstring, data in hs_dict.items():
+                    line = _make_hotstrings_line(hotstring, data)
+                    if line:
+                        scope_dict.setdefault(scope, []).append(line)
 
     code = f'{DIRECTIVE_INCL},\n' + '\n'.join(hs_global)
     for directive, scope_dict in [(DIRECTIVE_INCL, scope_incl), (DIRECTIVE_EXCL, scope_excl)]:
