@@ -85,6 +85,9 @@ class Draw(DrawCtrl):
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
+        self.scope_key = ''
+        self.scope_string = ''
+
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -152,12 +155,11 @@ class Draw(DrawCtrl):
 
         self._last_scope_index = index
 
-        scope_key, scope_string = self._scope_combo_items[index]
-        if scope_key == '':
+        self.scope_key, self.scope_string = self._scope_combo_items[index]
+        if self.scope_key == '':
             self.current_scope = self.user_cfg['']
         else:
-            self.current_scope = self.user_cfg[scope_key][scope_string]
-        self.current_scope
+            self.current_scope = self.user_cfg[self.scope_key][self.scope_string]
         self.editor.set_data(self.current_scope)
 
     def _unselect_add_option(self):
@@ -177,53 +179,48 @@ class Draw(DrawCtrl):
 
     def edit_scope(self):
         from a2widget.a2hotkey import scope_dialog, Vars
-        scope_key, scope_string = self._scope_combo_items[self.scope_combo.currentIndex()]
-        print('current_scope:', self.current_scope)
-        print('scope_key:', scope_key)
-        print('scope_string:', scope_string)
-
         scope_dict = {}
         scope_dict[Vars.scope_mode] = {
-            hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[scope_key]
-        scope_dict[Vars.scope] = scope_string.split('\n')
+            hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[self.scope_key]
+        scope_dict[Vars.scope] = self.scope_string.split('\n')
 
         dialog = scope_dialog.get_changable_no_global(self, scope_dict)
         dialog.okayed.connect(self.scope_edit_done)
         dialog.show()
-        return
+
+    def remove_scope(self):
+        if not self.current_scope:
+            del self.user_cfg[self.scope_key][self.scope_string]
+            self.fill_scope_combo()
+        else:
+            # TODO: what happens here?!
+            print('self.current_scope', self.current_scope)
+            print('self.scope_key', self.scope_key)
 
     def scope_edit_done(self, scope_cfg):
         from a2widget.a2hotkey.hotkey_common import Vars
         scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
         if scope_string:
-            current_index = self.scope_combo.currentIndex()
-            current_key, current_string = self._scope_combo_items[current_index]
-            current_cfg = self.user_cfg[current_key][current_string]
-
             mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
             scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
-
-            if scope_key == current_key and scope_string == current_string:
+            if scope_key == self.scope_key and scope_string == self.scope_string:
                 return
 
-            # remove the current setting and the mode key if changed and empty
-            del self.user_cfg[current_key][current_string]
-            if scope_key != current_key and not len(self.user_cfg[current_key]):
-                del self.user_cfg[current_key]
+            # remove the current setting ...
+            del self.user_cfg[self.scope_key][self.scope_string]
+            # and the mode key if changed and empty
+            if scope_key != self.scope_key and not len(self.user_cfg[self.scope_key]):
+                del self.user_cfg[self.scope_key]
 
-            print('current_cfg:', current_cfg)
-
-            self.user_cfg.setdefault(scope_key, {})[scope_string] = current_cfg
+            self.user_cfg.setdefault(scope_key, {})[scope_string] = self.current_scope
             self.fill_scope_combo()
             self.select_scope(scope_key, scope_string)
 
     def check(self, *args):
-        scope_key, scope_string = self._scope_combo_items[self.scope_combo.currentIndex()]
-
-        if scope_key == '':
+        if self.scope_key == '':
             self.user_cfg[''] = self.editor.data
         else:
-            self.user_cfg[scope_key][scope_string] = self.editor.data
+            self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
 
         self.set_user_value(self.user_cfg)
 
@@ -245,13 +242,12 @@ class Draw(DrawCtrl):
                 fobj.write('')
 
     def build_scope_edit_menu(self, menu):
-        if self.scope_combo.currentIndex() == 0:
-            menu.addAction(a2ctrl.Icons.inst().list_add,
-                           'Add Scope', self.add_scope_dialog)
-        else:
+        if self.scope_combo.currentIndex() != 0:
             menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
             menu.addAction(a2ctrl.Icons.inst().delete,
-                           'Remove Scope', self.edit_scope)
+                           'Remove Scope', self.remove_scope)
+        menu.addAction(a2ctrl.Icons.inst().list_add,
+                       'Add Scope', self.add_scope_dialog)
 
 
 class Edit(EditCtrl):
