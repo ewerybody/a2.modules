@@ -92,6 +92,7 @@ class Draw(DrawCtrl):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.editor = HotStringsEditor(self.current_scope, self)
+        self.editor.list_menu_called.connect(self.build_list_context_menu)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
 
@@ -248,6 +249,13 @@ class Draw(DrawCtrl):
                            'Remove Scope', self.remove_scope)
         menu.addAction(a2ctrl.Icons.inst().list_add,
                        'Add Scope', self.add_scope_dialog)
+
+    def build_list_context_menu(self, menu):
+        menu.clear()
+        action = menu.addAction(a2ctrl.Icons.inst().scope, 'Move to Scope ...')
+        action.setEnabled(False)
+        action = menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Hotstring')
+        action.setEnabled(False)
 
 
 class Edit(EditCtrl):
