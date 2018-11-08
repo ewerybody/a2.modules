@@ -7,7 +7,7 @@ import a2runtime
 from PySide2 import QtWidgets, QtCore
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
-from a2widget import A2TextField
+from a2widget import A2TextField, A2ConfirmDialog
 from a2widget.a2more_button import A2MoreButton
 
 this_dir = os.path.dirname(__file__)
@@ -80,13 +80,16 @@ class Draw(DrawCtrl):
         self._hs_code_b4 = None
         # getting global hotstrings on init
         self.current_scope = self.user_cfg.get('', {})
+        self._scope_combo_items = {}
         self._setup_ui()
-        self.is_expandable_widget = True
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
         self.scope_key = ''
         self.scope_string = ''
+        self._last_scope_index = 0
+
+        self.is_expandable_widget = True
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -107,7 +110,6 @@ class Draw(DrawCtrl):
         layout.addWidget(self.scope_more_button)
 
         self.editor.insert_scope_ui(widget)
-        self._last_scope_index = 0
         QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
     def fill_scope_combo(self):
@@ -190,13 +192,21 @@ class Draw(DrawCtrl):
         dialog.show()
 
     def remove_scope(self):
-        if not self.current_scope:
-            del self.user_cfg[self.scope_key][self.scope_string]
-            self.fill_scope_combo()
-        else:
-            # TODO: what happens here?!
-            print('self.current_scope', self.current_scope)
-            print('self.scope_key', self.scope_key)
+        if self.current_scope:
+            dialog = A2ConfirmDialog(
+                self.main, 'Remove scope "%s..."' % self.scope_string[:30],
+                'The scope still contains Hotstings! These would be lost!\n'
+                'You can also <b>move</b> the Hotstrings to other scopes or make them global via context menu.\n'
+                'Or do you want to continue deletion?')
+            dialog.exec_()
+            if not dialog.result:
+                return
+
+        del self.user_cfg[self.scope_key][self.scope_string]
+        self.fill_scope_combo()
+        self.scope_combo.setCurrentIndex(0)
+        self.on_scope_change(0)
+        self.delayed_check()
 
     def scope_edit_done(self, scope_cfg):
         from a2widget.a2hotkey.hotkey_common import Vars
