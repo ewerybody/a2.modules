@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+
 import a2util
 import a2ctrl
 import a2runtime
@@ -113,14 +114,24 @@ class Draw(DrawCtrl):
         QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
     def fill_scope_combo(self):
-        self._scope_combo_items = {0: ('', None)}
-
+        self._scope_combo_items = {}
         self.scope_combo.blockSignals(True)
         self.scope_combo.clear()
-        i = self.scope_combo.addItem(a2ctrl.Icons.inst().scope_global, GLOBAL_SCOPE_TXT)
+
+        for scope_key, scope_string, icon in self.iter_scope_items():
+            if scope_key == '':
+                self._scope_combo_items[0] = ('', None)
+            else:
+                self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
+            self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
+
+        self.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
+        self.scope_combo.blockSignals(False)
+
+    def iter_scope_items(self):
         for scope_key, scope_data in self.user_cfg.items():
             if scope_key == '':
-                continue
+                yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
             if scope_key == hotstrings_io.KEY_INCL:
                 icon = a2ctrl.Icons.inst().scope
             elif scope_key == hotstrings_io.KEY_EXCL:
@@ -129,14 +140,7 @@ class Draw(DrawCtrl):
                 continue
 
             for scope_string in scope_data.keys():
-                index = self.scope_combo.count()
-                self.scope_combo.addItem(icon, scope_string.replace('\n', ''))
-                item_data = (scope_key, scope_string)
-                self.scope_combo.setItemData(index, item_data)
-                self._scope_combo_items[index] = item_data
-
-        self.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
-        self.scope_combo.blockSignals(False)
+                yield scope_key, scope_string, icon
 
     def select_scope(self, scope_key, scope_string):
         for index, (this_key, this_string) in self._scope_combo_items.items():
@@ -233,6 +237,12 @@ class Draw(DrawCtrl):
         else:
             self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
 
+        # cleanup invalid and empty dictionary items
+        for key in list(self.user_cfg.keys()):
+            if key != '':
+                if key not in [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL] or not self.user_cfg[key]:
+                    del self.user_cfg[key]
+
         self.set_user_value(self.user_cfg)
 
         hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
@@ -262,10 +272,43 @@ class Draw(DrawCtrl):
 
     def build_list_context_menu(self, menu):
         menu.clear()
-        action = menu.addAction(a2ctrl.Icons.inst().scope, 'Move to Scope ...')
-        action.setEnabled(False)
-        action = menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Hotstring')
-        action.setEnabled(False)
+        submenu = menu.addMenu(a2ctrl.Icons.inst().scope, 'Move to Scope ...')
+        for this_key, this_string, icon in self.iter_scope_items():
+            if self.scope_key == '' and this_key == '':
+                continue
+            elif self.scope_key == this_key and self.scope_string == this_string:
+                continue
+
+            action = submenu.addAction(icon, this_string[:100], self._on_move_hotstring)
+            action.setData((this_key, this_string))
+        if submenu.isEmpty():
+            action = submenu.addAction('No Scopes set up yet!')
+            action.setEnabled(False)
+        menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Hotstring', self.editor.delete_item)
+
+    def _on_move_hotstring(self):
+        scope_key, scope_string = self.sender().data()
+        if scope_string == GLOBAL_SCOPE_TXT:
+            target_scope = self.user_cfg['']
+        else:
+            target_scope = self.user_cfg[scope_key][scope_string]
+
+        if self.editor.selected_name in target_scope:
+            dialog = A2ConfirmDialog(
+                self.main, 'Scope already contains "%s"!' % self.editor.selected_name,
+                'The target scope "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
+                'It would be <b>overwritten</b>! Do you want to continue?' %
+                (scope_string[:100], self.editor.selected_name))
+            dialog.exec_()
+            if not dialog.result:
+                return
+
+        hotstring_data = self.current_scope[self.editor.selected_name]
+        del self.current_scope[self.editor.selected_name]
+        target_scope[self.editor.selected_name] = hotstring_data
+        self.editor.set_data(self.current_scope)
+
+        self.delayed_check()
 
 
 class Edit(EditCtrl):
