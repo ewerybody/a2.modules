@@ -59,7 +59,8 @@
   {
     "children": [
       {
-        "typ": "sr_windowlister"
+        "name": "sr_windowlister",
+        "typ": "a2_local_element"
       }
     ],
     "disablable": false,
