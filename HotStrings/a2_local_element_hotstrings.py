@@ -114,14 +114,12 @@ class Draw(DrawCtrl):
         QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
     def fill_scope_combo(self):
-        self._scope_combo_items = {}
+        self._scope_combo_items = {0: ('', None)}
         self.scope_combo.blockSignals(True)
         self.scope_combo.clear()
 
         for scope_key, scope_string, icon in self.iter_scope_items():
-            if scope_key == '':
-                self._scope_combo_items[0] = ('', None)
-            else:
+            if scope_key != '':
                 self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
             self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
 
@@ -129,18 +127,21 @@ class Draw(DrawCtrl):
         self.scope_combo.blockSignals(False)
 
     def iter_scope_items(self):
-        for scope_key, scope_data in self.user_cfg.items():
-            if scope_key == '':
-                yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
-            if scope_key == hotstrings_io.KEY_INCL:
-                icon = a2ctrl.Icons.inst().scope
-            elif scope_key == hotstrings_io.KEY_EXCL:
-                icon = a2ctrl.Icons.inst().scope_exclude
-            else:
-                continue
+        if not self.user_cfg:
+            yield '', GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
+        else:
+            for scope_key, scope_data in self.user_cfg.items():
+                if scope_key == '':
+                    yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
+                if scope_key == hotstrings_io.KEY_INCL:
+                    icon = a2ctrl.Icons.inst().scope
+                elif scope_key == hotstrings_io.KEY_EXCL:
+                    icon = a2ctrl.Icons.inst().scope_exclude
+                else:
+                    continue
 
-            for scope_string in scope_data.keys():
-                yield scope_key, scope_string, icon
+                for scope_string in scope_data.keys():
+                    yield scope_key, scope_string, icon
 
     def select_scope(self, scope_key, scope_string):
         for index, (this_key, this_string) in self._scope_combo_items.items():
