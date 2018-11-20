@@ -11,18 +11,18 @@
     "version": "0.1"
   },
   {
-    "code": "print('Import Hotstrings ...')\nfile_path, _ = QtWidgets.QFileDialog.getOpenFileName(\n    None, 'Import Hotstrings Data', module.path, '(*.ahk *.json)')\n\nif file_path:\n    import a2util\n    import os\n    cwd = os.getcwd()\n    print(cwd)",
     "label": "Import Hotstrings",
+    "name": "import_hotstrings",
     "typ": "menu_item"
   },
   {
-    "code": "print('Export Hotstrings Code ...')",
     "label": "Export Hotstrings Code",
+    "name": "export_hotstring_ahk_code",
     "typ": "menu_item"
   },
   {
-    "code": "print('Export Hotstrings JSON ...')",
     "label": "Export Hotstrings JSON",
+    "name": "export_hotstring_json",
     "typ": "menu_item"
   },
   {
