@@ -12,17 +12,17 @@
   },
   {
     "label": "Import Hotstrings",
-    "name": "import_hotstrings",
+    "script_name": "import_hotstrings",
     "typ": "menu_item"
   },
   {
     "label": "Export Hotstrings Code",
-    "name": "export_hotstring_ahk_code",
+    "script_name": "export_hotstring_ahk_code",
     "typ": "menu_item"
   },
   {
     "label": "Export Hotstrings JSON",
-    "name": "export_hotstring_json",
+    "script_name": "export_hotstring_json",
     "typ": "menu_item"
   },
   {
