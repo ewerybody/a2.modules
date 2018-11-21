@@ -1,6 +1,10 @@
 ﻿# a2 menu item script "import_hotstring"
 
-def main(main, mod):
+def main(a2, mod):
+    """
+    :param a2: Main A2 object instance.
+    :param mod: Current a2 module instance.
+    """
     print('Import Hotstrings ... %s' % __name__)
 
     from PySide2 import QtWidgets
