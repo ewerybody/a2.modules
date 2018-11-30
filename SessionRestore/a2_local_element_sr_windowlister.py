@@ -139,7 +139,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
                                'xy': (win_data[2], win_data[3]),
                                'wh': (win_data[4], win_data[5])}
 
-        a2ctrl.qlist.select_items(self.ui.item_list, item)
+        self.ui.item_list.select_items([item])
         self.data_changed.emit()
 
     def add_item(self):
