@@ -1,6 +1,6 @@
 ; In-place sessionrestore starter
 
-; 1st we need the variables:
+; 1st we need the variables: (FIXME: this breaks if a2 path != a2 data path)
 #include ..\..\..\
 #include includes\variables.ahk
 

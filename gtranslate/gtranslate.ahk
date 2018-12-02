@@ -11,20 +11,20 @@ gtranslate(from="en", to="de") {
 
     WriteDebug("triggered", "", "debug", "gtranslate")
     global __gtranslate_search, __gtranslate_lngs
-    sel := get_selection() ; get selected text
-    
-    __gtranslate_search := Trim(sel, " `n`t`r")
+    sel := clipboard_get() ; get selected text
+
+    __gtranslate_search := trim(sel, " `n`t`r")
     __gtranslate_lngs = %from%|%to%
-    
+
     if (__gtranslate_search == "")
     {
         InputBox, UserInput, gtranslate, Enter something to translate..., , 640, 150
         if ErrorLevel
             return
         else
-            __gtranslate_search := Trim(UserInput)
+            __gtranslate_search := trim(UserInput)
     }
-    else if is_web_adress(__gtranslate_search) {
+    else if string_is_web_adress(__gtranslate_search) {
         global gtranslate_ask_website_translate
         if gtranslate_ask_website_translate {
             MsgBox, 1, Translate the web adress with translate.google.com?
@@ -36,7 +36,7 @@ gtranslate(from="en", to="de") {
         url .= "?sl=" to
         url .= "&tl=" from
         url .= "&js=y&prev=_t&hl=en&ie=UTF-8&u="
-        url .= lc_url_encode(__gtranslate_search)
+        url .= uri_url_encode(__gtranslate_search)
         url .= "&edit-text=&act=url"
         Run, %url%
         return
@@ -62,7 +62,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     global gtranslate_use_proxy
 
     WriteDebug("Text to translate:", srcTxt, "debug", gtranslate)
-    encoded := lc_uri_encode(srcTxt)
+    encoded := uri_encode(srcTxt)
 
     ApiURi := "https://translate.googleapis.com/translate_a/single?client=gtx"
     ApiURi .= "&sl=" srcLng
@@ -95,7 +95,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     
     
     RegExMatch(response, "\[\""(.+?)\""", match)
-    ;tranlation := lc_uri_decode(match1)
+    ;tranlation := uri_decode(match1)
     ;return tranlation
     return match1
 }
@@ -103,7 +103,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
 
 gtranslate_insert(ItemName, ItemPos, MenuName) {
     global __gtranslation
-    paste(__gtranslation)
+    clipboard_paste(__gtranslation)
 }
 
 

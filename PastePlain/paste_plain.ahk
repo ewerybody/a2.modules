@@ -3,11 +3,11 @@
 ; created: 2017 10 20
 
 paste_plain_paste() {
-    files := files_in_clipboard()
+    files := clipboard_get_files()
     if (files)
         paste_plain_build_filesmenu(files)
     else
-        paste(Clipboard)
+        clipboard_paste(Clipboard)
 }
 
 paste_plain_build_filesmenu(files) {
@@ -34,28 +34,29 @@ paste_plain_build_filesmenu(files) {
         Menu, PastePlain_ShowFileMenu, Show
         Menu, PastePlain_ShowFileMenu, DeleteAll
     } else
-        paste(Clipboard)
+        clipboard_paste(Clipboard)
 }
 
 paste_plain_files() {
-    paste(Clipboard)
+    clipboard_paste(Clipboard)
 }
 
 paste_plain_basename() {
-    paste(_paste_plain_basenames())
+    clipboard_paste(_paste_plain_basenames())
 }
 
 paste_plain_forward() {
     StringReplace, txt, clipboard, \, /, All
-    paste(txt)
+    clipboard_paste(txt)
 }
 
 paste_plain_double() {
     StringReplace, txt, clipboard, \, \\, All
-    paste(txt)
+    clipboard_paste(txt)
 }
 
 paste_plain_to_clipboard() {
+    ; looks weird but it actually converts to a string! ClipboardAll is the non-string one!
     clipboard := clipboard
 }
 
@@ -73,14 +74,14 @@ paste_plain_to_clipboard_double() {
 
 paste_plain_link_paths() {
     txt := ""
-    for i, file in files_in_clipboard()
+    for i, file in clipboard_get_files()
     {
         FileGetShortcut, %file%, OutTarget
         if OutTarget
             txt := txt OutTarget "`n"
     }
     StringTrimRight, txt, txt, 1
-    paste(txt)
+    clipboard_paste(txt)
 }
 
 
@@ -88,8 +89,8 @@ paste_plain_link_paths() {
 
 _paste_plain_basenames() {
     txt := ""
-    for i, item in files_in_clipboard()
-        txt := txt file_basename(item) "`n"
+    for i, item in clipboard_get_files()
+        txt := txt path_basename(item) "`n"
     StringTrimRight, txt, txt, 1
     return txt
 }
