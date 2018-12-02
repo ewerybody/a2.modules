@@ -22,32 +22,32 @@ HtmlMenuHandler:
 Return
 HtmlMenuHandler() {
     textClip := Clipboard
-	sel := get_selection()
+	sel := clipboard_get()
 
     if (A_ThisMenuItem == "a") {
         ; if selection contains http* put that into the href, point cursor between >< then
         If SubStr(sel,1,4) = "http" ;
         {
 			tt("HtmlMenu handling link...",1)
-			paste( "<a href=" sel "></a>" )
+			clipboard_paste( "<a href=" sel "></a>" )
 			SendInput, {Left 4}
         }
         ; if clipboard already contains http* put that in the href and the selection into the ><
         Else If SubStr(textClip,1,4) = "http"
         {
-            paste("<a href=" textClip ">" sel "</a>")
+            clipboard_paste("<a href=" textClip ">" sel "</a>")
         }
         ; otherwise just put the selected into the ><
         Else
         {
-            paste("<a href=`"`">" sel "</a>")
+            clipboard_paste("<a href=`"`">" sel "</a>")
             StringLen, hLen, sel
             hLen += 6
             SendInput, {Left %hLen%}
         }
     }
     Else If (A_ThisMenuItem == "img") {
-        paste("<img src=" sel " />")
+        clipboard_paste("<img src=" sel " />")
     }
     Else If (A_ThisMenuItem == "testHTML") {
         fileName = %A_Temp%\testHTML.html
@@ -57,10 +57,10 @@ HtmlMenuHandler() {
     }
     Else If (A_ThisMenuItem == "video") {
         code = <video width="960" height="540" controls>`n<source src="%sel%" type="video/mp4">`n</video>
-        paste(code)
+        clipboard_paste(code)
     }
     Else {
         ; handle simple surrounding with the tags:
-        paste("<" A_ThisMenuItem ">" sel "</" A_ThisMenuItem ">")
+        clipboard_paste("<" A_ThisMenuItem ">" sel "</" A_ThisMenuItem ">")
     }
 }
