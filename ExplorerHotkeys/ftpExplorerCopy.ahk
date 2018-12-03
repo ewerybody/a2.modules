@@ -4,7 +4,7 @@ ftpExplorerCopy()
 	;legacy: Win 7: ;ControlGetText, path, ToolbarWindow322, ahk_id %this_id%
     ;Win 8 ;ControlGetText, path, ToolbarWindow323, ahk_id %this_id%
 
-	sel := Explorer_GetSelected(this_id)
+	sel := explorer_get_selected(this_id)
 	clip := ""
     if sel
     {

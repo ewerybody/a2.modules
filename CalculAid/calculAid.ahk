@@ -6,14 +6,14 @@
 ; "ApplicationFrameHost.exe" and the class: "ApplicationFrameWindow". Thanks MS! This can be
 ; ANYTHING!!! OK the title is still "Calculator" but only on an english system.
 ; So basically we need logic for all of that because nothing
-; is for sure. Furthermore that also means that the Close-hetkeys we wanna setup in a2ui will need
+; is for sure. Furthermore that also means that the Close-hotkeys we wanna setup in a2ui will need
 ; win-version and language specific scope identifyers. In the end such a function will be quite
 ; nice to have in a2 anyway.
 
 calculAid_open() {
     tt("CalculAid...", 1)
     global calculAid_openAtCursor, calculAid_AlwaysOnTop
-    sel := getSelection()
+    sel := clipboard_get()
     RegExMatch(sel, "[0-9.,+/*=-]+", numbers)
     ;tt(numbers)
     

@@ -2,7 +2,6 @@
 ;rearrange_session_save()
 ;rearrange_session_restore()
 
-
 icons := new _DesktopIcons
 MsgBox % icons.list_all()
 icons._test_iconmove()
@@ -15,15 +14,12 @@ icons._test_iconmove()
 ExitApp
 
 
-
-
-
 Return ;-----------------------------------
 ;#include sessionrestore.ahk
 
-#include ..\..\..\
-#include lib\ahklib\functions.ahk
-#include lib\ahklib\ahk_functions.ahk
+;#include ..\..\..\
+;#include lib\ahklib\functions.ahk
+;#include lib\ahklib\ahk_functions.ahk
 
 class _DesktopIcons
 {
