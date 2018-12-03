@@ -16,10 +16,8 @@ ExitApp
 
 Return ;-----------------------------------
 ;#include sessionrestore.ahk
-
-;#include ..\..\..\
-;#include lib\ahklib\functions.ahk
-;#include lib\ahklib\ahk_functions.ahk
+;#include <a2functions>
+;#include <ahk_functions>
 
 class _DesktopIcons
 {
