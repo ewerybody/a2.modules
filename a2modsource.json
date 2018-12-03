@@ -1,10 +1,10 @@
 ﻿{
     "name": "a2.modules",
     "description": "The standard a2 script module collection.",
-    "news": "First version ever!!!",
+    "news": "The new structure branch changes are in!!",
     "maintainer": "ewerybody",
     "maintainer_at": "gmail.com",
     "url": "https://github.com/ewerybody/a2.modules/wiki",
     "update_url": "https://github.com/ewerybody/a2.modules",
-    "version": "0.0.2"
+    "version": "0.0.3"
 }
