@@ -1,6 +1,11 @@
-﻿; https://translate.google.com/#en/de/hallo
-; https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=
-; &edit-text=&act=url
+﻿; direct to user website
+; https://translate.google.com/#en/de/hallo
+; translate website
+; https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=&edit-text=&act=url
+; translate api call
+; https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=de&dt=t&q=File%20not%20visible
+; other translate api call
+; http://translate.google.de/translate_a/t?client=x&text=File%20not%20visible&sl=auto&tl=de
 
 __gtranslation := ""
 __gtranslate_search := ""
@@ -71,11 +76,8 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     ApiURi .= "&q=" encoded ;srcTxt
     WriteDebug("Calling URL:", ApiURi, "debug", gtranslate)
 
+    Headers := "Content-Type: application/json`n"
     Headers .= "user-agent: Mozilla/5.0`n"
-    
-    Options := ""
-    ;Options := "Method: GET`n"
-    ;Options .= "Charset: UTF-8`n"
 
     if gtranslate_use_proxy
     {
