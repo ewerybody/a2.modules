@@ -3,13 +3,13 @@
 ; created: 2017 7 6
 
 testahk() {
-    sel := getSelection()
+    sel := clipboard_get()
     
     if (sel == "") {
         tt("testahk: Nothing selected!", 1)
         Return
     }
-    
+
     tt("testahk...", 1)
     sel := "#SingleInstance force`n" sel
     testfile = %A_Temp%\_a2_test_ahk.ahk

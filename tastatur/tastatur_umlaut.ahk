@@ -7,7 +7,7 @@
     
     letters := ["o", "O", "a", "A", "u", "U", "e", "E", "s", "S"]
     umlauts := ["ö", "Ö", "ä", "Ä", "ü", "Ü", "ë", "Ë", "ß", "ẞ"]
-    idx := inArray(thiskey, letters)
+    idx := string_is_in_array(thiskey, letters)
     if (idx != 0) {
         umlaut := umlauts[idx]
         Send, %umlaut%

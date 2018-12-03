@@ -2,7 +2,7 @@
   {
     "author": "eRiC",
     "date": "2016 10 23",
-    "description": "Typing triggered actions! Mostly to correct typing or to insert longer texts by writing shortcuts. But this can also trigger any Autohotkey action.",
+    "description": "Typing triggered actions! To correct spelling, insert longer texts or tricky letters by writing shortcuts. But also to trigger any Autohotkey action.",
     "tags": [
       "text"
     ],
@@ -11,7 +11,22 @@
     "version": "0.1"
   },
   {
+    "label": "Import Hotstrings",
+    "script_name": "import_hotstrings",
+    "typ": "menu_item"
+  },
+  {
+    "label": "Export Hotstrings Code",
+    "script_name": "export_hotstring_ahk_code",
+    "typ": "menu_item"
+  },
+  {
+    "label": "Export Hotstrings JSON",
+    "script_name": "export_hotstring_json",
+    "typ": "menu_item"
+  },
+  {
     "name": "hotstrings",
-    "typ": "hotstrings"
+    "typ": "a2_local_element"
   }
 ]

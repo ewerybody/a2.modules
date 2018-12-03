@@ -14,28 +14,28 @@ BBCodeMenu(){
 }
 
 BBCodeMenuHandler() {
-	sel := getSelection()
+	sel := clipboard_get()
 	if (A_ThisMenuItem == "URL")
 	{
-		If (isURL(sel))
+		If (string_is_web_adress(sel))
 		{
 			tt("selection is URL",1)
-			paste( "[URL=" sel "][/URL]" )
+			clipboard_paste( "[URL=" sel "][/URL]" )
 			SendInput, {Left 6}
 		}
 		; if clipboard already contains a URL put that in the [URL= and the selection between ][/URL]
-		Else If (isURL(Clipboard))
+		Else If (string_is_web_adress(Clipboard))
 		{
 			tt("Clipboard is URL",1)
 			code := "[URL=" Clipboard "]" sel "[/URL]"
-			paste(code)
+			clipboard_paste(code)
 		}
 		; otherwise just put the selected into the ><
 		Else
 		{
 			tt("otherwise...",1)
 			code := "[URL=]" sel "[/URL]"
-			paste(code)
+			clipboard_paste(code)
 			StringLen, hLen, sel
 			hLen += 7
 			SendInput, {Left %hLen%}
@@ -43,6 +43,6 @@ BBCodeMenuHandler() {
 	}
 	else {
 		code := "[" A_ThisMenuItem "]" sel "[/" A_ThisMenuItem "]"
-		paste(code)
+		clipboard_paste(code)
 	}
 }

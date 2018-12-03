@@ -18,7 +18,7 @@ sessionrestore_session_restore() {
         return
     }
 
-    GetVirtualScreenCoordinates(_x, _y, vs_width, vs_height)
+    screen_get_virtual_size(_x, _y, vs_width, vs_height)
     this_vs_size := vs_width "," vs_height
     this_vs_size_list := SessionRestore_List[this_vs_size]
     if !IsObject(this_vs_size_list) {

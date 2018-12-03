@@ -11,7 +11,7 @@ import a2core
 import a2ctrl
 import a2util
 from a2element import DrawCtrl, EditCtrl
-from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField, A2ConfirmDialog
+from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField
 from copy import deepcopy
 
 
@@ -34,34 +34,29 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         self.ui.proc_field = QtWidgets.QLineEdit()
         self.ui.proc_field.setEnabled(False)
-        self.add_data_label_widget(
-            'process', self.ui.proc_field, self.ui.proc_field.setText,
-            default_value='', label=labels[0])
+        self.add_data_label_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
+                                   default_value='', label=labels[0])
 
         self.ui.title_field = A2ButtonField()
         self.ui.title_field.setPlaceholderText('No Title')
-        self.add_data_label_widget(
-            'title', self.ui.title_field, self.ui.title_field.setText,
-            default_value=DEFAULT_TITLE, label=labels[1])
+        self.add_data_label_widget('title', self.ui.title_field, self.ui.title_field.setText,
+                                   default_value=DEFAULT_TITLE, label=labels[1])
 
         self.ui.class_field = A2ButtonField()
-        self.add_data_label_widget(
-            'class', self.ui.class_field, self.ui.class_field.setText,
-            default_value='*', label=labels[2])
+        self.add_data_label_widget('class', self.ui.class_field, self.ui.class_field.setText,
+                                   default_value='*', label=labels[2])
 
         self.ui.pos_field = A2CoordsField()
         self.ui.size_field = A2CoordsField()
 
-        self.add_data_label_widget(
-            'xy', self.ui.pos_field, self.ui.pos_field.set_value,
-            default_value=(0, 0), label='Coordinates')
-        self.add_data_label_widget(
-            'wh', self.ui.size_field, self.ui.size_field.set_value,
-            default_value=(0, 0), label='Window Size')
+        self.add_data_label_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value,
+                                   default_value=(0, 0), label='Coordinates')
+        self.add_data_label_widget('wh', self.ui.size_field, self.ui.size_field.set_value,
+                                   default_value=(0, 0), label='Window Size')
 
         self.ui.ignore_check = QtWidgets.QCheckBox('Ignore this Window')
-        self.add_data_widget(
-            'ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked, default_value=False)
+        self.add_data_label_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
+                                   default_value=False)
 
         # self.ui.some_button = QtWidgets.QPushButton('some button')
         # self.ui.some_button.clicked.connect(self.some_function)
@@ -108,7 +103,6 @@ class SessionRestoreWindowLister(A2ItemEditor):
         window_data_str = a2ahk.call_cmd(cmd, process_name, cwd=this_path)
         try:
             window_data = json.loads(window_data_str)
-            print('window_data: %s' % window_data)
             return window_data
         except Exception as error:
             log.error('Could not get JSON data from window data string:\n  %s' % window_data_str)
@@ -145,7 +139,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
                                'xy': (win_data[2], win_data[3]),
                                'wh': (win_data[4], win_data[5])}
 
-        a2ctrl.qlist.select_items(self.ui.item_list, item)
+        self.ui.item_list.select_items([item])
         self.data_changed.emit()
 
     def add_item(self):
@@ -157,24 +151,22 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
-    def __init__(self, main, cfg, mod):
-        super(Draw, self).__init__(main, cfg, mod)
+    def __init__(self, *args):
+        super(Draw, self).__init__(*args)
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.size_combobox = QtWidgets.QComboBox()
-        layout_label = QtWidgets.QLabel('Selected Layout:')
-        layout_layout = QtWidgets.QHBoxLayout()
-        layout_layout.addWidget(layout_label)
-        layout_layout.addWidget(self.size_combobox)
-        size_layout_button = QtWidgets.QPushButton('Add Layout')
-        size_layout_button.clicked.connect(self.add_layout)
-        layout_layout.addWidget(size_layout_button)
-        self.main_layout.addLayout(layout_layout)
+        size_label = QtWidgets.QLabel('Virtual Desktop Size:')
+        size_layout = QtWidgets.QHBoxLayout()
+        size_layout.addWidget(size_label)
+        size_layout.addWidget(self.size_combobox)
+        size_add_button = QtWidgets.QPushButton('Add Size')
+        size_add_button.setEnabled(False)
+        size_layout.addWidget(size_add_button)
+        self.main_layout.addLayout(size_layout)
 
-        self.desktop_icons_check = QtWidgets.QCheckBox(
-            'Restore Desktop Icons (Not Implemented Yet!)')
-        self.desktop_icons_check.setEnabled(False)
+        self.desktop_icons_check = QtWidgets.QCheckBox('Restore Desktop Icons')
         self.desktop_icons_check.clicked[bool].connect(self.desktop_icons_checked)
         self.main_layout.addWidget(self.desktop_icons_check)
 
@@ -186,11 +178,14 @@ class Draw(DrawCtrl):
 
         self._validate_setups()
 
-        self.size_combobox.currentTextChanged.connect(self._on_size_selected)
+        self.size_combobox.currentTextChanged.connect(self._size_selected)
         self.size_combobox.addItems(self._size_keys)
-        self._on_size_selected()
+        self._size_selected()
 
     def desktop_icons_checked(self, value=None):
+        if self._drawing:
+            return
+
         change = False
         if value and 'icons' not in self.user_cfg.get(self._size_key, {}):
             self.user_cfg.setdefault(self._size_key, {})['icons'] = True
@@ -206,30 +201,24 @@ class Draw(DrawCtrl):
         if not self.user_cfg:
             return
 
+        first_key_name = list(self.user_cfg.keys())[0].lower()
+        if '.exe' in first_key_name:
+            print('updating the dictionary ...')
+            this_path = self.mod.path
+            cmd = os.path.join(this_path, 'sessionrestore_get_virtual_screen_size.ahk')
+            virtual_screen_size = a2ahk.call_cmd(cmd, cwd=this_path)
+            print('  virtual_screen_size: %s' % virtual_screen_size)
+
+            if virtual_screen_size in self.user_cfg:
+                del self.user_cfg[virtual_screen_size]
+
+            self.user_cfg = {virtual_screen_size: {'setups': deepcopy(self.user_cfg)}}
+            self.set_user_value(self.user_cfg)
+
+            print('  current element cfg:')
+            pprint(self.user_cfg)
+
         change = False
-
-        if '' in self.user_cfg.keys():
-            del self.user_cfg['']
-            change = True
-
-        if self.user_cfg.keys():
-            first_key_name = list(self.user_cfg.keys())[0].lower()
-            if '.exe' in first_key_name:
-                print('updating the dictionary ...')
-                this_path = self.mod.path
-                cmd = os.path.join(this_path, 'sessionrestore_get_virtual_screen_size.ahk')
-                virtual_screen_size = a2ahk.call_cmd(cmd, cwd=this_path)
-                print('  virtual_screen_size: %s' % virtual_screen_size)
-
-                if virtual_screen_size in self.user_cfg:
-                    del self.user_cfg[virtual_screen_size]
-
-                self.user_cfg = {virtual_screen_size: {'setups': deepcopy(self.user_cfg)}}
-                self.set_user_value(self.user_cfg)
-
-                print('  current element cfg:')
-                pprint(self.user_cfg)
-
         for virtual_screen_size in list(self.user_cfg.keys()):
             setups = self.user_cfg[virtual_screen_size]
             if 'setups' not in setups:
@@ -242,11 +231,11 @@ class Draw(DrawCtrl):
 
     def check(self, *args):
         super(Draw, self).check()
-        if self._size_key:
-            self.user_cfg.setdefault(self._size_key, {}).update(
-                {'setups': self.editor.data})
-            self.set_user_value(self.user_cfg)
-            self.change()
+        self.user_cfg.setdefault(self._size_key, {}).update({'setups': self.editor.data})
+        # self.user_cfg[self._size_key] = self.editor.data
+
+        self.set_user_value(self.user_cfg)
+        self.change()
 
     @property
     def _size_keys(self):
@@ -257,32 +246,17 @@ class Draw(DrawCtrl):
         text = self.size_combobox.currentText()
         return text
 
-    def _on_size_selected(self, value=None):
+    def _size_selected(self, value=None):
+        self._drawing = True
         if value is None:
-            value = self._size_key
-            if not value.strip():
+            if not self._size_keys:
                 return
+            value = self._size_keys[0]
 
         self.editor.data = self.user_cfg.get(value, {}).get('setups', {})
-        self.desktop_icons_check.blockSignals(True)
         self.desktop_icons_check.setChecked(self.user_cfg.get(value, {}).get('icons', False))
-        self.desktop_icons_check.blockSignals(False)
         self.editor.fill_item_list()
-
-    def add_layout(self):
-        this_path = self.mod.path
-        cmd = os.path.join(this_path, 'sessionrestore_get_virtual_screen_size.ahk')
-        virtual_screen_size = a2ahk.call_cmd(cmd, cwd=this_path)
-        if virtual_screen_size in self._size_keys:
-            A2ConfirmDialog(
-                self, 'Already Listed!',
-                msg="'%s' is already in the list of virtual desktop sizes!\n"
-                "I'm sorry but currently this does not support multiple layouts\n"
-                "for the same virtual desktop size! But this might be "
-                "added in the future for sure!" % virtual_screen_size).show()
-        self.user_cfg[virtual_screen_size] = {}
-        self.size_combobox.addItem(virtual_screen_size)
-        self.size_combobox.setCurrentText(virtual_screen_size)
+        self._drawing = False
 
 
 class Edit(EditCtrl):
@@ -302,8 +276,6 @@ class Edit(EditCtrl):
 def get_settings(module_key, cfg, db_dict, user_cfg):
     window_dict = {}
     for size_key, this_dict in user_cfg.items():
-        if not size_key:
-            continue
         window_list = []
         this_size_dict = this_dict.get('setups', {})
         for this_win_dict in this_size_dict.values():

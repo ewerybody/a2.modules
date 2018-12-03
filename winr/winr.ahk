@@ -1,13 +1,9 @@
-;a2VAR 
-winrTLDs := ["html", "com", "de", "net", "org", "co.uk"]
-;winr
-
-winr() { ;a2CMD
+winr() {
     global winr_paths
-	selection := getSelection()
-	selection := Trim(selection, " `n`t`r")
+	selection := clipboard_get()
+	selection := trim(selection, " `n`t`r")
 	
-	if ( selection == "" ) {
+	if (selection == "") {
 		winrCallDialog()
 	}
 	else if FileExist(selection) {
@@ -15,14 +11,11 @@ winr() { ;a2CMD
 		winrCatchedCallRun(selection)
 	}
 	; has http:// in the front
-	else if ( RegExMatch(selection, "i)^http://") OR RegExMatch(selection, "i)^https://") ) {
+	else if (string_is_web_adress(selection)) {
 		tt("web address...",0.5)
+        if (SubStr(selection, 1, 4) != "http")
+            selection := "https://" selection
         winrCatchedCallRun(selection)
-	}
-	; its a web address: with www. or a TLD at the end? =========
-	else if ( (SubStr(selection, 1, 4) == "www.") OR (SubStr(selection,-3) == ".com") OR (SubStr(selection,-2) == ".de") OR (SubStr(selection,-3) == ".net") OR (SubStr(selection,-4) == ".html") ) {
-        tt("web address...",0.5)
-        winrCatchedCallRun("http://" selection)
 	}
 	else {
         ; loop set up project paths, if combination with selection fits: run it

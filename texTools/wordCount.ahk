@@ -1,6 +1,6 @@
 ﻿wordCount() {
     global wordCount_tooltip_timeout
-	txt := getSelection()
+	txt := clipboard_get()
     words := StrSplit(txt, [A_Tab, A_Space, "`n", "`r"])
 	StringLen, length, txt
     

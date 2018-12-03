@@ -12,7 +12,7 @@ slasher() {
 }
 
 slasher_menu_handler:
-    Selection := getSelection()
+    Selection := clipboard_get()
     if (A_ThisMenuItemPos == 1) {
         IfInString, Selection, /
             outstr := StrReplace(Selection, "/" , "\")
@@ -24,5 +24,5 @@ slasher_menu_handler:
         outstr := StrReplace(Selection, "\" , "\\")
     else if (A_ThisMenuItemPos == 3)
         outstr := StrReplace(Selection, "\\" , "\")
-    paste(outstr)
+    clipboard_paste(outstr)
 Return

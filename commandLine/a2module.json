@@ -1,143 +1,67 @@
-[
+﻿[
   {
     "author": "eric, Oliver Lipkau",
     "date": "2015",
-    "description": "Adds some standard hotkey functionality to the basic windows cmd window like pasting via Ctrl+V or simple closing with Ctrl+W.",
+    "description": "Adds simple closing functionality to the basic windows command line window.",
     "tags": [],
     "typ": "nfo",
     "url": "",
     "version": "0.3"
   },
   {
-    "file": "commandLine.ahk",
-    "typ": "include"
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "WinClose",
+    "functionMode": 0,
+    "key": "Esc",
+    "keyChange": false,
+    "label": "Close commandline window",
+    "mode": "ahk",
+    "multiple": false,
+    "name": "closeHotkey3",
+    "scope": [
+      "ahk_class ConsoleWindowClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
   },
   {
-    "children": [
-      {
-        "disablable": true,
-        "enabled": true,
-        "functionCode": "WinClose",
-        "functionMode": 0,
-        "key": "Esc",
-        "keyChange": false,
-        "label": "Close commandline window",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "closeHotkey3",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      },
-      {
-        "disablable": true,
-        "enabled": false,
-        "functionCode": "WinClose",
-        "functionMode": 0,
-        "functionURL": "Run, ",
-        "key": "Alt+F4",
-        "keyChange": false,
-        "label": "Close commandline window",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "closeHotkey1",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      },
-      {
-        "disablable": true,
-        "enabled": false,
-        "functionCode": "WinClose",
-        "functionMode": 0,
-        "functionURL": "Run, ",
-        "key": "Ctrl+W",
-        "keyChange": false,
-        "label": "Close commandline window",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "closeHotkey2",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      }
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "WinClose",
+    "functionMode": 0,
+    "functionURL": "Run, ",
+    "key": "Alt+F4",
+    "keyChange": false,
+    "label": "Close commandline window",
+    "mode": "ahk",
+    "multiple": false,
+    "name": "closeHotkey1",
+    "scope": [
+      "ahk_class ConsoleWindowClass"
     ],
-    "disablable": false,
-    "enabled": true,
-    "label": "",
-    "name": "commandLine_GroupBox",
-    "typ": "group"
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
   },
   {
-    "children": [
-      {
-        "disablable": true,
-        "enabled": true,
-        "functionCode": "Send, {enter}^C{BackSpace}",
-        "functionMode": 0,
-        "key": "Ctrl+C",
-        "keyChange": false,
-        "label": "Copy selected text",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "copyHotkey",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      },
-      {
-        "disablable": true,
-        "enabled": true,
-        "functionCode": "SendInput {raw}%clipboard%",
-        "functionMode": 0,
-        "key": "Ctrl+V",
-        "keyChange": false,
-        "label": "Paste clipboard",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "pasteHotkey",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      },
-      {
-        "disablable": true,
-        "enabled": true,
-        "functionCode": "commandLine_selectAll()",
-        "functionMode": 0,
-        "key": "Ctrl+A",
-        "keyChange": false,
-        "label": "Select All",
-        "mode": "ahk",
-        "multiple": false,
-        "name": "selectAllHotkey",
-        "scope": [
-          "ahk_class ConsoleWindowClass"
-        ],
-        "scopeChange": true,
-        "scopeMode": 1,
-        "typ": "hotkey"
-      }
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "WinClose",
+    "functionMode": 0,
+    "functionURL": "Run, ",
+    "key": "Ctrl+W",
+    "keyChange": false,
+    "label": "Close commandline window",
+    "mode": "ahk",
+    "multiple": false,
+    "name": "closeHotkey2",
+    "scope": [
+      "ahk_class ConsoleWindowClass"
     ],
-    "disablable": false,
-    "enabled": true,
-    "label": "",
-    "name": "commandLine_GroupBox2",
-    "typ": "group"
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
   }
 ]
