@@ -12,6 +12,7 @@ __gtranslate_search := ""
 __gtranslate_lngs := ""
 
 gtranslate(from="en", to="de") {
+    global a2data
     icon_path := a2data "modules\a2.modules\gtranslate\a2icon.png"
 
     WriteDebug("triggered", "", "debug", "gtranslate")
