@@ -96,6 +96,21 @@ def file_to_dict(path):
     return parser.hs_dict
 
 
+def iterate(hotstrings_dict):
+    """
+    Yields scope_mode, scope_string, hotstring, hotstring_cfg.
+    """
+    for scope_mode, data in hotstrings_dict.items():
+        if scope_mode == '':
+            for hotstring, hotstring_cfg in data.items():
+                yield '', '', hotstring, hotstring_cfg
+        else:
+            for scope_mode, scope_mode_data in data.items():
+                for scope_string, scope_data in scope_mode_data.items():
+                    for hotstring, hotstring_cfg in scope_data.items():
+                        yield scope_mode, scope_string, hotstring, hotstring_cfg
+
+
 class HotstringsParser(object):
     def __init__(self, path):
         """
