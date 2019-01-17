@@ -10,7 +10,7 @@ def main(a2, mod):
     from PySide2 import QtWidgets
 
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
-        None, 'Import Hotstrings Data', mod.path, '(*.ahk *.json)')
+        None, 'Import Hotstrings Data', a2.paths.a2, '(*.ahk *.json)')
 
     if not file_path:
         return
