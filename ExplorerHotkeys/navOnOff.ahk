@@ -16,5 +16,5 @@ ExplorerHotkeys_NavOnOff() {
     Sleep, 100
     Send, n
     Sleep, 100
-    Send, {Enter}
+    Send, {Space}
 }
