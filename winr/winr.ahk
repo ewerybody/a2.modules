@@ -11,7 +11,7 @@ winr() {
 		winrCatchedCallRun(selection)
 	}
 	; has http:// in the front
-	else if (string_is_web_adress(selection)) {
+	else if (string_is_web_address(selection)) {
 		tt("web address...",0.5)
         if (SubStr(selection, 1, 4) != "http")
             selection := "https://" selection
