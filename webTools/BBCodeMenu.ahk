@@ -17,18 +17,19 @@ BBCodeMenuHandler() {
 	sel := clipboard_get()
 	if (A_ThisMenuItem == "URL")
 	{
-		If (string_is_web_adress(sel))
+		If (string_is_web_address(sel))
 		{
 			tt("selection is URL",1)
 			clipboard_paste( "[URL=" sel "][/URL]" )
 			SendInput, {Left 6}
 		}
 		; if clipboard already contains a URL put that in the [URL= and the selection between ][/URL]
-		Else If (string_is_web_adress(Clipboard))
+		Else If (string_is_web_address(Clipboard))
 		{
 			tt("Clipboard is URL",1)
 			code := "[URL=" Clipboard "]" sel "[/URL]"
 			clipboard_paste(code)
+            SendInput, {Left 6}
 		}
 		; otherwise just put the selected into the ><
 		Else
