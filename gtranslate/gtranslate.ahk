@@ -15,7 +15,7 @@ gtranslate(from="en", to="de") {
     global a2data
     icon_path := a2data "modules\a2.modules\gtranslate\a2icon.png"
 
-    WriteDebug("triggered", "", "debug", "gtranslate")
+    a2log_debug("triggered", "", "gtranslate")
     global __gtranslate_search, __gtranslate_lngs
     sel := clipboard_get() ; get selected text
 
@@ -67,7 +67,7 @@ gtranslate(from="en", to="de") {
 gtranslate_fetch(srcTxt, srcLng, transLng) {
     global gtranslate_use_proxy
 
-    WriteDebug("Text to translate:", srcTxt, "debug", gtranslate)
+    a2log_debug("Text to translate:", srcTxt, "gtranslate")
     encoded := uri_encode(srcTxt)
 
     ApiURi := "https://translate.googleapis.com/translate_a/single?client=gtx"
@@ -75,7 +75,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     ApiURi .= "&tl=" transLng
     ApiURi .= "&dt=t"
     ApiURi .= "&q=" encoded ;srcTxt
-    WriteDebug("Calling URL:", ApiURi, "debug", gtranslate)
+    a2log_debug("Calling URL:", ApiURi, "gtranslate")
 
     Headers := "Content-Type: application/json`n"
     Headers .= "user-agent: Mozilla/5.0`n"
@@ -86,15 +86,15 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
         Options .= Settings.Proxy.Enabled ? "Proxy: " Settings.Proxy.Address ":" Settings.Proxy.Port "`n" : ""
     }
 
-    WriteDebug("HTTPRequest request HEADER:", Headers, "debug", "gtranslate")
-    WriteDebug("HTTPRequest request Options:", Options, "debug", "gtranslate")
+    a2log_debug("HTTPRequest request HEADER:", Headers, "gtranslate")
+    a2log_debug("HTTPRequest request Options:", Options, "gtranslate")
 
     tt("gtranslate looking up '" srcTxt "' ...")
     HTTPRequest(ApiURi , response, Headers, Options)
     tt()
 
-    WriteDebug("HTTPRequest response HEADER:", Headers, "debug", "gtranslate")
-    WriteDebug("HTTPRequest response BODY:", response, "debug", "gtranslate")
+    a2log_debug("HTTPRequest response HEADER:", Headers, "gtranslate")
+    a2log_debug("HTTPRequest response BODY:", response, "gtranslate")
     
     
     RegExMatch(response, "\[\""(.+?)\""", match)
