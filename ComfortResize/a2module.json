@@ -32,5 +32,9 @@
     "name": "cr_ShowPosition",
     "typ": "check",
     "value": false
+  },
+  {
+    "code": "comfort_resize_init()",
+    "typ": "init"
   }
 ]
