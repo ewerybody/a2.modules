@@ -15,76 +15,41 @@ comfort_resize_init() {
 }
 
 comfort_resize_main() {
-	MouseGetPos, cr_actMouseX, cr_actMouseY, cr_actWin
-    global cr_ShowPosition
-	WinGetClass, cr_actClass, ahk_id %cr_actWin%
+    global cr_ShowPosition, cr_ClickTime
+	; get mouse position relative to screen
+	CoordMode, Mouse, Screen
+	MouseGetPos, mouse_x, mouse_y, window_id
+	WinGetClass, cr_actClass, ahk_id %window_id%
 
-	;If func_IsWindowInIgnoreList?()
-	;	Return
-	;WinGetTitle, cr_actWinTitle, ahk_id %cr_actWin%
-	;If cr_actWinTitle in aadScreenShots
-	;	Return
-	;Loop, Parse, cr_DisableClasses, `,
-	;{
-	;	If (func_WildcardMatch( cr_actWinTitle, A_LoopField, 0) OR func_WildcardMatch( cr_actClass, A_LoopField, 0) )
-	;	{
-	;		Return
-	;	}
-	;}
-    ;msgbox cr_actClass: %cr_actClass%
+    double_click := _comfort_resize_get_doubleclick(mouse_x, mouse_y)
+    ; remember the current mouse cursor
+	current_cursor := A_Cursor
     
-	cr_diffX := cr_lastMouseX - cr_actMouseX
-	cr_diffY := cr_lastMouseY - cr_actMouseY
-	Transform, cr_diffX, abs, %cr_diffX%
-	Transform, cr_diffY, abs, %cr_diffY%
-	If (cr_diffY < 5 AND cr_diffX < 5)
-	{
-		If (A_Priorhotkey = A_Thishotkey AND A_TickCount-cr_ClickTime < 400)
-		{
-			cr_DoubleClick = 1
-		}
-		Else
-		{
-			cr_DoubleClick = 0
-		}
-	}
-	Else
-		cr_DoubleClick = 0
-
-	cr_ClickTime = %A_TickCount%
-	cr_lastMouseX = %cr_actMouseX%
-	cr_lastMouseY = %cr_actMouseY%
-
-	cr_Cursor = %A_Cursor%
-    
-	WinGet, cr_WindowID, ID, A
 	if (cr_actClass = "Putty")
-		SendMessage WM_ENTERSIZEMOVE, , , , ahk_id %cr_WindowID%
-
+		SendMessage WM_ENTERSIZEMOVE, , , , ahk_id %window_id%
+    
 	SetBatchLines, 2000
-	; Mausposition relativ zum Bildschirm bekommen
-	CoordMode, Mouse
-	; Mausposition und ID des darunterliegenden Fensters ermitteln
-	MouseGetPos, cr_X1, cr_Y1, cr_id
 	; Postion und Groesse des Fensters ermitteln
-	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %cr_id%
-	; Fensterregion ermitteln. Die neuen Regionen ergeben sich als
+	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %window_id%
+	; Fensterregion ermitteln. Die neun Regionen ergeben sich als
 	; Horizontal x Vertikal = (left,center,right)x(up,center,down)
-	If (cr_X1 < cr_WinX1 + cr_WinW / 4)
+	If (mouse_x < cr_WinX1 + cr_WinW / 4)
         cr_WinHor := "Left"
-	Else If (cr_X1 < cr_WinX1 + 3 * cr_WinW / 4)
+	Else If (mouse_x < cr_WinX1 + 3 * cr_WinW / 4)
         cr_WinHor := "Center"
 	Else
         cr_WinHor := "Right"
-	If (cr_Y1 < cr_WinY1 + cr_WinH / 4)
+
+	If (mouse_y < cr_WinY1 + cr_WinH / 4)
 		cr_WinVer := "Up"
-	Else If (cr_Y1 < cr_WinY1 + 3 * cr_WinH / 4)
+	Else If (mouse_y < cr_WinY1 + 3 * cr_WinH / 4)
 		cr_WinVer := "Center"
 	Else
 		cr_WinVer := "Down"
+
 	; Fenster-Style ermitteln
-	WinGet, cr_Style, Style, ahk_id %cr_id%
-	If ( (!(cr_Style & 0x40000) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id" cr_id))
+	WinGet, cr_Style, Style, ahk_id %window_id%
+	If ( (!(cr_Style & 0x40000) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id))
 	{
 		cr_Resizeable = 0
 		cr_WinHor := "Center"
@@ -106,7 +71,7 @@ comfort_resize_main() {
 
 		GetKeyState, cr_LButton, LButton, P
 
-		; Solange der Knopf gedrückt ist
+		; as long as button is pressed [D]own
 		If cr_Button = D
 		{
 			If cr_MouseKey = 9
@@ -120,7 +85,7 @@ comfort_resize_main() {
             cr_X3 = %cr_X2%
             cr_Y3 = %cr_Y2%
             ; aktuelle Fenstergroesse und -position bestimmen
-            WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %cr_id%
+            WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %window_id%
             cr_WinX2 := cr_WinX1+cr_WinW
             cr_WinY2 := cr_WinY1+cr_WinH
 
@@ -151,16 +116,16 @@ comfort_resize_main() {
             }
             
             ; Verschiebung der Maus innerhalb dieser Schleife ermitteln
-            cr_OffsetX := cr_X3 - cr_X1
-            cr_OffsetY := cr_Y3 - cr_Y1
+            cr_OffsetX := cr_X3 - mouse_x
+            cr_OffsetY := cr_Y3 - mouse_y
 
             cr_DistanceX := cr_DistanceX + cr_OffsetX
             cr_DistanceY := cr_DistanceY + cr_OffsetY
 
-            If (Abs(cr_DistanceX) < 4 AND Abs(cr_DistanceY) < 4 AND cr_DoubleClick = 0)
+            If (Abs(cr_DistanceX) < 4 AND Abs(cr_DistanceY) < 4 AND double_click = 0)
             {
-                cr_X1 := cr_X3
-                cr_Y1 := cr_Y3
+                mouse_x := cr_X3
+                mouse_y := cr_Y3
                 continue
             }
 
@@ -168,27 +133,27 @@ comfort_resize_main() {
             If cr_hCurs =
             {
                 cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", cr_Cur%cr_WinVer%%cr_WinHor%)
-                If cr_Cursor = IBEAM
+                If current_cursor = IBEAM
                     DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_IBEAM)
                 Else
                     DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_ARROW)
             }
 
             ; Wenn das Fenster maximiert ist
-            WinGet,cr_Win,MinMax,ahk_id %cr_id%
-            If (cr_Win = 1 AND cr_DoubleClick = 0)
+            WinGet, cr_Win, MinMax, ahk_id %window_id%
+            If (cr_Win = 1 AND double_click = 0)
             {
                 If cr_ResizeFixedWindows = 1
-                    WinRestore, ahk_id %cr_id%
+                    WinRestore, ahk_id %window_id%
                 Else
                     Return
             }
 
             ; Abhaengig von der Fensterregion reagieren
             ; In der Mitte wird das Fenster verschoben
-            If ( (cr_WinHor = "Center" and cr_WinVer = "Center") OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id" cr_id)) )
+            If ( (cr_WinHor = "Center" and cr_WinVer = "Center") OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) )
             {
-                If (cr_DoubleClick = 1 AND cr_Resizeable = 1 AND Enable_WindowsControl = 1)
+                If (double_click = 1 AND cr_Resizeable = 1 AND Enable_WindowsControl = 1)
                 {
                     Gosub, wc_sub_Max%A_EmptyVar%
                     cr_Resizeable = 0
@@ -212,18 +177,18 @@ comfort_resize_main() {
             Else
             {
                 ; Wenn das Fenster maximiert ist
-                WinGet,cr_Win,MinMax,ahk_id %cr_id%
-                If (cr_Win = 1 AND cr_DoubleClick = 0)
+                WinGet,cr_Win,MinMax,ahk_id %window_id%
+                If (cr_Win = 1 AND double_click = 0)
                 {
                     If cr_ResizeFixedWindows = 1
-                        WinRestore, ahk_id %cr_id%
+                        WinRestore, ahk_id %window_id%
                     Else
                         Return
                 }
 
 			If ( cr_WinHor = "Left" AND cr_Resizeable = 1 )
                 {
-			 If (cr_DoubleClick = 1 AND Enable_WindowsControl = 1)
+			 If (double_click = 1 AND Enable_WindowsControl = 1)
                  {
                      Gosub, wc_sub_MaxWidth%A_EmptyVar%
                      cr_Resizeable = 0
@@ -234,13 +199,13 @@ comfort_resize_main() {
                 }
 			Else If ( cr_WinHor = "Right"	AND cr_Resizeable = 1 )
                 {
-			 If (cr_DoubleClick = 1 AND Enable_WindowsControl = 1)
+			 If (double_click = 1 AND Enable_WindowsControl = 1)
                      Goto, wc_sub_MaxWidth%A_EmptyVar%
                  cr_WinW	+= cr_OffsetX
                 }
                 If ( cr_WinVer = "Up" AND cr_Resizeable = 1 )
                 {
-                 If (cr_DoubleClick = 1 AND Enable_WindowsControl = 1)
+                 If (double_click = 1 AND Enable_WindowsControl = 1)
                  {
                      Gosub, wc_sub_MaxHeight%A_EmptyVar%
                      cr_Resizeable = 0
@@ -251,7 +216,7 @@ comfort_resize_main() {
                 }
                 Else If ( cr_WinVer = "Down" AND cr_Resizeable = 1)
                 {
-			 If (cr_DoubleClick = 1 AND Enable_WindowsControl = 1)
+			 If (double_click = 1 AND Enable_WindowsControl = 1)
                  {
                      Gosub, wc_sub_MaxHeight%A_EmptyVar%
                      cr_Resizeable = 0
@@ -260,7 +225,7 @@ comfort_resize_main() {
                  cr_WinH	+= cr_OffsetY
                 }
 
-                ; Magnetische Bildschirmränder
+                ; Magnetische Bildschirmrï¿½nder
                 If ( (cr_MagneticBorders = 1 AND cr_CtrlState = "U") OR (cr_MagneticBorders = 0 AND cr_CtrlState = "D") )
                 {
                     if (cr_WinX1 + cr_WinW > WorkAreaRight)
@@ -305,13 +270,13 @@ comfort_resize_main() {
                 SetWindelay, 5
 
             ; Die gerade ermittelten Werte werden jetzt aufs Fenster angewendet
-            WinMove, ahk_id %cr_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
+            WinMove, ahk_id %window_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
 
-            ; Mausposition für diese Schleife uebernehmen
-            cr_X1 := cr_X2
-            cr_Y1 := cr_Y2
+            ; Mausposition fï¿½r diese Schleife uebernehmen
+            mouse_x := cr_X2
+            mouse_y := cr_Y2
             ; Tooltip aktualisieren
-            If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id" cr_id)) AND cr_ShowPosition = 1 )
+            If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) AND cr_ShowPosition = 1 )
             {
                 cr_Tooltip = %lng_cr_Position% (%cr_WinX1%, %cr_WinY1%)`n%lng_cr_Size% (%cr_WinW%, %cr_WinH%) %Style% %ExStyle%
                 Tooltip, %cr_Tooltip%
@@ -339,8 +304,8 @@ comfort_resize_main() {
                     RButton_send = yes
                     RButton_tip = yes
                 }
-                If (!WinActive("ahk_id" cr_id))
-                    WinActivate, ahk_id %cr_id%
+                If (!WinActive("ahk_id" window_id))
+                    WinActivate, ahk_id %window_id%
             }
             Else
             {
@@ -353,12 +318,33 @@ comfort_resize_main() {
 		Sleep, 10
 	} ; Loop Ende
 	if (cr_actClass = "Putty")
-		SendMessage WM_EXITSIZEMOVE , , , , ahk_id %cr_WindowID%
+		SendMessage WM_EXITSIZEMOVE , , , , ahk_id %window_id%
 
-	; Mauspfeil zurücksetzen
-	If cr_Cursor = IBEAM
+	; reset mouse cursor
+	If current_cursor = IBEAM
 		DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_IBEAM)
 	Else
     	DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_ARROW)
 	cr_hCurs =
+}
+
+_comfort_resize_get_doubleclick(mx, my) {
+    global _comfort_resize_lastMouseX, _comfort_resize_lastMouseY, _comfort_resize_ClickTime
+    diffx := Abs(_comfort_resize_lastMouseX - mx)
+	diffy := Abs(_comfort_resize_lastMouseY - my)
+	If (diffx < 5 AND diffy < 5)
+	{
+		If (A_Priorhotkey = A_Thishotkey AND A_TickCount - _comfort_resize_ClickTime < 400)
+			double_click = 1
+		Else
+			double_click = 0
+	}
+	Else
+		double_click = 0
+    
+	_comfort_resize_lastMouseX = %mx%
+	_comfort_resize_lastMouseY = %my%
+	_comfort_resize_ClickTime = %A_TickCount%
+    
+    return double_click
 }
