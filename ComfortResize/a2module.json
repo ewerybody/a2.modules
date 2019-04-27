@@ -9,6 +9,10 @@
     "version": "0.1"
   },
   {
+    "code": "comfort_resize_init()",
+    "typ": "init"
+  },
+  {
     "file": "comfort_resize_main.ahk",
     "typ": "include"
   },
@@ -28,13 +32,71 @@
     "typ": "hotkey"
   },
   {
-    "label": "Show window size and position",
-    "name": "cr_ShowPosition",
+    "label": "Allow Resizing Fixed Windows",
+    "name": "cr_ResizeFixedWindows",
     "typ": "check",
     "value": false
   },
   {
-    "code": "comfort_resize_init()",
-    "typ": "init"
+    "label": "Resize Focused Windows Only / Move Inactive Ones",
+    "name": "cr_AlwaysMoveNonActive",
+    "typ": "check",
+    "value": true
+  },
+  {
+    "children": [
+      {
+        "label": "Position",
+        "name": "comfort_resize_show_tooltip_pos",
+        "typ": "check",
+        "value": false
+      },
+      {
+        "label": "Size",
+        "name": "comfort_resize_show_tooltip_size",
+        "typ": "check",
+        "value": true
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "Show Tooltip",
+    "name": "comfort_resize_show_tooltip",
+    "typ": "group"
+  },
+  {
+    "children": [
+      {
+        "text": "Hold <b>Shift</b> Key additionally to enable the Raster",
+        "typ": "label"
+      },
+      {
+        "label": "Raster X",
+        "label_over_field": false,
+        "name": "cr_RasterX",
+        "password_mode": false,
+        "typ": "string",
+        "value": "1/20"
+      },
+      {
+        "label": "Raster Y",
+        "label_over_field": false,
+        "name": "cr_RasterY",
+        "password_mode": false,
+        "typ": "string",
+        "value": "1/9"
+      },
+      {
+        "label": "Always use the Raster",
+        "name": "cr_RasterAlways",
+        "typ": "check",
+        "value": false
+      }
+    ],
+    "disablable": false,
+    "enabled": true,
+    "label": "Raster",
+    "name": "ComfortResize_Raster",
+    "typ": "group"
   }
 ]
