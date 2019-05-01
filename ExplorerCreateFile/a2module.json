@@ -1,0 +1,38 @@
+﻿[
+  {
+    "author": "eric",
+    "date": "2019 5 1",
+    "description": "May create different files directly in the current Explorer directory.\t\t\t\t",
+    "tags": [
+      "file",
+      "code",
+      "explorer"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "explorer_create_file_popup()",
+    "functionMode": 0,
+    "key": [
+      "LAlt+C"
+    ],
+    "keyChange": true,
+    "label": "Popup CreateFile Menu",
+    "multiple": true,
+    "name": "CreateFile_Hotkey",
+    "scope": [
+      "ahk_class CabinetWClass ahk_exe Explorer.EXE"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "explorer_create_file.ahk",
+    "typ": "include"
+  }
+]
