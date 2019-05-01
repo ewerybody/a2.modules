@@ -29,7 +29,8 @@ explorer_create_file_handler(menu_name) {
         if ErrorLevel
             Return
     }
-    file_path := path "\" file_name "." this["ext"]
+    file_base := file_name "." this["ext"]
+    file_path := path "\" file_base
     
     if FileExist(file_path) {
         MsgBox, 48, File Already Exists!, There is already a file with that name here!
@@ -37,5 +38,8 @@ explorer_create_file_handler(menu_name) {
     }
     content := this["content"]
     FileAppend , %content%, %file_path%
-    ; TODO: Find a way to select the new file?
+    
+    Send, F5
+    sleep 1000
+    explorer_select(file_base)
 }
