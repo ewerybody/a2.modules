@@ -25,7 +25,7 @@ explorer_create_file_handler(menu_name) {
     this := explorer_create_file_data[menu_name]
     file_name := this["file_name"]
     if (this["ask"]) {
-        InputBox, file_path, %menu_name% File Name, Please enter a name for the new file:,,, 130,,,,, %file_name%
+        InputBox, file_name, %menu_name% File Name, Please enter a name for the new file:,,, 130,,,,, %file_name%
         if ErrorLevel
             Return
     }
