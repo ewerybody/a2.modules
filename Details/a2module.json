@@ -1,0 +1,33 @@
+﻿[
+  {
+    "author": "eric",
+    "date": "2019 8 26",
+    "description": "To paste detail information into specific forms or just anything from a simple menu under the cursor.",
+    "tags": [
+      "text",
+      "wip"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "details_popup_menu()",
+    "functionMode": 0,
+    "key": [
+      "Win+Shift+D"
+    ],
+    "keyChange": true,
+    "label": "Popup the <b>details</b> main menu",
+    "multiple": true,
+    "name": "details_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "details_popup_menu.ahk",
+    "typ": "include"
+  }
+]
