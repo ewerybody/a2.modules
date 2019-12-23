@@ -5,7 +5,7 @@
 explorer_create_file_popup() {
     ; TODO: Embedd this into an a2 interface
     global explorer_create_file_data, a2data
-    explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}, Python: {ext: "py", file_name: "__init__", content: "", ask: true}}
+    explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}, Python: {ext: "py", file_name: "__init__", content: "", ask: true}, JSON: {ext: "json", file_name: "some_data", content: "", ask: true}}
 
     ; add menu entries on demand...
     for name, data in explorer_create_file_data
