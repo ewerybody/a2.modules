@@ -11,8 +11,9 @@ import a2core
 import a2ctrl
 import a2util
 from a2element import DrawCtrl, EditCtrl
-from a2widget import A2ItemEditor, A2ButtonField, A2CoordsField
-from copy import deepcopy
+from a2widget.a2item_editor import A2ItemEditor
+from a2widget.a2button_field import A2ButtonField
+from a2widget.a2coords_field import A2CoordsField
 
 
 DEFAULT_TITLE = '*'
@@ -212,7 +213,7 @@ class Draw(DrawCtrl):
             if virtual_screen_size in self.user_cfg:
                 del self.user_cfg[virtual_screen_size]
 
-            self.user_cfg = {virtual_screen_size: {'setups': deepcopy(self.user_cfg)}}
+            self.user_cfg = {virtual_screen_size: {'setups': self.user_cfg.copy()}}
             self.set_user_value(self.user_cfg)
 
             print('  current element cfg:')
@@ -223,7 +224,7 @@ class Draw(DrawCtrl):
             setups = self.user_cfg[virtual_screen_size]
             if 'setups' not in setups:
                 del self.user_cfg[virtual_screen_size]
-                self.user_cfg = {virtual_screen_size: {'setups': deepcopy(setups)}}
+                self.user_cfg = {virtual_screen_size: {'setups': setups.copy()}}
                 change = True
 
         if change:

@@ -8,7 +8,8 @@ import a2runtime
 from PySide2 import QtWidgets, QtCore
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
-from a2widget import A2TextField, A2ConfirmDialog
+from a2widget.a2text_field import A2TextField
+from a2widget.a2input_dialog import A2ConfirmDialog
 from a2widget.a2more_button import A2MoreButton
 
 this_dir = os.path.dirname(__file__)
