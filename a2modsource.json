@@ -1,11 +1,11 @@
 ﻿{
     "name": "a2.modules",
     "description": "The standard a2 script module collection.",
-    "news": "The new structure branch changes are in!!",
+    "news": "* Ported wip module \"Details\" to a2.modules\n* Nice tiny new module \"ExplorerCreateFile\"* first version of ComfortResize port from activAid\n* finished #5 Hotstrings can finally be imported and exported 👍",
     "maintainer": "ewerybody",
     "maintainer_at": "gmail.com",
     "url": "https://github.com/ewerybody/a2.modules/wiki",
     "update_url": "https://github.com/ewerybody/a2.modules",
-    "version": "0.0.3",
-    "zip_size": 71772
+    "version": "0.0.4",
+    "zip_size": 88441
 }
