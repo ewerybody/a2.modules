@@ -9,6 +9,7 @@ Escape::Gosub, Details_Abort
 return
 
 Details_Paste:
+    Sleep, 150
     clipboard_paste(entry)
     FileAppend, 0, *
     ExitApp
