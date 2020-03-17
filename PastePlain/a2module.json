@@ -1,9 +1,12 @@
-[
+﻿[
   {
     "author": "Eric Werner",
     "date": "2017 10 20",
     "description": "To paste text without <b>formatting</b> and <b>file paths or names</b> instead of the actual files.",
-    "tags": [],
+    "tags": [
+      "text",
+      "file"
+    ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/wiki/PastePlain",
     "version": "0.1"
@@ -15,7 +18,7 @@
     "functionMode": 0,
     "key": "Win+V",
     "keyChange": true,
-    "label": "make some awesome stuff",
+    "label": "Perform PastePlain",
     "mode": "ahk",
     "multiple": true,
     "name": "PastePlain_Hotkey",
