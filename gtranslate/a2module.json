@@ -53,7 +53,7 @@
     "label": "Translate German to English",
     "mode": "ahk",
     "multiple": true,
-    "name": "gtranslate_Hotkey",
+    "name": "gtranslate_Hotkey2",
     "scope": [],
     "scopeChange": true,
     "scopeMode": 0,
