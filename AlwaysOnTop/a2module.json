@@ -1,0 +1,27 @@
+[
+  {
+    "author": "Oliver Kopp",
+    "date": "2020-03-27",
+    "description": "Keep a window always on top",
+    "tags": [],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1.0"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "Winset, Alwaysontop, , A",
+    "functionMode": 0,
+    "key": "Ctrl+Alt+Space",
+    "keyChange": false,
+    "label": "Toggle always on top",
+    "mode": "ahk",
+    "multiple": false,
+    "name": "AlwaysontopHotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  }
+]
