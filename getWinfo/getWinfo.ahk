@@ -16,9 +16,10 @@ getWinfo() {
 	Menu, wInfoMenu, Add, title: %this_title%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, class: %this_class%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, hwnd: %getWinfoID%, getWinfoMenuHandler
-	Menu, wInfoMenu, Add, PID: %thisPID%, getWinfoMenuHandler
+	Menu, wInfoMenu, Add, pid: %thisPID%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, process: %this_process%, getWinfoMenuHandler
-    Menu, wInfoMenu, Add, path: %this_path%, getWinfoGotoPath
+    Menu, wInfoMenu, Add, path: %this_path%, getWinfoMenuHandler
+	Menu, wInfoMenu, Add, Explore to path, getWinfoGotoPath
 	Menu, wInfoMenu, Add, version: %this_ver%, getWinfoMenuHandler
 
 	ctrlList := getWinfoCtrls()
