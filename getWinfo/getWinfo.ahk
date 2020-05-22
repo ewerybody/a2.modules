@@ -11,6 +11,7 @@ getWinfo() {
 	WinGet, thisPID, PID, ahk_id %getWinfoID%
 	WinGet, this_process, ProcessName, ahk_id %getWinfoID%
     WinGet, this_path, ProcessPath, ahk_id %getWinfoID%
+	FileGetVersion, this_ver, %this_path%
 
 	Menu, wInfoMenu, Add, title: %this_title%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, class: %this_class%, getWinfoMenuHandler
@@ -18,6 +19,7 @@ getWinfo() {
 	Menu, wInfoMenu, Add, PID: %thisPID%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, process: %this_process%, getWinfoMenuHandler
     Menu, wInfoMenu, Add, path: %this_path%, getWinfoGotoPath
+	Menu, wInfoMenu, Add, version: %this_ver%, getWinfoMenuHandler
 
 	ctrlList := getWinfoCtrls()
 	if (ctrlList.MaxIndex()) {
