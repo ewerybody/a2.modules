@@ -1,15 +1,15 @@
 ﻿[
   {
-    "author": "eric werner",
-    "date": "2016 8 24",
+    "author": "ewerybody",
+    "date": "",
     "description": "Gathers title, process Id, handle, class, size, positon and controls information in a menu that you can click to get the item in the clipboard.",
     "tags": [
       "window",
       "code"
     ],
     "typ": "nfo",
-    "url": "",
-    "version": "0.2"
+    "url": "https://github.com/ewerybody/a2.modules/wiki/getWinfo",
+    "version": "0.3"
   },
   {
     "file": "getWinfo.ahk",
