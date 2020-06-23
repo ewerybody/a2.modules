@@ -1,9 +1,10 @@
 ﻿; getWinfo - window information tool
 ; gathers title, process Id, handle, class, size, positon and controls information
-; in a menu that you can click to get the item in your clipboard 
+; in a menu that you can click to get the item in your clipboard
 
 getWinfo() {
-	tt("getting Winfo ...")
+	tt("getting Winfo ...", 1)
+	Sleep, 50
 	global getWinfoID
 	WinGet, getWinfoID, ID, A
 	WinGetTitle, this_title, ahk_id %getWinfoID%
@@ -18,22 +19,23 @@ getWinfo() {
 	Menu, wInfoMenu, Add, hwnd: %getWinfoID%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, pid: %thisPID%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, process: %this_process%, getWinfoMenuHandler
+	Menu, wInfoMenu, Add, version: %this_ver%, getWinfoMenuHandler
     Menu, wInfoMenu, Add, path: %this_path%, getWinfoMenuHandler
 	Menu, wInfoMenu, Add, Explore to path, getWinfoGotoPath
-	Menu, wInfoMenu, Add, version: %this_ver%, getWinfoMenuHandler
 
 	ctrlList := getWinfoCtrls()
 	if (ctrlList.MaxIndex()) {
 		numCtrls := ctrlList.MaxIndex()
-		Menu, wInfoMenu, Add, controls: %numCtrls% ( click to show ... ), getWinfoCtrlsHandler
-        Menu, wInfoMenu, Add, copy all control info, getWinfoCopyCtrlsHandler
+		Menu, wInfoMenu, Add, Controls: %numCtrls% ( click to show ... ), getWinfoCtrlsHandler
+        Menu, wInfoMenu, Add, Copy All Control Info, getWinfoCopyCtrlsHandler
 	}
 	else {
-		Menu, wInfoMenu, Add, no controls here, getWinfoMenuHandler
-		Menu, wInfoMenu, Disable, no controls here
+		Menu, wInfoMenu, Add, No Controls Here, getWinfoMenuHandler
+		Menu, wInfoMenu, Disable, No Controls Here
 	}
 
 	WinGetPos, X, Y, Width, Height, ahk_id %getWinfoID%
+	CoordMode, Mouse, Screen
     MouseGetPos, mouseX, mouseY
 	Menu, wInfoPosMenu, Add, x: %X%, getWinfoMenuHandler
 	Menu, wInfoPosMenu, Add, y: %Y%, getWinfoMenuHandler
@@ -43,17 +45,23 @@ getWinfo() {
     Menu, wInfoPosMenu, Add, MousePos: %mouseX%`,%mouseY%, getWinfoMenuHandler
 
 	Menu, wInfoMenu, Add, Pos:  %X% x %Y%   Size:  %Width% x %Height%  ..., :wInfoPosMenu
-	
-	tt()
-	Menu, wInfoMenu, Show
+	Menu, wInfoMenu, Add, Cancel, getWinfoMenuHandler
+
+	CoordMode, Menu, Screen
+	menu_x := mouseX + 15
+	menu_y := mouseY + 47
+	Menu, wInfoMenu, Show, %menu_x%, %menu_y%
 	; cleanup
 	Menu, wInfoMenu, DeleteAll
 	Menu, wInfoPosMenu, DeleteAll
+	tt()
 }
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
 getWinfoMenuHandler:
 	getWinfoID := A_ThisMenuItem
+	if (getWinfoID == "Cancel")
+		Return
 	StringGetPos, iTmp, getWinfoID, %A_Space%
 	StringTrimLeft, getWinfoID, getWinfoID, (iTmp + 1)
 	Clipboard := getWinfoID
@@ -89,7 +97,7 @@ Return
 getWinfoCtrlsHandler(getWinfoID) {
 	ctrlList := getWinfoCtrls()
 	menuList := []
-	
+
 	startTime := A_TickCount
 	for i, ctrl in ctrlList {
 		tookTime := A_TickCount - startTime
@@ -109,10 +117,10 @@ getWinfoCtrlsHandler(getWinfoID) {
 
 		Menu, ctrlSubmenu, Add, %i%: %ctrl%, :%menuName%
 	}
-	
+
 	; Menu, wInfoMenu, Add, controls: %numCtrls%, :ctrlSubmenu
 	Menu, ctrlSubmenu, Show
-	
+
 	Menu, ctrlSubmenu, DeleteAll
 	Loop % menuList.maxIndex() {
 		thisMenu := menuList[A_Index]
@@ -126,7 +134,7 @@ Return
 
 getWinfoCopyCtrlsHandler(getWinfoID) {
     ctrlList := getWinfoCtrls()
-    
+
     texttmp := ""
 	for i, ctrl in ctrlList {
 		ControlGet, thisCtrlID, Hwnd,, %ctrl%, ahk_id %getWinfoID%
