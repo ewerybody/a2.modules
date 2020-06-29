@@ -1,6 +1,38 @@
 {
-    "1. replace me": {
-        "some key1": "value1",
-        "some key2": "value2"
+    "1. home": {
+        "Name": "Eric Werner",
+        "Vorname": "Eric",
+        "Nachname": "Werner",
+        "Str. HausNr": "Böttgerstr. 8",
+        "Straße": "Böttgerstraße",
+        "HausNr": "8",
+        "PLZ": "60389",
+        "Stadt": "Frankfurt am Main",
+        "Telefon+": "+491771984880",
+        "Telefon": "01771984880",
+        "Land": "Deutschland",
+        "Country": "Germany"
+    },
+    "2. work": {
+        "Company": "Crytek GmbH",
+        "Name": "Eric Werner",
+        "Str. HausNr": "Hugo-Junkers-Strasse 3",
+        "PLZ": "60386",
+        "Stadt": "Frankfurt am Main",
+        "Telefon+": "+491771984880"
+    },
+    "3. ccard": {
+        "Card Holder": "Eric Werner",
+        "Card Holder name": "Eric",
+        "Card Holder surname": "Werner",
+        "exp month": "04",
+        "exp year": "25",
+        "Nr": "4930000005510885",
+        "CVC": 608
+    },
+    "4. email adresses": {
+        "gmail": "ewerybody@gmail.com",
+        "goodsoul": "eric@goodsoul.de",
+        "crytek": "eric@crytek.com"
     }
 }

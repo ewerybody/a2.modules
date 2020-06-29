@@ -112,7 +112,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
     def _fetch_window_process_list(self):
         scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
-        scope_nfo = scope_nfo.split('\\n')
+        scope_nfo = scope_nfo.split('\n')
         if not scope_nfo:
             log.error('Error getting scope_nfo!! scope_nfo: %s' % scope_nfo)
             return
