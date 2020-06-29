@@ -13,7 +13,7 @@ sessionrestore_session_restore() {
     global Sessionrestore_Restore_All_Windows
 
     if !IsObject(SessionRestore_List) {
-        ; MsgBox SessionRestore: Nothing stored yet!
+        MsgBox SessionRestore: Nothing stored yet!
         ; TODO: use logging!
         return
     }
