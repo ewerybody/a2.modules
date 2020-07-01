@@ -1,6 +1,8 @@
 ; ComfortResize - comfort_resize_main.ahk
+; Port from ac'tivAid to a2
 ; author: eric
 ; created: 2019 4 19
+
 comfort_resize_init() {
 	global cr_CurDownCenter := IDC_SIZENS
 	global cr_CurUpCenter := IDC_SIZENS
@@ -15,7 +17,7 @@ comfort_resize_init() {
 
 comfort_resize_main() {
     static cr_ClickTime
-    
+
 	; get mouse position relative to screen
 	CoordMode, Mouse, Screen
 	MouseGetPos, mouse_x, mouse_y, window_id
@@ -24,10 +26,10 @@ comfort_resize_main() {
     double_click := _comfort_resize_get_doubleclick(mouse_x, mouse_y)
     ; remember the current mouse cursor
 	current_cursor := A_Cursor
-    
+
 	if (cr_actClass = "Putty")
 		SendMessage WM_ENTERSIZEMOVE, , , , ahk_id %window_id%
-    
+
 	SetBatchLines, 2000
 	; Postion und Groesse des Fensters ermitteln
 	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %window_id%
@@ -56,6 +58,11 @@ comfort_resize_main() {
 	Else
 		cr_Resizeable = 1
 
+    if (cr_WinHor = "Center" and cr_WinVer = "Center")
+        is_center := true
+    else
+        is_center := false
+
 	cr_DistanceX := 0
 	cr_DistanceY := 0
 
@@ -76,7 +83,7 @@ comfort_resize_main() {
 		{
 			If cr_MouseKey = 9 AND cr_LButton <> D
                 continue
-        
+
             ; aktuelle Mausposition bestimmen
             MouseGetPos, cr_X2, cr_Y2
             cr_X3 = %cr_X2%
@@ -109,7 +116,7 @@ comfort_resize_main() {
                 cr_X2 := Round(cr_X2 / cr_RasterXtmp) * cr_RasterXtmp
                 cr_Y2 := Round(cr_Y2 / cr_RasterYtmp) * cr_RasterYtmp
             }
-            
+
             ; Verschiebung der Maus innerhalb dieser Schleife ermitteln
             cr_OffsetX := cr_X3 - mouse_x
             cr_OffsetY := cr_Y3 - mouse_y
@@ -146,7 +153,7 @@ comfort_resize_main() {
 
             ; Abhaengig von der Fensterregion reagieren
             ; In der Mitte wird das Fenster verschoben
-            If ( (cr_WinHor = "Center" and cr_WinVer = "Center") OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) )
+            If ( is_center OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) )
             {
                 If (double_click = 1 AND cr_Resizeable = 1 AND Enable_WindowsControl = 1)
                 {
@@ -261,18 +268,20 @@ comfort_resize_main() {
             ; Die gerade ermittelten Werte werden jetzt aufs Fenster angewendet
             WinMove, ahk_id %window_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
 
-            ; Mausposition f�r diese Schleife uebernehmen
+            ; Mausposition fuer diese Schleife uebernehmen
             mouse_x := cr_X2
             mouse_y := cr_Y2
+
             ; update tooltip
             If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) AND (comfort_resize_show_tooltip_pos OR comfort_resize_show_tooltip_size))
             {
                 tt_text := ""
-                if comfort_resize_show_tooltip_pos
+                if (is_center AND comfort_resize_show_tooltip_pos)
                     tt_text := "Position (" cr_WinX1 "," cr_WinY1 ")`n"
-                if comfort_resize_show_tooltip_size
+                if (!is_center AND comfort_resize_show_tooltip_size)
                     tt_text := tt_text "Size (" cr_WinW "," cr_WinH ")" Style " " ExStyle
-                Tooltip, %tt_text%
+                if tt_text
+                    Tooltip, %tt_text%
             }
 
             cr_LastX = %cr_WinX1%
@@ -311,7 +320,7 @@ comfort_resize_main() {
 		}
 		Sleep, 10
 	} ; Loop Ende
-	
+
     if (cr_actClass = "Putty")
 		SendMessage WM_EXITSIZEMOVE , , , , ahk_id %window_id%
 
@@ -337,10 +346,10 @@ _comfort_resize_get_doubleclick(mx, my) {
 	}
 	Else
 		double_click = 0
-    
+
 	_comfort_resize_lastMouseX = %mx%
 	_comfort_resize_lastMouseY = %my%
 	_comfort_resize_ClickTime = %A_TickCount%
-    
+
     return double_click
 }
