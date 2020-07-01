@@ -33,5 +33,10 @@
   {
     "name": "details_lister",
     "typ": "a2_local_element"
+  },
+  {
+    "label": "Import Data",
+    "script_name": "import_data",
+    "typ": "menu_item"
   }
 ]
