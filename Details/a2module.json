@@ -29,5 +29,9 @@
   {
     "file": "details_popup_menu.ahk",
     "typ": "include"
+  },
+  {
+    "name": "details_lister",
+    "typ": "a2_local_element"
   }
 ]
