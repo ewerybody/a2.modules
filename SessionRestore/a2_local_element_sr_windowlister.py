@@ -217,7 +217,7 @@ class Draw(DrawCtrl):
             self.set_user_value(self.user_cfg)
 
             print('  current element cfg:')
-            pprint(self.user_cfg)
+            pprint.pprint(self.user_cfg)
 
         change = False
         for virtual_screen_size in list(self.user_cfg.keys()):
