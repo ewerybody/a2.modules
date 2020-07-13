@@ -3,12 +3,7 @@
 ; created: 2019 8 26
 
 details_popup_menu() {
-    ; TODO: Embedd this into an a2 interface
     global details_popup_data, _details_handled_entries, a2data
-    json_path := a2data "modules\a2.modules\Details\details_entries.json"
-    FileEncoding, UTF-8
-    FileRead, contents, %json_path%
-    details_popup_data := jxon_load(contents)
     _details_handled_entries := []
 
     count := 0
@@ -17,7 +12,6 @@ details_popup_menu() {
         Menu, DetailsMenu, Add, %name%, details_popup_handler
         count++
     }
-    
     if (count == 0)
     {
         MsgBox, There is nothing to popup! Apparently there was no data added yet?`nHave a look at the file:`n`n  %json_path%

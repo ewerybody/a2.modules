@@ -5,7 +5,6 @@ def main(a2, mod):
     :param a2: Main A2 object instance.
     :param mod: Current a2 module instance.
     """
-    print('calling menu script "a2_menu_item_import_data.py" main() ...')
     import os
     from PySide2 import QtWidgets
 
@@ -16,12 +15,20 @@ def main(a2, mod):
         return
 
     import a2util
-    data = a2util.json_read(file_path)
-    print(data)
+    import json
+    try:
+        data = a2util.json_read(file_path)
+    except json.decoder.JSONDecodeError as error:
+        raise error
 
-    name = 'details_lister'
-    current = mod.get_user_cfg().setdefault(name, {})
+    element_name = 'details_lister'
+    elem_cfg = mod.get_user_cfg().setdefault(element_name, {})
+    current_data = elem_cfg.get('data', {})
+    for cat_name, key_values in data.items():
+        if cat_name in current_data:
+            cat_name = a2util.get_next_free_number(cat_name, current_data.keys(), '_')
+        current_data[cat_name] = key_values
 
-    mod.set_user_cfg({'name': name}, current)
+    mod.set_user_cfg({'name': element_name}, elem_cfg)
     a2.win.load_runtime_and_ui()
-    a2.win.check_element(name)
+    a2.win.check_element(element_name)

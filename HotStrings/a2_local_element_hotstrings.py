@@ -42,8 +42,9 @@ class HotStringsEditor(A2ItemEditor):
         super(HotStringsEditor, self).__init__(parent)
 
         self.ui.text = A2TextField(self)
-        self.add_data_widget('text', self.ui.text, self.ui.text.setText, self.ui.text.editing_finished,
-                             default_value='')
+        self.add_data_widget(
+            'text', self.ui.text, self.ui.text.setText,
+            self.ui.text.editing_finished, default_value='')
 
         for name, label in HS_CHECKBOXES:
             checkbox = QtWidgets.QCheckBox(self)

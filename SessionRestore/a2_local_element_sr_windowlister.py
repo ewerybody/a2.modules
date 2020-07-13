@@ -59,10 +59,6 @@ class SessionRestoreWindowLister(A2ItemEditor):
         self.add_data_label_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
                                    default_value=False)
 
-        # self.ui.some_button = QtWidgets.QPushButton('some button')
-        # self.ui.some_button.clicked.connect(self.some_function)
-        # self.ui.config_layout.addWidget(self.ui.some_button)
-
         self.ui.title_field.add_action('Set to exactly "" No Title', partial(self.ui.title_field.setText, ''))
         self.ui.title_field.add_action('Set to "*" Any Title', partial(self.ui.title_field.setText, '*'))
         self.ui.title_field.add_action('Insert ".*" Wildcard', partial(self.ui.title_field.insert, '.*'))
@@ -92,11 +88,6 @@ class SessionRestoreWindowLister(A2ItemEditor):
         else:
             action = menu.addAction(NO_AVAILABLE_TXT % (name, process_name))
             action.setEnabled(False)
-
-    def some_function(self):
-        process_name = self.data[self.selected_name]['process']
-        win_data = self._fetch_window_data(process_name)
-        print(pprint.pformat(win_data))
 
     def _fetch_window_data(self, process_name):
         this_path = self.draw_ctrl.mod.path
