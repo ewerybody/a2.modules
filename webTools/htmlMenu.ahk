@@ -17,9 +17,7 @@ HtmlMenu() {
 	Menu, MyMenu, DeleteAll
 }
 
-HtmlMenuHandler:
-    HtmlMenuHandler()
-Return
+
 HtmlMenuHandler() {
     textClip := Clipboard
 	sel := clipboard_get()
