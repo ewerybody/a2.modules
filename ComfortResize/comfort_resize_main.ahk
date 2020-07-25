@@ -136,9 +136,9 @@ comfort_resize_main() {
             {
                 cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", cr_Cur%cr_WinVer%%cr_WinHor%)
                 If current_cursor = IBEAM
-                    DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_IBEAM)
+                    _cr_set_cursor(cr_hCurs, IDC_IBEAM)
                 Else
-                    DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_ARROW)
+                    _cr_set_cursor(cr_hCurs, IDC_ARROW)
             }
 
             ; Wenn das Fenster maximiert ist
@@ -324,12 +324,16 @@ comfort_resize_main() {
     if (cr_actClass = "Putty")
 		SendMessage WM_EXITSIZEMOVE , , , , ahk_id %window_id%
 
-	; reset mouse cursor
-	If current_cursor = IBEAM
-		DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_IBEAM)
-	Else
-    	DllCall("SetSystemCursor", "Uint", cr_hCurs, "Int", IDC_ARROW)
-	cr_hCurs =
+	; reset mouse
+    SPI_SETCURSORS := 0x57
+	DllCall( "SystemParametersInfo", UInt,SPI_SETCURSORS, UInt,0, UInt,0, UInt,0 )
+    ; MsgBox, IDC_ARROW: %IDC_ARROW%`nIBEAM: %IBEAM%`nIDC_IBEAM: %IDC_IBEAM%current_cursor: %current_cursor%`ncr_hCurs: %cr_hCurs%
+    ; cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", IDC_ARROW)
+	; If (current_cursor == "IBEAM")
+    ;     _cr_set_cursor(cr_hCurs, IDC_IBEAM)
+	; Else
+    ;     _cr_set_cursor(cr_hCurs, IDC_ARROW)
+	; cr_hCurs =
 }
 
 
@@ -352,4 +356,8 @@ _comfort_resize_get_doubleclick(mx, my) {
 	_comfort_resize_ClickTime = %A_TickCount%
 
     return double_click
+}
+
+_cr_set_cursor(current, to_id) {
+    DllCall("SetSystemCursor", "Uint", current, "Int", to_id)
 }
