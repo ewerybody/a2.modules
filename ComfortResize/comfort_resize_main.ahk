@@ -339,23 +339,37 @@ comfort_resize_main() {
 
 
 _comfort_resize_get_doubleclick(mx, my) {
-    static _comfort_resize_lastMouseX, _comfort_resize_lastMouseY, _comfort_resize_ClickTime
-    diffx := Abs(_comfort_resize_lastMouseX - mx)
-	diffy := Abs(_comfort_resize_lastMouseY - my)
-	If (diffx < 5 AND diffy < 5)
-	{
-		If (A_Priorhotkey = A_Thishotkey AND A_TickCount - _comfort_resize_ClickTime < 400)
-			double_click = 1
-		Else
-			double_click = 0
-	}
-	Else
-		double_click = 0
+    static last_mouse_x, last_mouse_y, click_time, last_dbl_click
 
-	_comfort_resize_lastMouseX = %mx%
-	_comfort_resize_lastMouseY = %my%
-	_comfort_resize_ClickTime = %A_TickCount%
+    If (A_Priorhotkey != A_Thishotkey)
+        return 0
 
+    global comfort_resize_pixel_threshold
+    diffx := Abs(last_mouse_x - mx)
+	diffy := Abs(last_mouse_y - my)
+	last_mouse_x := mx
+	last_mouse_y := my
+    If (diffx > comfort_resize_pixel_threshold OR diffy > comfort_resize_pixel_threshold)
+        return 0
+
+    global comfort_resize_time_threshold
+    quick_enough := A_TickCount - click_time < comfort_resize_time_threshold
+    ; to prevent double-doubleclicks
+    if !last_dbl_click
+        late_enough := 1
+    Else
+        late_enough := A_TickCount - last_dbl_click > comfort_resize_time_threshold
+
+    If (quick_enough AND late_enough) {
+            double_click = 1
+            last_dbl_click := A_TickCount
+    } Else
+        double_click = 0
+
+    ; msg := "late_enough: " . late_enough . " quick_enough: " . quick_enough . ", double_click: " . double_click
+    ; a2log_debug(msg, "comfort_resize")
+
+    click_time := A_TickCount
     return double_click
 }
 
