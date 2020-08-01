@@ -21,18 +21,19 @@ comfort_resize_main() {
 	; get mouse position relative to screen
 	CoordMode, Mouse, Screen
 	MouseGetPos, mouse_x, mouse_y, window_id
-	WinGetClass, cr_actClass, ahk_id %window_id%
 
     double_click := _comfort_resize_get_doubleclick(mouse_x, mouse_y)
     ; remember the current mouse cursor
 	current_cursor := A_Cursor
 
+    ahk_id := "ahk_id " . window_id
+	WinGetClass, cr_actClass, %ahk_id%
 	if (cr_actClass = "Putty")
-		SendMessage WM_ENTERSIZEMOVE, , , , ahk_id %window_id%
+		SendMessage WM_ENTERSIZEMOVE, , , , %ahk_id%
 
 	SetBatchLines, 2000
 	; Postion und Groesse des Fensters ermitteln
-	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %window_id%
+	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, %ahk_id%
 	; Fensterregion ermitteln. Die neun Regionen ergeben sich als
 	; Horizontal x Vertikal = (left,center,right)x(up,center,down)
 	If (mouse_x < cr_WinX1 + cr_WinW / 4)
@@ -89,7 +90,7 @@ comfort_resize_main() {
             cr_X3 = %cr_X2%
             cr_Y3 = %cr_Y2%
             ; aktuelle Fenstergroesse und -position bestimmen
-            WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, ahk_id %window_id%
+            WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, %ahk_id%
             cr_WinX2 := cr_WinX1 + cr_WinW
             cr_WinY2 := cr_WinY1+cr_WinH
 
@@ -142,11 +143,11 @@ comfort_resize_main() {
             }
 
             ; Wenn das Fenster maximiert ist
-            WinGet, cr_WinMinMax, MinMax, ahk_id %window_id%
+            WinGet, cr_WinMinMax, MinMax, %ahk_id%
             If (cr_WinMinMax = 1 AND double_click = 0)
             {
                 If cr_ResizeFixedWindows = 1
-                    WinRestore, ahk_id %window_id%
+                    WinRestore, %ahk_id%
                 Else
                     Return
             }
@@ -155,9 +156,9 @@ comfort_resize_main() {
             ; In der Mitte wird das Fenster verschoben
             If ( is_center OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) )
             {
-                If (double_click = 1 AND cr_Resizeable = 1 AND Enable_WindowsControl = 1)
+                If (double_click = 1 AND cr_Resizeable = 1)
                 {
-                    Gosub, wc_sub_Max%A_EmptyVar%
+                    window_toggle_maximize(window_id)
                     cr_Resizeable = 0
                     Return
                 }
@@ -180,7 +181,7 @@ comfort_resize_main() {
             {
   			    If ( cr_WinHor = "Left" AND cr_Resizeable = 1 )
                 {
-			    If (double_click = 1 AND Enable_WindowsControl = 1)
+			    If (double_click = 1)
                     {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable = 0
@@ -191,7 +192,7 @@ comfort_resize_main() {
                 }
 			    Else If ( cr_WinHor = "Right"	AND cr_Resizeable = 1 )
                 {
-                    If (double_click = 1 AND Enable_WindowsControl = 1)
+                    If (double_click = 1)
                     {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable = 0
@@ -202,9 +203,9 @@ comfort_resize_main() {
 
                 If ( cr_WinVer = "Up" AND cr_Resizeable = 1 )
                 {
-                    If (double_click = 1 AND Enable_WindowsControl = 1)
+                    If (double_click = 1)
                     {
-                        Gosub, wc_sub_MaxHeight%A_EmptyVar%
+                        window_toggle_maximize_height(window_id)
                         cr_Resizeable = 0
                         Return
                     }
@@ -213,9 +214,9 @@ comfort_resize_main() {
                 }
                 Else If ( cr_WinVer = "Down" AND cr_Resizeable = 1)
                 {
-			    If (double_click = 1 AND Enable_WindowsControl = 1)
+			    If (double_click = 1)
                     {
-                        Gosub, wc_sub_MaxHeight%A_EmptyVar%
+                        window_toggle_maximize_height(window_id)
                         cr_Resizeable = 0
                         Return
                     }
@@ -266,7 +267,7 @@ comfort_resize_main() {
                 SetWindelay, 5
 
             ; Die gerade ermittelten Werte werden jetzt aufs Fenster angewendet
-            WinMove, ahk_id %window_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
+            WinMove, %ahk_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
 
             ; Mausposition fuer diese Schleife uebernehmen
             mouse_x := cr_X2
@@ -308,7 +309,7 @@ comfort_resize_main() {
                     RButton_tip = yes
                 }
                 If (!WinActive("ahk_id" window_id))
-                    WinActivate, ahk_id %window_id%
+                    WinActivate, %ahk_id%
             }
             Else
             {
@@ -322,11 +323,11 @@ comfort_resize_main() {
 	} ; Loop Ende
 
     if (cr_actClass = "Putty")
-		SendMessage WM_EXITSIZEMOVE , , , , ahk_id %window_id%
+		SendMessage WM_EXITSIZEMOVE , , , , %ahk_id%
 
 	; reset mouse
     SPI_SETCURSORS := 0x57
-	DllCall( "SystemParametersInfo", UInt,SPI_SETCURSORS, UInt,0, UInt,0, UInt,0 )
+	DllCall("SystemParametersInfo", UInt,SPI_SETCURSORS, UInt,0, UInt,0, UInt,0)
     ; MsgBox, IDC_ARROW: %IDC_ARROW%`nIBEAM: %IBEAM%`nIDC_IBEAM: %IDC_IBEAM%current_cursor: %current_cursor%`ncr_hCurs: %cr_hCurs%
     ; cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", IDC_ARROW)
 	; If (current_cursor == "IBEAM")
