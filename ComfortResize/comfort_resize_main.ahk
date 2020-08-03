@@ -347,29 +347,34 @@ _comfort_resize_get_doubleclick(mx, my) {
     global comfort_resize_pixel_threshold
     diffx := Abs(last_mouse_x - mx)
 	diffy := Abs(last_mouse_y - my)
+    diff_t := A_TickCount - click_time
 	last_mouse_x := mx
 	last_mouse_y := my
+    click_time := A_TickCount
+
     If (diffx > comfort_resize_pixel_threshold OR diffy > comfort_resize_pixel_threshold)
         return 0
 
     global comfort_resize_time_threshold
-    quick_enough := A_TickCount - click_time < comfort_resize_time_threshold
+    quick_enough := diff_t < comfort_resize_time_threshold
+    click_time := A_TickCount
+
     ; to prevent double-doubleclicks
+    diff_last := A_TickCount - last_dbl_click
     if !last_dbl_click
         late_enough := 1
     Else
-        late_enough := A_TickCount - last_dbl_click > comfort_resize_time_threshold
+        late_enough := diff_last > comfort_resize_time_threshold
 
-    If (quick_enough AND late_enough) {
+    If (quick_enough == 1 AND late_enough == 1) {
             double_click = 1
             last_dbl_click := A_TickCount
     } Else
         double_click = 0
 
-    ; msg := "late_enough: " . late_enough . " quick_enough: " . quick_enough . ", double_click: " . double_click
+    ; msg .= "quick_enough: " . quick_enough . "(" . diff_t . "), late_enough: " . late_enough . "(" . diff_last . ")"
     ; a2log_debug(msg, "comfort_resize")
 
-    click_time := A_TickCount
     return double_click
 }
 
