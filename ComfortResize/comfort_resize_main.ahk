@@ -16,8 +16,6 @@ comfort_resize_init() {
 }
 
 comfort_resize_main() {
-    static cr_ClickTime
-
 	; get mouse position relative to screen
 	CoordMode, Mouse, Screen
 	MouseGetPos, mouse_x, mouse_y, window_id
@@ -50,7 +48,7 @@ comfort_resize_main() {
 	Else
 		cr_WinVer := "Down"
 
-	If ( (!(window_is_resizable(window_id)) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id))
+	If ( (!(window_is_resizable(window_id)) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id))
 	{
 		cr_Resizeable = 0
 		cr_WinHor := "Center"
@@ -154,12 +152,13 @@ comfort_resize_main() {
 
             ; Abhaengig von der Fensterregion reagieren
             ; In der Mitte wird das Fenster verschoben
-            If ( is_center OR (cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) )
+            If ( is_center OR (cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id)) )
             {
                 If (double_click = 1 AND cr_Resizeable = 1)
                 {
                     window_toggle_maximize(window_id)
                     cr_Resizeable = 0
+                    _cr_reset_mouse_cursor()
                     Return
                 }
                 cr_WinX1 += cr_OffsetX
@@ -185,6 +184,7 @@ comfort_resize_main() {
                     {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable = 0
+                        _cr_reset_mouse_cursor()
                         Return
                     }
                     cr_WinX1 += cr_OffsetX
@@ -196,6 +196,7 @@ comfort_resize_main() {
                     {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable = 0
+                        _cr_reset_mouse_cursor()
                         Return
                     }
                     cr_WinW	+= cr_OffsetX
@@ -207,6 +208,7 @@ comfort_resize_main() {
                     {
                         window_toggle_maximize_height(window_id)
                         cr_Resizeable = 0
+                        _cr_reset_mouse_cursor()
                         Return
                     }
                     cr_WinY1 += cr_OffsetY
@@ -218,6 +220,7 @@ comfort_resize_main() {
                     {
                         window_toggle_maximize_height(window_id)
                         cr_Resizeable = 0
+                        _cr_reset_mouse_cursor()
                         Return
                     }
                     cr_WinH	+= cr_OffsetY
@@ -274,7 +277,7 @@ comfort_resize_main() {
             mouse_y := cr_Y2
 
             ; update tooltip
-            If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive("ahk_id " window_id)) AND (comfort_resize_show_tooltip_pos OR comfort_resize_show_tooltip_size))
+            If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id)) AND (comfort_resize_show_tooltip_pos OR comfort_resize_show_tooltip_size))
             {
                 tt_text := ""
                 if (is_center AND comfort_resize_show_tooltip_pos)
@@ -325,16 +328,7 @@ comfort_resize_main() {
     if (cr_actClass = "Putty")
 		SendMessage WM_EXITSIZEMOVE , , , , %ahk_id%
 
-	; reset mouse
-    SPI_SETCURSORS := 0x57
-	DllCall("SystemParametersInfo", UInt,SPI_SETCURSORS, UInt,0, UInt,0, UInt,0)
-    ; MsgBox, IDC_ARROW: %IDC_ARROW%`nIBEAM: %IBEAM%`nIDC_IBEAM: %IDC_IBEAM%current_cursor: %current_cursor%`ncr_hCurs: %cr_hCurs%
-    ; cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", IDC_ARROW)
-	; If (current_cursor == "IBEAM")
-    ;     _cr_set_cursor(cr_hCurs, IDC_IBEAM)
-	; Else
-    ;     _cr_set_cursor(cr_hCurs, IDC_ARROW)
-	; cr_hCurs =
+    _cr_reset_mouse_cursor()
 }
 
 
@@ -380,4 +374,14 @@ _comfort_resize_get_doubleclick(mx, my) {
 
 _cr_set_cursor(current, to_id) {
     DllCall("SetSystemCursor", "Uint", current, "Int", to_id)
+}
+
+
+; Reset the system mouse cursor image.
+; This used to be way more complicated. With changing the current image to a remembered one..?
+; this all broke down as soon as one tried to more/resize a frozen window and the main loop got stuck.
+; Well. This solves it pretty nicely! And it seems fast!
+_cr_reset_mouse_cursor() {
+    SPI_SETCURSORS := 0x57
+	DllCall("SystemParametersInfo", UInt,SPI_SETCURSORS, UInt,0, UInt,0, UInt,0)
 }
