@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+"""
+A special item editor element to host various app layouts with different desktop dimensions.
+"""
 import os
 import json
-import pprint
 from functools import partial
 
 from PySide2 import QtWidgets, QtGui
@@ -9,11 +10,8 @@ from PySide2 import QtWidgets, QtGui
 import a2ahk
 import a2core
 import a2ctrl
-import a2util
 from a2element import DrawCtrl, EditCtrl
-from a2widget.a2item_editor import A2ItemEditor
-from a2widget.a2button_field import A2ButtonField
-from a2widget.a2coords_field import A2CoordsField
+from a2widget import a2item_editor, a2button_field, a2coords_field
 
 
 DEFAULT_TITLE = '*'
@@ -21,7 +19,7 @@ NO_AVAILABLE_TXT = 'No a available %s for process "%s"'
 log = a2core.get_logger(__name__)
 
 
-class SessionRestoreWindowLister(A2ItemEditor):
+class SessionRestoreWindowLister(a2item_editor.A2ItemEditor):
     def __init__(self, cfg, parent):
         self.draw_ctrl = parent
         self.data = cfg or {}
@@ -29,26 +27,23 @@ class SessionRestoreWindowLister(A2ItemEditor):
 
         self._process_menu = QtWidgets.QMenu(self)
 
-        # TODO: thread it
-        self._fetch_window_process_list()
         labels = ['Process Name', 'Window Title', 'Window Class', 'Position', 'Size', '']
-
         self.ui.proc_field = QtWidgets.QLineEdit()
         self.ui.proc_field.setEnabled(False)
         self.add_data_label_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
                                    default_value='', label=labels[0])
 
-        self.ui.title_field = A2ButtonField()
+        self.ui.title_field = a2button_field.A2ButtonField()
         self.ui.title_field.setPlaceholderText('No Title')
         self.add_data_label_widget('title', self.ui.title_field, self.ui.title_field.setText,
                                    default_value=DEFAULT_TITLE, label=labels[1])
 
-        self.ui.class_field = A2ButtonField()
+        self.ui.class_field = a2button_field.A2ButtonField()
         self.add_data_label_widget('class', self.ui.class_field, self.ui.class_field.setText,
                                    default_value='*', label=labels[2])
 
-        self.ui.pos_field = A2CoordsField()
-        self.ui.size_field = A2CoordsField()
+        self.ui.pos_field = a2coords_field.A2CoordsField()
+        self.ui.size_field = a2coords_field.A2CoordsField()
 
         self.add_data_label_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value,
                                    default_value=(0, 0), label='Coordinates')
@@ -97,7 +92,7 @@ class SessionRestoreWindowLister(A2ItemEditor):
             window_data = json.loads(window_data_str)
             return window_data
         except Exception as error:
-            log.error('Could not get JSON data from window data string:\n  %s' % window_data_str)
+            log.error('Could not get JSON data from window data string:\n  %s', window_data_str)
             log.error(error)
         return []
 
@@ -105,36 +100,43 @@ class SessionRestoreWindowLister(A2ItemEditor):
         scope_nfo = a2ahk.call_lib_cmd('get_scope_nfo')
         scope_nfo = scope_nfo.split('\n')
         if not scope_nfo:
-            log.error('Error getting scope_nfo!! scope_nfo: %s' % scope_nfo)
+            log.error('Error getting scope_nfo!! scope_nfo: %s', scope_nfo)
             return
 
-        processes = set()
+        processes = {}
         num_items = len(scope_nfo)
         num_items -= num_items % 3
         for i in range(0, num_items, 3):
-            if scope_nfo[i + 2]:
-                processes.add(scope_nfo[i + 2])
-        self._process_list = sorted(processes, key=lambda x: x.lower())
+            proc_name = scope_nfo[i + 2]
+            if not proc_name:
+                continue
+            _proc_name = proc_name.lower()
+            if _proc_name in processes:
+                continue
+            processes[_proc_name] = proc_name
 
-        for name in self._process_list:
-            self._process_menu.addAction(name, partial(self.add_process, name))
+        for proc_name in sorted(processes.values(), key=lambda x: x.lower()):
+            self._process_menu.addAction(proc_name, partial(self.add_process, proc_name))
 
     def add_process(self, name):
+        """Append a process name to the current list."""
+        import a2util
         # for now we're just filling with the data of 1st found window
         win_data = self._fetch_window_data(name)[0]
 
         new_name = a2util.get_next_free_number(name, self.data.keys(), ' ')
-        item = self._add_and_setup_item(new_name)
         self.data[new_name] = {'process': name,
                                'class': win_data[0],
                                'title': win_data[1],
                                'xy': (win_data[2], win_data[3]),
                                'wh': (win_data[4], win_data[5])}
 
-        self.ui.item_list.select_items([item])
+        self.add_named_item(new_name)
         self.data_changed.emit()
 
     def add_item(self):
+        self._process_menu.clear()
+        self._fetch_window_process_list()
         self._process_menu.popup(QtGui.QCursor.pos())
 
 
@@ -207,8 +209,9 @@ class Draw(DrawCtrl):
             self.user_cfg = {virtual_screen_size: {'setups': self.user_cfg.copy()}}
             self.set_user_value(self.user_cfg)
 
-            print('  current element cfg:')
-            pprint.pprint(self.user_cfg)
+            # import pprint
+            # print('  current element cfg:')
+            # pprint.pprint(self.user_cfg)
 
         change = False
         for virtual_screen_size in list(self.user_cfg.keys()):
