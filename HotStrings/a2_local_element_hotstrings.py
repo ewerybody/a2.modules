@@ -2,10 +2,11 @@
 import os
 import sys
 
+from PySide2 import QtWidgets, QtCore
+
 import a2util
 import a2ctrl
 import a2runtime
-from PySide2 import QtWidgets, QtCore
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget.a2text_field import A2TextField
