@@ -34,7 +34,7 @@ getWinfo() {
 		Menu, wInfoMenu, Disable, No Controls Here
 	}
 
-	WinGetPos, X, Y, Width, Height, ahk_id %getWinfoID%
+	window_get_rect(X, Y, Width, Height, getWinfoID)
 	CoordMode, Mouse, Screen
     MouseGetPos, mouseX, mouseY
 	Menu, wInfoPosMenu, Add, x: %X%, getWinfoMenuHandler
