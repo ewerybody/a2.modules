@@ -30,10 +30,10 @@ comfort_resize_main() {
 		SendMessage WM_ENTERSIZEMOVE, , , , %ahk_id%
 
 	SetBatchLines, 2000
-	; Postion und Groesse des Fensters ermitteln
-	WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, %ahk_id%
+    window_get_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
+
 	; Fensterregion ermitteln. Die neun Regionen ergeben sich als
-	; Horizontal x Vertikal = (left,center,right)x(up,center,down)
+	; Horizontal * Vertikal = (left,center,right)*(up,center,down)
 	If (mouse_x < cr_WinX1 + cr_WinW / 4)
         cr_WinHor := "Left"
 	Else If (mouse_x < cr_WinX1 + 3 * cr_WinW / 4)
@@ -88,7 +88,7 @@ comfort_resize_main() {
             cr_X3 = %cr_X2%
             cr_Y3 = %cr_Y2%
             ; aktuelle Fenstergroesse und -position bestimmen
-            WinGetPos, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, %ahk_id%
+            window_get_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
             cr_WinX2 := cr_WinX1 + cr_WinW
             cr_WinY2 := cr_WinY1+cr_WinH
 
@@ -270,7 +270,7 @@ comfort_resize_main() {
                 SetWindelay, 5
 
             ; Die gerade ermittelten Werte werden jetzt aufs Fenster angewendet
-            WinMove, %ahk_id%, , %cr_WinX1%, %cr_WinY1%, %cr_WinW%, %cr_WinH%
+            window_set_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
 
             ; Mausposition fuer diese Schleife uebernehmen
             mouse_x := cr_X2
