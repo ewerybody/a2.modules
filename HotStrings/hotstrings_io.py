@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-import os
+"""
+Python module to handle Autohotkey Hotstrings stuff.
+"""
 import enum
 import codecs
 
@@ -25,6 +26,7 @@ DIRECTIVE_INCL = '#ifwinactive'
 DIRECTIVE_EXCL = '#ifwinnotactive'
 KEY_INCL = 'scope_incl'
 KEY_EXCL = 'scope_excl'
+IN_EXCLUDE = (KEY_INCL, KEY_EXCL)
 
 
 def dict_to_ahkcode(hotstrings_data):
@@ -37,7 +39,7 @@ def dict_to_ahkcode(hotstrings_data):
         if line:
             hs_global.append(line)
 
-    for key, scope_dict in [(KEY_INCL, scope_incl), (KEY_EXCL, scope_excl)]:
+    for key, scope_dict in ((KEY_INCL, scope_incl), (KEY_EXCL, scope_excl)):
         for scope_string, hs_dict in hotstrings_data.get(key, {}).items():
             for scope in scope_string.split('\n'):
                 for hotstring, data in hs_dict.items():
@@ -46,7 +48,7 @@ def dict_to_ahkcode(hotstrings_data):
                         scope_dict.setdefault(scope, []).append(line)
 
     code = f'{DIRECTIVE_INCL},\n' + '\n'.join(hs_global)
-    for directive, scope_dict in [(DIRECTIVE_INCL, scope_incl), (DIRECTIVE_EXCL, scope_excl)]:
+    for directive, scope_dict in ((DIRECTIVE_INCL, scope_incl), (DIRECTIVE_EXCL, scope_excl)):
         for scope, scope_lines in scope_dict.items():
             code += f'\n{directive}, {scope}\n' + '\n'.join(scope_lines)
     return code
@@ -58,9 +60,9 @@ def _make_hotstrings_line(hotstring, data):
         return
 
     options = ':'
-    for op in Options:
-        if data.get(op.name, False):
-            options += op.value
+    for opt in Options:
+        if data.get(opt.name, False):
+            options += opt.value
 
     for name, option_list in OPTION_LISTS.items():
         value = data.get(name)
@@ -98,10 +100,10 @@ def file_to_dict(path):
 
 def iterate(hotstrings_dict):
     """
-    Yields scope_mode, scope_string, hotstring, hotstring_cfg.
+    Yield scope_mode, scope_string, hotstring, hotstring_cfg.
     """
-    for scope_mode, data in hotstrings_dict.items():
-        if scope_mode == '':
+    for scope_type, data in hotstrings_dict.items():
+        if scope_type == '':
             for hotstring, hotstring_cfg in data.items():
                 yield '', '', hotstring, hotstring_cfg
         else:
@@ -111,7 +113,7 @@ def iterate(hotstrings_dict):
                         yield scope_mode, scope_string, hotstring, hotstring_cfg
 
 
-class HotstringsParser(object):
+class HotstringsParser:
     def __init__(self, path):
         """
         the resulting hotstrings dict::
@@ -189,16 +191,16 @@ class HotstringsParser(object):
 
         # disassemble the options
         options = options.upper()
-        for op in Options:
-            if op.value in options:
-                self.this_hs[op.name] = True
+        for opt in Options:
+            if opt.value in options:
+                self.this_hs[opt.name] = True
         for name, option_list in OPTION_LISTS.items():
-            for i, op in enumerate(option_list):
+            for i, opt in enumerate(option_list):
                 # we do not break because found "C" can still be "C1"
-                if op in options:
+                if opt in options:
                     self.this_hs[name] = i + 1
-        for op, mode_index in RAW_MODES.items():
-            if op in options:
+        for opt, mode_index in RAW_MODES.items():
+            if opt in options:
                 self.this_hs['mode'] = mode_index
                 break
 
@@ -207,8 +209,8 @@ class HotstringsParser(object):
             self.this_shortcut, text = rest.split('::', 1)
         # otherwise we need to search for the first non-":"
         else:
-            for i, l in enumerate(rest):
-                if l != ':':
+            for i, letter in enumerate(rest):
+                if letter != ':':
                     break
             pos = rest[i:].find('::')
             if pos == -1:

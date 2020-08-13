@@ -204,8 +204,8 @@ class Draw(DrawCtrl):
             dialog = A2ConfirmDialog(
                 self.main, 'Remove scope "%s..."' % self.scope_string[:30],
                 'The scope still contains Hotstings! These would be lost!\n'
-                'You can also <b>move</b> the Hotstrings to other scopes or make them global via context menu.\n'
-                'Or do you want to continue deletion?')
+                'You can also <b>move</b> the Hotstrings to other scopes or '
+                'make them global via context menu.\nOr do you want to continue deletion?')
             dialog.exec_()
             if not dialog.result:
                 return
@@ -228,7 +228,7 @@ class Draw(DrawCtrl):
             # remove the current setting ...
             del self.user_cfg[self.scope_key][self.scope_string]
             # and the mode key if changed and empty
-            if scope_key != self.scope_key and not len(self.user_cfg[self.scope_key]):
+            if scope_key != self.scope_key and not self.user_cfg[self.scope_key]:
                 del self.user_cfg[self.scope_key]
 
             self.user_cfg.setdefault(scope_key, {})[scope_string] = self.current_scope
@@ -244,7 +244,7 @@ class Draw(DrawCtrl):
         # cleanup invalid and empty dictionary items
         for key in list(self.user_cfg.keys()):
             if key != '':
-                if key not in [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL] or not self.user_cfg[key]:
+                if key not in hotstrings_io.IN_EXCLUDE or not self.user_cfg[key]:
                     del self.user_cfg[key]
 
         self.set_user_value(self.user_cfg)
