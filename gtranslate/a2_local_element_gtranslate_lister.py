@@ -1,30 +1,58 @@
 """
-Some element description ...
-
-@created: 2020 6 30
-@author: eric
+A lister element for creating arbitrary translation hotkeys.
 """
-import os, sys
+import os
+import sys
+from copy import deepcopy
 
 from PySide2 import QtWidgets, QtCore
 
 import a2ctrl
 import a2util
+import a2element.hotkey
 from a2element import DrawCtrl, EditCtrl
 from a2widget import a2item_editor, a2input_dialog, a2hotkey
 
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+if THIS_DIR not in sys.path:
+    sys.path.append(THIS_DIR)
+import gtranslate_langs
+
+
+_DEFAULT_HOTKEY = {
+    'disablable': True,
+    'enabled': True,
+    'functionCode': '',
+    'functionMode': 0,
+    'key': [''],
+    'keyChange': True,
+    'label': '...',
+    'multiple': True,
+    'name': 'some_name',
+    'scope': [],
+    'scopeChange': False,
+    'scopeMode': 0,
+    'typ': 'hotkey'
+    }
 
 
 class GTranslateLister(a2item_editor.A2ItemEditor):
     def __init__(self, cfg, parent):
         super(GTranslateLister, self).__init__(parent)
 
-        hotkey = a2hotkey.A2Hotkey(self)
-        self.add_data_widget('hotkey', hotkey, hotkey.set_key)
-        ignore_check = QtWidgets.QCheckBox(self)
-        ignore_check.setText('Ignore this one')
-        self.add_data_widget('ignore', ignore_check, ignore_check.setChecked, default_value=False)
+        self._hk_user_cfg = {}
+        hk_config = deepcopy(_DEFAULT_HOTKEY)
+        self.hotkey = a2element.hotkey.Draw(self, hk_config, self._hk_user_cfg)
+        self.add_row(self.hotkey)
+        # self.add_data_widget('hotkey', hotkey, hotkey.set_key)
+        # ignore_check = QtWidgets.QCheckBox(self)
+        # ignore_check.setText('Ignore this one')
+        # self.add_data_widget('ignore', ignore_check, ignore_check.setChecked, default_value=False)
+        self.selected_name_changed.connect(self._update_hotkey)
 
+        self.hotkey.hotkey_button.hotkey_changed.connect(self._changed)
+        self.hotkey.hotkey_button.scope_changed.connect(self._changed)
+        self.hotkey.checkbox.clicked.connect(self._changed)
 
     def add_item(self):
         dialog = NewDialog(self)
@@ -34,6 +62,17 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
     def _add(self):
         key = self.sender().output
         self.add_named_item(key)
+
+    def _update_hotkey(self, name):
+        from_lang, to_lang = name.split(gtranslate_langs.SEPARATOR)
+        text = 'Translate "%s" to "%s"' % (gtranslate_langs.key_to_name(from_lang),
+                                           gtranslate_langs.key_to_name(to_lang))
+        self.hotkey.label.setText(text)
+        this_cfg = self.data(name, {})
+        self.hotkey.hotkey_button.set_config(this_cfg)
+
+    def _changed(self):
+        self
 
 
 class NewDialog(a2input_dialog.A2ConfirmDialog):
@@ -45,8 +84,8 @@ class NewDialog(a2input_dialog.A2ConfirmDialog):
             parent, 'New gtranslate Hotkey', 'Select languaged to translate between:')
 
         self.ui.combo_from = QtWidgets.QComboBox(self)
-        self.ui.combo_from.addItem('Detect Language (auto)')
-        self.ui.combo_from.setItemData(0, 'auto')
+        self.ui.combo_from.addItem(gtranslate_langs.AUTO_LANGUAGE)
+        self.ui.combo_from.setItemData(0, gtranslate_langs.AUTO_KEY)
 
         self.ui.combo_to = QtWidgets.QComboBox(self)
         for i, (name, key) in enumerate(self.iter_langs()):
@@ -90,17 +129,12 @@ class NewDialog(a2input_dialog.A2ConfirmDialog):
         if key is None:
             from_lang = self.ui.combo_from.currentData()
             to_lang = self.ui.combo_to.currentData()
-            key = f'{from_lang} > {to_lang}'
+            key = f'{from_lang}{gtranslate_langs.SEPARATOR}{to_lang}'
         return key
 
     def iter_langs(self):
-        THIS_DIR = os.path.abspath(os.path.dirname(__file__))
-        if THIS_DIR not in sys.path:
-            sys.path.append(THIS_DIR)
-        import gtranslate_langs
         for name, key in gtranslate_langs.get().items():
             yield name, key
-        sys.path.remove(THIS_DIR)
 
 
 class Draw(DrawCtrl):
