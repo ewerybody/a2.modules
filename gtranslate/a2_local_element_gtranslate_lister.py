@@ -42,7 +42,8 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
 
         self._hk_user_cfg = {}
         hk_config = deepcopy(_DEFAULT_HOTKEY)
-        self.hotkey = a2element.hotkey.Draw(self, hk_config, self._hk_user_cfg)
+        self._dummymod = _ModStub(hk_config)
+        self.hotkey = a2element.hotkey.Draw(self, hk_config, self._dummymod, self._hk_user_cfg)
         self.add_row(self.hotkey)
         # self.add_data_widget('hotkey', hotkey, hotkey.set_key)
         # ignore_check = QtWidgets.QCheckBox(self)
@@ -75,13 +76,22 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         self
 
 
+class _ModStub:
+    """A fake module to be able to receive element changes."""
+    def __init__(self, config):
+        self.config = config
+
+    def set_user_cfg(self, cfg, this, name):
+        cfg[name] = this
+
+
 class NewDialog(a2input_dialog.A2ConfirmDialog):
     okayed = QtCore.Signal(str)
     field_changed = QtCore.Signal(str)
 
     def __init__(self, parent):
         super(NewDialog, self).__init__(
-            parent, 'New gtranslate Hotkey', 'Select languaged to translate between:')
+            parent, 'New gtranslate Hotkey', 'Select languages to translate between:')
 
         self.ui.combo_from = QtWidgets.QComboBox(self)
         self.ui.combo_from.addItem(gtranslate_langs.AUTO_LANGUAGE)
