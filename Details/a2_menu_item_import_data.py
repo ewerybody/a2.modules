@@ -22,13 +22,12 @@ def main(a2, mod):
         raise error
 
     element_name = 'details_lister'
-    elem_cfg = mod.get_user_cfg().setdefault(element_name, {})
-    current_data = elem_cfg.get('data', {})
+    current_data = mod.get_user_cfg().setdefault(element_name, {})
     for cat_name, key_values in data.items():
         if cat_name in current_data:
             cat_name = a2util.get_next_free_number(cat_name, current_data.keys(), '_')
         current_data[cat_name] = key_values
 
-    mod.set_user_cfg({'name': element_name}, elem_cfg)
+    mod.set_user_cfg({'name': element_name}, current_data)
     a2.win.load_runtime_and_ui()
     a2.win.check_element(element_name)
