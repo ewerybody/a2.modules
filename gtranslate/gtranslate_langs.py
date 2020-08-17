@@ -13,6 +13,8 @@ _DATA = {}
 SEPARATOR = ' > '
 AUTO_KEY = 'auto'
 AUTO_LANGUAGE = 'Detect Language (auto)'
+DEFAULT = 'en'
+DEFAULT_TRANSLATION = AUTO_KEY + SEPARATOR + DEFAULT
 
 
 def get():
@@ -51,7 +53,7 @@ def key_to_name(key):
     for name, this_key in langs.items():
         if this_key == key:
             return name
-    return key_to_name('en')
+    return key_to_name(DEFAULT)
 
 
 if __name__ == "__main__":

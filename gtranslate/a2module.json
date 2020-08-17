@@ -2,7 +2,7 @@
   {
     "author": "Eric Werner",
     "date": "2017 3 17",
-    "description": "Makes use of translate.googleapis.com. WIP. So far only en > de",
+    "description": "Makes use of translate.googleapis.com to translate short text snippets or whole websites. WIP...",
     "tags": [
       "lookup",
       "text"
@@ -16,22 +16,6 @@
     "typ": "include"
   },
   {
-    "disablable": true,
-    "enabled": true,
-    "functionCode": "gtranslate()",
-    "functionMode": 0,
-    "key": "Ralt+L",
-    "keyChange": true,
-    "label": "Translate English to German",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "gtranslate_Hotkey",
-    "scope": [],
-    "scopeChange": true,
-    "scopeMode": 0,
-    "typ": "hotkey"
-  },
-  {
     "label": "Use Proxy",
     "name": "gtranslate_use_proxy",
     "typ": "check",
@@ -42,22 +26,6 @@
     "name": "gtranslate_ask_website_translate",
     "typ": "check",
     "value": true
-  },
-  {
-    "disablable": true,
-    "enabled": true,
-    "functionCode": "gtranslate(\"de\", \"en\")",
-    "functionMode": 0,
-    "key": "Ralt+K",
-    "keyChange": true,
-    "label": "Translate German to English",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "gtranslate_Hotkey2",
-    "scope": [],
-    "scopeChange": true,
-    "scopeMode": 0,
-    "typ": "hotkey"
   },
   {
     "name": "gtranslate_lister",
