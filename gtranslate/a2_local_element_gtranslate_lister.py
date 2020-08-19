@@ -53,7 +53,6 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         self.hotkey.hotkey_button.hotkey_changed.connect(self._changed)
         self.hotkey.hotkey_button.scope_changed.connect(self._changed)
         self.hotkey.checkbox.clicked.connect(self._changed)
-        self.ui.list_layout_widget.setMaximumWidth(150)
 
         if cfg:
             self.ui.item_list.select_names([sorted(cfg.keys())[0]])
@@ -89,6 +88,9 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
     def _changed(self):
         self.data[self.selected_name] = self.hotkey.get_user_dict()
         self.data_changed.emit()
+
+    def set_list_width(self, value):
+        self.ui.list_layout_widget.setMaximumWidth(value)
 
 
 class _ModStub:
@@ -187,6 +189,7 @@ class Draw(DrawCtrl):
         self.main_layout.addWidget(self.editor)
 
         self.is_expandable_widget = True
+        self.editor.set_list_width(self.main.style.scale(120))
 
     def check(self):
         self.user_cfg = self.editor.data
