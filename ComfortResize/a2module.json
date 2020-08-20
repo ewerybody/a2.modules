@@ -100,27 +100,36 @@
     "typ": "group"
   },
   {
-    "decimals": 1,
-    "label": "Double Click time threshold",
-    "max": 1000.0,
-    "min": 23.0,
-    "name": "comfort_resize_time_threshold",
-    "slider": false,
-    "step_len": 1.0,
-    "suffix": "miliseconds",
-    "typ": "number",
-    "value": 400.0
-  },
-  {
-    "decimals": 1,
-    "label": "Double Click position threshold",
-    "max": 100.0,
-    "min": 1.0,
-    "name": "comfort_resize_pixel_threshold",
-    "slider": false,
-    "step_len": 1.0,
-    "suffix": "pixels",
-    "typ": "number",
-    "value": 5.0
+    "children": [
+      {
+        "decimals": 0,
+        "label": "Double Click position threshold",
+        "max": 100.0,
+        "min": 1.0,
+        "name": "comfort_resize_pixel_threshold",
+        "slider": false,
+        "step_len": 1.0,
+        "suffix": "pixels",
+        "typ": "number",
+        "value": 5
+      },
+      {
+        "decimals": 0,
+        "label": "Double Click time threshold",
+        "max": 1000.0,
+        "min": 50.0,
+        "name": "comfort_resize_time_threshold",
+        "slider": false,
+        "step_len": 1.0,
+        "suffix": "miliseconds",
+        "typ": "number",
+        "value": 400
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "Maximize on Doubleclick",
+    "name": "comfort_resize_doubleclick",
+    "typ": "group"
   }
 ]

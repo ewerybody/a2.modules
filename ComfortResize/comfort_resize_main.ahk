@@ -333,12 +333,15 @@ comfort_resize_main() {
 
 
 _comfort_resize_get_doubleclick(mx, my) {
+    global comfort_resize_pixel_threshold, comfort_resize_time_threshold
+    if (!comfort_resize_pixel_threshold OR ! comfort_resize_time_threshold)
+        return 0
+
     static last_mouse_x, last_mouse_y, click_time, last_dbl_click
 
     If (A_Priorhotkey != A_Thishotkey)
         return 0
 
-    global comfort_resize_pixel_threshold
     diffx := Abs(last_mouse_x - mx)
 	diffy := Abs(last_mouse_y - my)
     diff_t := A_TickCount - click_time
@@ -349,7 +352,6 @@ _comfort_resize_get_doubleclick(mx, my) {
     If (diffx > comfort_resize_pixel_threshold OR diffy > comfort_resize_pixel_threshold)
         return 0
 
-    global comfort_resize_time_threshold
     quick_enough := diff_t < comfort_resize_time_threshold
     click_time := A_TickCount
 
