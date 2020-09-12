@@ -241,4 +241,3 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
             db_dict['hotkeys'][0].append([key, func])
         else:
             db_dict['hotkeys'][scope_mode].append([scope, key, func])
-

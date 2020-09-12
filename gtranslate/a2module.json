@@ -16,6 +16,10 @@
     "typ": "include"
   },
   {
+    "name": "gtranslate_lister",
+    "typ": "a2_local_element"
+  },
+  {
     "label": "Use Proxy",
     "name": "gtranslate_use_proxy",
     "typ": "check",
@@ -26,9 +30,5 @@
     "name": "gtranslate_ask_website_translate",
     "typ": "check",
     "value": true
-  },
-  {
-    "name": "gtranslate_lister",
-    "typ": "a2_local_element"
   }
 ]

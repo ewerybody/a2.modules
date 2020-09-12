@@ -50,7 +50,7 @@ gtranslate(from="en", to="de") {
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to) ; translate
 
     if (__gtranslation == "")
-        MsgBox No tranlation found for "%__gtranslate_search%".
+        MsgBox No tranlation found for "%__gtranslate_search%".`nAre you connected to the internet?
     else {
         Menu, gtranslate_menu, Add, %__gtranslation%, gtranslate_insert
         Menu, gtranslate_menu, Icon, %__gtranslation%, %icon_path%
