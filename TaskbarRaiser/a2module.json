@@ -1,0 +1,49 @@
+﻿[
+{
+"author": "eric",
+"date": "2020 7 30",
+"description": "Because none existed before this temporary description was created for \"TaskbarRaiser\". Change it to describe what it does with a couple of words.",
+"tags": [],
+"typ": "nfo",
+"url": "",
+"version": "0.1"
+},
+{
+"code": "taskbar_raiser_init()",
+"typ": "init"
+},
+{
+"file": "taskbar_raiser.ahk",
+"typ": "include"
+},
+{
+"decimals": 1,
+"label": "Time between checks",
+"max": 10000.0,
+"min": 100.0,
+"name": "TaskbarRaiser_Interval",
+"slider": false,
+"step_len": 1.0,
+"suffix": "ms",
+"typ": "number",
+"value": 100.0
+},
+{
+"decimals": 1,
+"label": "Distance to Taskbar",
+"max": 200.0,
+"min": 1.0,
+"name": "TaskbarRaiser_Distance",
+"slider": false,
+"step_len": 1.0,
+"suffix": "pixels",
+"typ": "number",
+"value": 5.0
+},
+{
+"label": "Ignore on Remote Desktop Connections",
+"name": "TaskbarRaiser_CheckRDC",
+"typ": "check",
+"value": false
+}
+]
