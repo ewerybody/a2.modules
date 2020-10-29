@@ -19,19 +19,19 @@
     "typ": "include"
   },
   {
-    "decimals": 1,
+    "decimals": 0,
     "label": "Time between checks",
     "max": 10000.0,
     "min": 250.0,
     "name": "TaskbarRaiser_Interval",
     "slider": false,
-    "step_len": 1.0,
+    "step_len": 10.0,
     "suffix": "ms",
     "typ": "number",
-    "value": 1000.0
+    "value": 1000
   },
   {
-    "decimals": 1,
+    "decimals": 0,
     "label": "Distance to Taskbar",
     "max": 200.0,
     "min": 1.0,
@@ -40,7 +40,7 @@
     "step_len": 1.0,
     "suffix": "pixels",
     "typ": "number",
-    "value": 5.0
+    "value": 5
   },
   {
     "label": "Ignore on Remote Desktop Connections",
