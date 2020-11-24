@@ -41,6 +41,7 @@ getWinfo() {
 	Menu, wInfoPosMenu, Add, y: %Y%, getWinfoMenuHandler
 	Menu, wInfoPosMenu, Add, w: %Width%, getWinfoMenuHandler
 	Menu, wInfoPosMenu, Add, h: %Height%, getWinfoMenuHandler
+    Menu, wInfoPosMenu, Add, x|y|w|h: %x%|%y%|%Width%|%Height%, getWinfoMenuHandler
 	Menu, wInfoPosMenu, Add, SetToCursor, getWinfoSetToCursor
     Menu, wInfoPosMenu, Add, MousePos: %mouseX%`,%mouseY%, getWinfoMenuHandler
 
