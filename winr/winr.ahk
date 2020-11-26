@@ -2,20 +2,24 @@ winr() {
     global winr_paths
 	selection := clipboard_get()
 	selection := trim(selection, " `n`t`r")
-	
+
+    if string_startswith(selection, "u'") OR string_startswith(selection, "u""")
+        selection := substr(selection, 2)
+    selection := string_unquote(selection)
+    selection := string_unquote(selection, "'")
+
 	if (selection == "") {
-		winrCallDialog()
+		winr_CallDialog()
 	}
 	else if FileExist(selection) {
         tt("path exists...",0.5)
-		winrCatchedCallRun(selection)
+		winr_CatchedCallRun(selection)
 	}
-	; has http:// in the front
 	else if (string_is_web_address(selection)) {
 		tt("web address...",0.5)
-        if (SubStr(selection, 1, 4) != "http")
+        if (!string_startswith(selection, "http"))
             selection := "https://" selection
-        winrCatchedCallRun(selection)
+        winr_CatchedCallRun(selection)
 	}
 	else {
         ; loop set up project paths, if combination with selection fits: run it
@@ -24,19 +28,19 @@ winr() {
             ppath = %ppath%\%slashed%
             if FileExist(ppath) {
                 tt("Found relative path ...",0.5)
-                winrCatchedCallRun(ppath)
+                winr_CatchedCallRun(ppath)
                 Return
             }
         }
 
         tt("Does not exist!`nI don't know what todo with your selection...", 1)
-        winrCallDialog()
+        winr_CallDialog()
         sleep, 300
         SendInput, %selection%
     }
 }
 
-winrCallDialog() {
+winr_CallDialog() {
 	runWindow = Run ahk_class #32770
 	Send #r
 	WinWaitActive, %runWindow%
@@ -48,11 +52,15 @@ winrCallDialog() {
     }
 }
 
-winrCatchedCallRun(ppath) {
-    Run, %ppath%,, UseErrorLevel
-    if ErrorLevel {
-        cmd = explorer.exe /select,"%ppath%"
-        Run, %cmd%
-        tt("but I cound not 'Run' it!`nExploring to ...:", 1.5, 1)
+winr_CatchedCallRun(path) {
+    global winr_explore_check
+    if winr_explore_check
+        explorer_show(path)
+    else {
+        Run, %path%,, UseErrorLevel
+        if ErrorLevel {
+            explorer_show(path)
+            tt("but I cound not 'Run' it!`nExploring to ...:", 1.5, 1)
+        }
     }
 }
