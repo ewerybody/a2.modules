@@ -1,11 +1,12 @@
-; ExplorerCreateFile - create_file.ahk
-; author: eric
-; created: 2019 5 1
-
 explorer_create_file_popup() {
+    ; Provide a menu popup to aid simple file creation.
+
     ; TODO: Embedd this into an a2 interface
     global explorer_create_file_data, a2data
-    explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}, Python: {ext: "py", file_name: "__init__", content: "", ask: true}, JSON: {ext: "json", file_name: "some_data", content: "", ask: true}}
+    explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
+    , Python: {ext: "py", file_name: "__init__", content: "", ask: true}
+    , JSON: {ext: "json", file_name: "some_data", content: "", ask: true}
+    , Text: {ext: "txt", file_name: "text", content: "", ask: true}}
 
     ; add menu entries on demand...
     for name, data in explorer_create_file_data
@@ -19,27 +20,30 @@ explorer_create_file_popup() {
     Menu, MyMenu, DeleteAll
 }
 
-explorer_create_file_handler(menu_name) {
+explorer_create_file_handler(menu_name)
+{
     global explorer_create_file_data
     path := explorer_get_path()
     this := explorer_create_file_data[menu_name]
     file_name := this["file_name"]
     if (this["ask"]) {
-        InputBox, file_name, %menu_name% File Name, Please enter a name for the new file:,,, 130,,,,, %file_name%
+        msg := "Please enter a name for the new file:"
+        InputBox, file_name, %menu_name% File Name, %msg%,,, 130,,,,, %file_name%
         if ErrorLevel
             Return
     }
+
     file_base := file_name "." this["ext"]
     file_path := path "\" file_base
-    
+
     if FileExist(file_path) {
-        MsgBox, 48, File Already Exists!, There is already a file with that name here!
-        return
+        MsgBox, 48, File Already Exists, There is already a file with that name here!
+    } else {
+        content := this["content"]
+        FileAppend , %content%, %file_path%
+
+        Send, F5
+        sleep 1000
+        explorer_select(file_base)
     }
-    content := this["content"]
-    FileAppend , %content%, %file_path%
-    
-    Send, F5
-    sleep 1000
-    explorer_select(file_base)
 }

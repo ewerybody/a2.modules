@@ -2,7 +2,7 @@
   {
     "author": "eric",
     "date": "2019 5 1",
-    "description": "May create different files directly in the current Explorer directory.\t\t\t\t",
+    "description": "Create different files directly in the current Explorer directory.\t\t\t\t",
     "tags": [
       "file",
       "code",
@@ -23,7 +23,7 @@
     "keyChange": true,
     "label": "Popup CreateFile Menu",
     "multiple": true,
-    "name": "CreateFile_Hotkey",
+    "name": "ExplorerCreateFile_Hotkey",
     "scope": [
       "ahk_class CabinetWClass ahk_exe Explorer.EXE"
     ],
@@ -33,6 +33,29 @@
   },
   {
     "file": "explorer_create_file.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "explorer_create_on_paste()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+V"
+    ],
+    "keyChange": true,
+    "label": "Create Files from Clipboard (images)",
+    "multiple": true,
+    "name": "ExplorerCreateFile_PasteHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "explorer_create_on_paste.ahk",
     "typ": "include"
   }
 ]
