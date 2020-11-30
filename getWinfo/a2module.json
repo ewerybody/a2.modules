@@ -2,14 +2,14 @@
   {
     "author": "ewerybody",
     "date": "",
-    "description": "Gathers title, process Id, handle, class, size, positon and controls information in a menu that you can click to get the item in the clipboard.",
+    "description": "Gathers title, window class, handle, process Id, process name, path, window size, positon, controls and command line information in a menu to get into the clipboard.",
     "tags": [
       "window",
       "code"
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/wiki/getWinfo",
-    "version": "0.3"
+    "version": "0.5"
   },
   {
     "file": "getWinfo.ahk",
