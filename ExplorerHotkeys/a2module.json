@@ -11,38 +11,123 @@
     "version": "0.1"
   },
   {
-    "file": "callExplorer.ahk",
-    "typ": "include"
-  },
-  {
     "disablable": true,
     "enabled": true,
-    "functionCode": "callExplorer()",
+    "functionCode": "ExplorerHotkeys_CallExplorer()",
     "functionMode": 0,
     "key": "Win+E",
     "keyChange": true,
     "label": "calls Explorer with a predefined folder",
     "mode": "ahk",
     "multiple": true,
-    "name": "callExplorerHotkey",
+    "name": "ExplorerHotkeys_CallExplorer",
     "scope": [],
     "scopeChange": false,
     "scopeMode": 0,
     "typ": "hotkey"
   },
   {
-    "file": "ftpExplorerCopy.ahk",
-    "typ": "include"
-  },
-  {
     "browse_type": "0",
     "file_types": "",
-    "label": "predefined folder",
-    "name": "callExplorer_path",
+    "label": "Predefined Path",
+    "name": "ExplorerHotkeys_CallExplorerPath",
     "save_mode": false,
     "typ": "path",
     "value": "C:\\",
     "writable": false
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_ToggleHidden()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+H"
+    ],
+    "keyChange": true,
+    "label": "Toggle Hidden Items",
+    "multiple": true,
+    "name": "ExplorerHotkeys_ToggleHiddenHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "ExplorerHotkeys.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_ToggleExtensions()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+E"
+    ],
+    "keyChange": true,
+    "label": "Toggle File Extensions",
+    "multiple": true,
+    "name": "ExplorerHotkeys_ToggleExtensionsHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "children": [
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionMode": 2,
+        "functionSend": "Send, {Browser_Forward}",
+        "key": [
+          "Shift+Wheelup"
+        ],
+        "keyChange": true,
+        "label": "Forward",
+        "multiple": true,
+        "name": "ExplorerHotkeys_ShiftWheelHotkey1",
+        "scope": [
+          "ahk_class CabinetWClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionMode": 2,
+        "functionSend": "Send, {Browser_Back}",
+        "key": [
+          "Shift+Wheeldown"
+        ],
+        "keyChange": true,
+        "label": "Backward",
+        "multiple": true,
+        "name": "ExplorerHotkeys_ShiftWheelHotkey2",
+        "scope": [
+          "ahk_class CabinetWClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "Browse Forward/Backward on MouseWheel",
+    "name": "ExplorerHotkeys_ShiftWheelBox",
+    "typ": "group"
+  },
+  {
+    "file": "ftpExplorerCopy.ahk",
+    "typ": "include"
   },
   {
     "disablable": true,
@@ -71,7 +156,7 @@
     "functionURL": "Run, ",
     "key": "Alt+N",
     "keyChange": true,
-    "label": "Toggle the Navigation Panel",
+    "label": "Toggle the Navigation Panel (Experimental)",
     "mode": "ahk",
     "multiple": true,
     "name": "ExplorerHotkeys_NavOnOff",
@@ -85,5 +170,24 @@
   {
     "file": "navOnOff.ahk",
     "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_DuplicateWindow()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+Shift+D"
+    ],
+    "keyChange": true,
+    "label": "Duplicate Explorer Window",
+    "multiple": true,
+    "name": "ExplorerHotkeys_DuplicateWindowHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
   }
 ]
