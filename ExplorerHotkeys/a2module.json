@@ -17,7 +17,7 @@
     "functionMode": 0,
     "key": "Win+E",
     "keyChange": true,
-    "label": "calls Explorer with a predefined folder",
+    "label": "Call Explorer with a predefined path",
     "mode": "ahk",
     "multiple": true,
     "name": "ExplorerHotkeys_CallExplorer",
