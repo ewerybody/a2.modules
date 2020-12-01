@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* ComfortResize\n  - repaired double click for maxi/minimize\n  - added Double Click thresholds, put in Group\n    so the whole thing can be toggled\n  - reset mouse cursor on double_click actions\n  - new cursor reset code #28\n  - now uses new window lib respecting virtual borders\n* SessionRestore - now with on demand process fetch\n* gtranslate:\n  - removed default hotkeys\n  - added new language lister\n  - online msg added\n* getWinfo fixed with new window_get_rect to display window size\n* DetailsPopup: lister element data no longer in sub-level element\n* New module TaskBarRaiser\n  - Makes sure a hidden task bar pops up when a foreground app prevents it.",
+  "news": "* ExplorerHotkeys: Huge Update. Ported many things.\n* getWinfo:\n  - new menu option to get x|y|w|h into clipboard\n  - Added commandline info (if any)\n* WinR: now unquotes paths and has new option to always show in explorer\n* ExplorerCreateFile: added pasting images from clipboard\n* NEW module TaskbarRaiser",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules/wiki",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "zip_size": 88441
 }
