@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "author": "eRiC",
     "date": "2015 10 10",
@@ -6,7 +6,7 @@
     "tags": [],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "children": [
@@ -45,6 +45,12 @@
         "name": "calculAid_AlwaysOnTop",
         "typ": "check",
         "value": false
+      },
+      {
+        "label": "Activate already open Calculator/Open New when focused.",
+        "name": "CalculAid_ReuseOpenOne",
+        "typ": "check",
+        "value": true
       }
     ],
     "disablable": true,

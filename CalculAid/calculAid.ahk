@@ -1,6 +1,4 @@
-; CalculAid - calculAid.ahk
-; author: eRiC
-; created: 2015 10 10
+; CalculAid - Calculato opener/helper
 ;
 ; nice :/ on win10 although you call calc.exe the calculator process executable will be:
 ; "ApplicationFrameHost.exe" and the class: "ApplicationFrameWindow". Thanks MS! This can be
@@ -11,33 +9,76 @@
 ; nice to have in a2 anyway.
 
 calculAid_open() {
-    tt("CalculAid...", 1)
-    global calculAid_openAtCursor, calculAid_AlwaysOnTop
-    sel := clipboard_get()
-    RegExMatch(sel, "[0-9.,+/*=-]+", numbers)
-    ;tt(numbers)
-    
+    global calculAid_openAtCursor, calculAid_AlwaysOnTop, CalculAid_ReuseOpenOne
+
+    ; TODO fix the selected number to calculator-thing:
+    ; sel := clipboard_get()
+    ; RegExMatch(sel, "[0-9.,+-]+", numbers)
+    ; RegExMatch(sel, "[0-9.,+/*=-]+", number_ops)
+
+    WinGet, current_id, ID, A
+    found_ids := calculAid_get_current()
+    calc_is_active := string_is_in_array(current_id, found_ids)
+
+    if (CalculAid_ReuseOpenOne and found_ids.MaxIndex() and !calc_is_active)
+    {
+        tt("CalculAid: found one activating ...", 1)
+        this := found_ids[1]
+        WinActivate, ahk_id %this%
+        Return
+    }
+
+    ; This calls to open a Calculator, but the PID is useless.
+    ; Windows will now use ApplicationFrameHost.exe to host a Calculator
+    tt("CalculAid: Calling new ...", 1)
     Run, calc.exe,, UseErrorLevel, calcPID
-    
-	If calculAid_openAtCursor
-	{
-        ;tt("waiting for pid:" calcPID " ...", 2, 1)
-		WinWait, ahk_pid %calcPID%,, 2
-        ;win10Calc := "Calculator ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe"
-        ;win7Calc := "Calculator ahk_class CalcFrame ahk_exe calc.exe"
-        ;WinWait, %win7Calc%,, 2
-        sleep, 50
-        ;tt("Window found! " calcPID, 1)
+
+    ; We'll have to wait a moment for it to be available
+    new_id := calculAid_wait_for_new(found_ids)
+    ; txt := string_join(found_ids, "`n")
+    ; MsgBox, calc_is_active: %calc_is_active%`nCalculAid_ReuseOpenOne:%CalculAid_ReuseOpenOne%`nnew_id:%new_id%`n`n%txt%
+
+	If calculAid_openAtCursor {
 		CoordMode, Mouse, Screen
-		MouseGetPos, clq_mousex, clq_mousey
-		;position the windowtitle under the cursor so one can move it instantly:
-        WinMove, %win7Calc%,, (clq_mousex - 30), (clq_mousey - 10)
-		;WinMove, (clq_mousex - 30), (clq_mousey - 10), %win10Calc%
+		MouseGetPos, mx, my
+        WinMove, ahk_id %new_id%,, (mx - 30), (my - 10)
 	}
 
 	If calculAid_AlwaysOnTop
-	{
-		WinWait, ahk_pid %calcPID%,, 2
-		WinSet, AlwaysOnTop, On, ahk_pid %calcPID%
-	}
+        WinSet, AlwaysOnTop, On, ahk_id %new_id%
+}
+
+
+calculAid_get_current() {
+    this_lng := SubStr(A_Language, -1)
+    names := {09: "Calculator", 07: "Taschenrechner"}
+    this_name := names[this_lng]
+
+    calc_ids := []
+    WinGet, found_ids, List, %this_name% ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe
+    Loop, %found_ids% {
+        this := found_ids%A_Index%
+        calc_ids.Push(this)
+    }
+    Return calc_ids
+}
+
+
+calculAid_wait_for_new(found_ids) {
+    t0 := A_TickCount
+    tries := 0
+    Loop,
+    {
+        for _, id in calculAid_get_current() {
+            if string_is_in_array(id, found_ids)
+                Continue
+            Return id
+        }
+        tries++
+        t1 := A_TickCount - t0
+        Sleep, 20
+        if (t1 > 1000)
+            Break
+    }
+    MsgBox, nothing found!`ntries: %tries%
 }
