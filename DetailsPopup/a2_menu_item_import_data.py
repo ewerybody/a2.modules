@@ -1,21 +1,20 @@
 # a2 menu item script "a2_menu_item_import_data.py"
 
+
 def main(a2, mod):
-    """
-    :param a2: Main A2 object instance.
-    :param mod: Current a2 module instance.
-    """
     import os
     from PySide2 import QtWidgets
 
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
-        None, 'Import Details Data', a2.paths.a2, '(*.json, *.*)')
+        None, 'Import Details Data', a2.paths.a2, '(*.json, *.*)'
+    )
 
     if not os.path.isfile(file_path):
         return
 
     import a2util
     import json
+
     try:
         data = a2util.json_read(file_path)
     except json.decoder.JSONDecodeError as error:

@@ -38,5 +38,10 @@
     "label": "Import Data",
     "script_name": "import_data",
     "typ": "menu_item"
+  },
+  {
+    "label": "Export Data",
+    "script_name": "export_data",
+    "typ": "menu_item"
   }
 ]
