@@ -7,8 +7,18 @@ explorer_create_on_paste() {
         return
     }
 
-    current_path := explorer_get_path()
+    ; file_name := this["file_name"]
     img_name := "Clipboard Image.png"
+    msg := "Please enter a name for the new image file:`n"
+    msg .= "The extension might be .png, .jpg, .gif, .bmp or .tif..."
+    InputBox, img_name, Clipboard Image File Name, %msg%,, 420, 140,,,,, %img_name%
+
+    if ErrorLevel {
+        gdip_shutdown(token)
+        Return
+    }
+
+    current_path := explorer_get_path()
     img_path := path_join(current_path, [img_name])
     tt("Creating image from clipboard ...", 1)
     gdipbitmap_to_file(bitmap, img_path)
