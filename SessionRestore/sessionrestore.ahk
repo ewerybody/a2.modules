@@ -2,7 +2,6 @@
 ; author: Eric Werner
 ; created: 2017 1 31
 
-
 sessionrestore_session_restore() {
     ; To avoid using the hidden windows list we need to restore all stored windows of the stored processes.
     ; That gives us the subwindows as well without the gazillions hidden ones.
@@ -21,8 +20,7 @@ sessionrestore_session_restore() {
     this_vs_size := vs_width "," vs_height
     this_vs_size_list := SessionRestore_List[this_vs_size]
     if !IsObject(this_vs_size_list) {
-        ; TODO: remove this later:
-        MsgBox this_vs_size: "%this_vs_size%" is not listed!
+        ; nothing to do
         return
     }
 
@@ -72,15 +70,7 @@ sessionrestore_session_restore() {
             if (swin[4] == win.x && swin[5] == win.y && swin[6] == win.w && swin[7] == win.h)
                 continue
 
-            ;text := win.proc_name " - " win.id " saved geo vs current:`n" win.x " " win.y " " win.w " " win.h "`n" swin[4] " " swin[5] " " swin[6] " " swin[7]
-            ;msgbox %text%
-            this_id := win.id
-            this_x := swin[4]
-            this_y := swin[5]
-            this_w := swin[6]
-            this_h := swin[7]
-            WinMove, ahk_id %this_id%,, this_x, this_y, this_w, this_h
-            ;WinMove("ahk_id " this_id,, swin[4], swin[5], swin[6], swin[7])
+            window_set_rect(swin[4], swin[5], swin[6], swin[7], win.id)
         }
     }
 
@@ -93,7 +83,7 @@ sessionrestore_session_restore() {
     ;    win := this_vs_size_list[A_Index]
     ;    p := win[1]
     ;    c := win[2]
-        ;MsgBox %A_Index% proc: %p%`nclass: %c%
+    ;MsgBox %A_Index% proc: %p%`nclass: %c%
     ;}
 
     ; to make it look like it finished correctly
@@ -101,26 +91,27 @@ sessionrestore_session_restore() {
     Progress, Off
 }
 
-
 _sessionrestore_class_match(win_class, match_string) {
     if ((match_string == "") || (match_string == "*") || (win_class == match_string))
         return true
-    if InStr(match_string, "*")
-        if RegExMatch(win_class, match_string)
+    if InStr(match_string, "*") {
+        if RegExMatch(win_class, match_string) {
             return true
-
+        }
+    }
     return false
 }
 _sessionrestore_title_match(win_title, match_string) {
     if ((match_string == "*") || (win_title == match_string))
         return true
-    if InStr(match_string, "*")
-        if RegExMatch(win_title, match_string)
+    if InStr(match_string, "*") {
+        if RegExMatch(win_title, match_string) {
             return true
+        }
+    }
 
     return false
 }
-
 
 sessionrestore_init() {
     hw_ahk := _sessionrestore_FindWindowEx(0, 0, "AutoHotkey", a_ScriptFullPath " - AutoHotkey v" a_AhkVersion)
@@ -131,27 +122,22 @@ sessionrestore_init() {
     NOTIFY_FOR_THIS_SESSION = 0
     result := DllCall("Wtsapi32.dll\WTSRegisterSessionNotification", "uint", hw_ahk, "uint", NOTIFY_FOR_ALL_SESSIONS)
 
-    if (!result)
-    {
+    if (!result) {
         MsgBox, sessionrestore_init: WTSRegisterSessionNotification has failed!
     }
 }
 
-
 sessionrestore_handle_session_change(p_w, p_l, p_m, p_hw) {
-    WTS_SESSION_LOCK    = 0x7
-    WTS_SESSION_UNLOCK  = 0x8
+    WTS_SESSION_LOCK = 0x7
+    WTS_SESSION_UNLOCK = 0x8
 
-    if ( p_w = WTS_SESSION_LOCK )
-    {
+    if ( p_w = WTS_SESSION_LOCK ) {
         ;sessionrestore_session_save()
     }
-    else if ( p_w = WTS_SESSION_UNLOCK )
-    {
+    else if ( p_w = WTS_SESSION_UNLOCK ) {
         sessionrestore_session_restore()
     }
 }
-
 
 ;deprecated for now
 sessionrestore_session_save() {
@@ -166,27 +152,9 @@ sessionrestore_session_save() {
     }
 }
 
-
 _sessionrestore_FindWindowEx(p_hw_parent, p_hw_child, p_class, p_title) {
     return, DllCall( "FindWindowEx", "uint", p_hw_parent, "uint", p_hw_child, "str", p_class, "str", p_title )
 }
-
-
-class _sessionrestore_procwin
-{
-    __New(proc_name, win_name="", win_class="", pos_x=0, pos_y=0, size_w=0, size_h=0, ignore=false)
-    {
-        this.proc_name := proc_name
-        this.win_name := win_name
-        this.win_class := win_class
-        this.ignore := ignore
-        this.x := pos_x
-        this.y := pos_y
-        this.w := size_w
-        this.h := size_h
-    }
-}
-
 
 sessionrestore_get_window_list(hidden=false, process_name="") {
     current_detect_state := DetectHiddenWindows()
@@ -216,11 +184,8 @@ sessionrestore_get_window_list(hidden=false, process_name="") {
     return window_list
 }
 
-
-class _sessionrestore_window
-{
-    __New(proc_name, win_title, win_class, x, y, w, h, id, index, minmax)
-    {
+class _sessionrestore_window {
+    __New(proc_name, win_title, win_class, x, y, w, h, id, index, minmax) {
         this.proc_name := proc_name
         this.title := win_title
         this.class := win_class
