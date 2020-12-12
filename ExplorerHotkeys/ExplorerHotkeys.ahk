@@ -69,12 +69,9 @@ ExplorerHotkeys_DuplicateWindow() {
     path := explorer_get_path()
     explorer_show(path)
 
-    ; dirname := path_dirname(path)
     WinWaitNotActive, ahk_id %this_id%
     WinWaitActive, ahk_class CabinetWClass
     WinGet, new_id, ID, A
 
-    t = path:%path%`nthis_id:%this_id%`nnew_id:%new_id%
-    tt(t, 2)
     window_set_rect(geo.x + 20, geo.y + 20, geo.w, geo.h, new_id)
 }
