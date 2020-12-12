@@ -28,9 +28,7 @@ ExplorerHotkeys_ToggleHidden() {
         tt("Hidden Items: OFF", 1)
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
-
-    ; RegRead, value2, %EH_REG_KEY%, %value_name%
-    ; msgbox EH_REG_KEY:%EH_REG_KEY%`nvalue_name:%value_name%`nvalue:%value%`nnew_value:%new_value%`nvalue2:%value2%
+    Sleep, 100 ; Whow this did only work every second time without this delaay
 
     ExplorerHotkeys_Refresh()
 }
@@ -48,19 +46,18 @@ ExplorerHotkeys_ToggleExtensions() {
         tt("Extensions: OFF", 1)
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
-
-    ; RegRead, value2, %EH_REG_KEY%, %value_name%
-    ; msgbox EH_REG_KEY:%EH_REG_KEY%`nvalue_name:%value_name%`nvalue:%value%`nnew_value:%new_value%`nvalue2:%value2%
+    Sleep, 100 ; Whow this did only work every second time without this delaay
 
     ExplorerHotkeys_Refresh()
 }
 
 ExplorerHotkeys_Refresh() {
-    WinGetClass, eh_Class, A
-    If (eh_Class = "#32770" OR (WinVer >= WIN_VISTA))
+    WinGetClass, win_class, A
+    If (win_class = "#32770" OR (WinVer >= WIN_VISTA)) {
         send, {F5}
-    Else
+    } Else {
         PostMessage, 0x111, 28931,,, A
+    }
 }
 
 ExplorerHotkeys_DuplicateWindow() {
