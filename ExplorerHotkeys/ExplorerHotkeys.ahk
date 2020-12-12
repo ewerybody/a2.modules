@@ -2,17 +2,18 @@
 
 ExplorerHotkeys_CallExplorer() {
     global ExplorerHotkeys_CallExplorerPath
-    IfNotExist, %ExplorerHotkeys_CallExplorerPath%
+    IfExist, %ExplorerHotkeys_CallExplorerPath%
     {
-        msg = The call Explorer-path set in ExplorerHotkeys is inexistent!`n`n
-        msg = %msg% %ExplorerHotkeys_CallExplorerPath%`n`n
-        msg = %msg%Maybe the directory was deleted? Please make sure the path exists or choose an existing one in the dialog!
-        MsgBox, 16, ExplorerHotkeys Error, %msg%
-
-        Run, "C:\\"
+        Run, %ExplorerHotkeys_CallExplorerPath%
         Return
     }
-    Run, %ExplorerHotkeys_CallExplorerPath%
+
+    msg = The call Explorer-path set in ExplorerHotkeys is inexistent!`n`n
+    msg = %msg% %ExplorerHotkeys_CallExplorerPath%`n`n
+    msg = %msg%Maybe the directory was deleted? Please make sure the path exists or choose an existing one in the dialog!
+    MsgBox, 16, ExplorerHotkeys Error, %msg%
+
+    Run, "C:\\"
 }
 
 ExplorerHotkeys_ToggleHidden() {
