@@ -5,7 +5,7 @@ import os
 import sys
 from copy import deepcopy
 
-from PySide2 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 
 import a2ctrl
 import a2widget.a2hotkey
@@ -32,15 +32,16 @@ _DEFAULT_HOTKEY = {
     'scope': [],
     'scopeChange': False,
     'scopeMode': 0,
-    'typ': 'hotkey'
-    }
+    'typ': 'hotkey',
+}
 
 
 class GTranslateLister(a2item_editor.A2ItemEditor):
     def __init__(self, cfg, parent):
         super(GTranslateLister, self).__init__(parent)
         self.item_flags = (
-            QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsEnabled)
+            QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsEnabled
+        )
         self.set_data(cfg)
 
         self._hk_user_cfg = {}
@@ -74,8 +75,10 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         except ValueError:
             return
 
-        text = 'Translate "%s" to "%s"' % (gtranslate_langs.key_to_name(from_lang),
-                                           gtranslate_langs.key_to_name(to_lang))
+        text = 'Translate "%s" to "%s"' % (
+            gtranslate_langs.key_to_name(from_lang),
+            gtranslate_langs.key_to_name(to_lang),
+        )
         self.hotkey.label.setText(text)
         this_cfg = self.data.get(name, {})
         self.hotkey.checkbox.blockSignals(True)
@@ -95,6 +98,7 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
 
 class _ModStub:
     """A fake module to be able to receive element changes."""
+
     def __init__(self, config):
         self.config = config
         self.enabled = False
@@ -108,12 +112,14 @@ class _ModStub:
 
 class NewDialog(a2input_dialog.A2ConfirmDialog):
     """Dialog to select the languages to translate between."""
+
     okayed = QtCore.Signal(str)
     field_changed = QtCore.Signal(str)
 
     def __init__(self, parent, present_keys):
         super(NewDialog, self).__init__(
-            parent, 'New gtranslate Hotkey', 'Select languages to translate between:')
+            parent, 'New gtranslate Hotkey', 'Select languages to translate between:'
+        )
         self._present_keys = present_keys
 
         self.ui.combo_from = QtWidgets.QComboBox(self)
@@ -179,6 +185,7 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
+
     def __init__(self, *args):
         super(Draw, self).__init__(*args)
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -202,6 +209,7 @@ class Edit(EditCtrl):
     The background widget that sets up how the user can edit the element,
     visible when editing the module.
     """
+
     def __init__(self, cfg, main, parent_cfg):
         super(Edit, self).__init__(cfg, main, parent_cfg)
 

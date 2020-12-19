@@ -3,7 +3,7 @@
 
 def main(a2, mod):
     import os
-    from PySide2 import QtWidgets
+    from PySide6 import QtWidgets
 
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
         None, 'Import Details Data', a2.paths.a2, '(*.json, *.*)'

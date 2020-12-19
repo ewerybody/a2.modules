@@ -1,5 +1,6 @@
 ﻿# a2 menu item script "import_hotstring"
 
+
 def main(a2, mod):
     """
     :param a2: Main A2 object instance.
@@ -7,10 +8,11 @@ def main(a2, mod):
     """
     print('Import Hotstrings ... %s' % __name__)
 
-    from PySide2 import QtWidgets
+    from PySide6 import QtWidgets
 
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
-        None, 'Import Hotstrings Data', a2.paths.a2, '(*.ahk *.json)')
+        None, 'Import Hotstrings Data', a2.paths.a2, '(*.ahk *.json)'
+    )
 
     if not file_path:
         return
@@ -19,6 +21,7 @@ def main(a2, mod):
     import a2util
     import pprint
     import hotstrings_io
+
     name = 'hotstrings'
     base, ext = os.path.splitext(file_path)
     ext = ext.lower()
