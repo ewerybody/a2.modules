@@ -1,5 +1,5 @@
 import a2util
-from PySide6 import QtWidgets
+from a2qt import QtWidgets
 
 
 def main(a2, mod):

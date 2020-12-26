@@ -1,5 +1,5 @@
 ﻿# a2 menu item script "export_hotstring_ahk_code"
-from PySide6 import QtWidgets
+from a2qt import QtWidgets
 
 
 def main(a2, mod):

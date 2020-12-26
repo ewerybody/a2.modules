@@ -5,7 +5,7 @@ import os
 import json
 from functools import partial
 
-from PySide6 import QtWidgets, QtGui
+from a2qt import QtWidgets, QtGui
 
 import a2ahk
 import a2core

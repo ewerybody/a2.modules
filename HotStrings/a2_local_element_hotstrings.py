@@ -2,7 +2,7 @@
 import os
 import sys
 
-from PySide6 import QtWidgets, QtCore
+from a2qt import QtWidgets, QtCore
 
 import a2util
 import a2ctrl
