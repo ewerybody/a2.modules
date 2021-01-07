@@ -6,7 +6,7 @@ from PySide2 import QtWidgets, QtCore
 
 import a2util
 import a2ctrl
-import a2runtime
+import a2core
 from a2element import DrawCtrl, EditCtrl
 from a2widget.a2item_editor import A2ItemEditor
 from a2widget.a2text_field import A2TextField
@@ -27,13 +27,16 @@ HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
     (Options.ignore.name, 'Ignore Characters Causing Replacement'),
     (Options.inside.name, 'Replace Inside Words'),
-    (Options.append.name, 'Don\'t Replace Abbreviation, Just append')]
+    (Options.append.name, "Don't Replace Abbreviation, Just append"),
+]
 
-MODES = ['a2 default - escape "!+^#"',
-         'Execute as Autohotkey code',
-         'Let !+^# press Ctrl, Shift, Alt, Win',
-         'Raw - Control-Characters as Plain Text',
-         'Text - new. Similar to raw mode.']
+MODES = [
+    'a2 default - escape "!+^#"',
+    'Execute as Autohotkey code',
+    'Let !+^# press Ctrl, Shift, Alt, Win',
+    'Raw - Control-Characters as Plain Text',
+    'Text - new. Similar to raw mode.',
+]
 CASE_ITEMS = ['Forward to text', 'Sensitive', 'Keep original']
 
 
@@ -44,8 +47,12 @@ class HotStringsEditor(A2ItemEditor):
 
         self.ui.text = A2TextField(self)
         self.add_data_widget(
-            'text', self.ui.text, self.ui.text.setText,
-            self.ui.text.editing_finished, default_value='')
+            'text',
+            self.ui.text,
+            self.ui.text.setText,
+            self.ui.text.editing_finished,
+            default_value='',
+        )
 
         for name, label in HS_CHECKBOXES:
             checkbox = QtWidgets.QCheckBox(self)
@@ -54,18 +61,25 @@ class HotStringsEditor(A2ItemEditor):
 
         self.ui.mode = QtWidgets.QComboBox(self)
         self.ui.mode.addItems(MODES)
-        self.add_data_label_widget('mode', self.ui.mode, self.ui.mode.setCurrentIndex,
-                                   default_value=0, label='Mode')
+        self.add_data_label_widget(
+            'mode', self.ui.mode, self.ui.mode.setCurrentIndex, default_value=0, label='Mode'
+        )
 
         self.ui.case = QtWidgets.QComboBox(self)
         self.ui.case.addItems(CASE_ITEMS)
-        self.add_data_label_widget('case', self.ui.case, self.ui.case.setCurrentIndex,
-                                   default_value=0)
+        self.add_data_label_widget(
+            'case', self.ui.case, self.ui.case.setCurrentIndex, default_value=0
+        )
 
         self.ui.sendmode = QtWidgets.QComboBox(self)
         self.ui.sendmode.addItems(['Default', 'SendInput', 'SendPlay', 'SendEvent'])
-        self.add_data_label_widget('send', self.ui.sendmode, self.ui.sendmode.setCurrentIndex,
-                                   default_value=0, label='Send Method')
+        self.add_data_label_widget(
+            'send',
+            self.ui.sendmode,
+            self.ui.sendmode.setCurrentIndex,
+            default_value=0,
+            label='Send Method',
+        )
 
         self.enable_search_field(False)
 
@@ -78,6 +92,7 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
+
     def __init__(self, *args):
         # cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(*args)
@@ -154,6 +169,7 @@ class Draw(DrawCtrl):
 
     def add_scope_dialog(self):
         from a2widget.a2hotkey import scope_dialog
+
         dialog = scope_dialog.get_changable_no_global(self)
         dialog.okayed.connect(self.scope_add_done)
         dialog.rejected.connect(self._unselect_add_option)
@@ -180,6 +196,7 @@ class Draw(DrawCtrl):
 
     def scope_add_done(self, scope_cfg):
         from a2widget.a2hotkey.hotkey_common import Vars
+
         scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
         if scope_string:
             mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
@@ -190,9 +207,11 @@ class Draw(DrawCtrl):
 
     def edit_scope(self):
         from a2widget.a2hotkey import scope_dialog, Vars
+
         scope_dict = {}
-        scope_dict[Vars.scope_mode] = {
-            hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[self.scope_key]
+        scope_dict[Vars.scope_mode] = {hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[
+            self.scope_key
+        ]
         scope_dict[Vars.scope] = self.scope_string.split('\n')
 
         dialog = scope_dialog.get_changable_no_global(self, scope_dict)
@@ -202,10 +221,12 @@ class Draw(DrawCtrl):
     def remove_scope(self):
         if self.current_scope:
             dialog = A2ConfirmDialog(
-                self.main, 'Remove scope "%s..."' % self.scope_string[:30],
+                self.main,
+                'Remove scope "%s..."' % self.scope_string[:30],
                 'The scope still contains Hotstings! These would be lost!\n'
                 'You can also <b>move</b> the Hotstrings to other scopes or '
-                'make them global via context menu.\nOr do you want to continue deletion?')
+                'make them global via context menu.\nOr do you want to continue deletion?',
+            )
             dialog.exec_()
             if not dialog.result:
                 return
@@ -218,6 +239,7 @@ class Draw(DrawCtrl):
 
     def scope_edit_done(self, scope_cfg):
         from a2widget.a2hotkey.hotkey_common import Vars
+
         scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
         if scope_string:
             mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
@@ -254,7 +276,7 @@ class Draw(DrawCtrl):
             return
         self._hs_code_b4 = hotstrings_code
 
-        hotstrings_code = a2runtime.EDIT_DISCLAIMER % 'hotstrings' + '\n' + hotstrings_code
+        hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
         a2util.write_utf8(self.hotstrings_file, hotstrings_code)
 
         self.change()
@@ -269,10 +291,8 @@ class Draw(DrawCtrl):
     def build_scope_edit_menu(self, menu):
         if self.scope_combo.currentIndex() != 0:
             menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
-            menu.addAction(a2ctrl.Icons.inst().delete,
-                           'Remove Scope', self.remove_scope)
-        menu.addAction(a2ctrl.Icons.inst().list_add,
-                       'Add Scope', self.add_scope_dialog)
+            menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Scope', self.remove_scope)
+        menu.addAction(a2ctrl.Icons.inst().list_add, 'Add Scope', self.add_scope_dialog)
 
     def build_list_context_menu(self, menu):
         menu.clear()
@@ -299,10 +319,12 @@ class Draw(DrawCtrl):
 
         if self.editor.selected_name in target_scope:
             dialog = A2ConfirmDialog(
-                self.main, 'Scope already contains "%s"!' % self.editor.selected_name,
+                self.main,
+                'Scope already contains "%s"!' % self.editor.selected_name,
                 'The target scope "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
-                'It would be <b>overwritten</b>! Do you want to continue?' %
-                (scope_string[:100], self.editor.selected_name))
+                'It would be <b>overwritten</b>! Do you want to continue?'
+                % (scope_string[:100], self.editor.selected_name),
+            )
             dialog.exec_()
             if not dialog.result:
                 return
@@ -318,8 +340,11 @@ class Draw(DrawCtrl):
 class Edit(EditCtrl):
     def __init__(self, *args):
         super(Edit, self).__init__(*args)
-        self.mainLayout.addWidget(QtWidgets.QLabel(
-            'Nothing to setup on the HotStrings element. This one is all for the user.'))
+        self.mainLayout.addWidget(
+            QtWidgets.QLabel(
+                'Nothing to setup on the HotStrings element. This one is all for the user.'
+            )
+        )
 
     @staticmethod
     def element_name():
