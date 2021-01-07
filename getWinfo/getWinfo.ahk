@@ -13,7 +13,6 @@ getWinfo() {
     WinGet, this_process, ProcessName, ahk_id %getWinfoID%
     WinGet, this_path, ProcessPath, ahk_id %getWinfoID%
     FileGetVersion, this_ver, %this_path%
-    cmd_line := getWinfoCmdLine(thisPID, this_path)
 
     Menu, wInfoMenu, Add, title: %this_title%, getWinfoMenuHandler
     Menu, wInfoMenu, Add, class: %this_class%, getWinfoMenuHandler
@@ -24,8 +23,18 @@ getWinfo() {
     Menu, wInfoMenu, Add, path: %this_path%, getWinfoMenuHandler
     Menu, wInfoMenu, Add, Explore to path, getWinfoGotoPath
 
+    ; "The names of menus and menu items can be up to 260 characters long."
+    ; https://www.autohotkey.com/docs/commands/Menu.htm#Remarks ...260 is a lot!
+    max_menu_label_len := 64
+    cmd_line := getWinfoCmdLine(thisPID, this_path)
     if (cmd_line) {
-        Menu, wInfoMenu, Add, commandline: %cmd_line%, getWinfoMenuHandler
+        if (StringLen(cmd_line) > max_menu_label_len) {
+            display_line := SubStr(cmd_line, 1, max_menu_label_len) "..."
+        }
+        else
+            display_line := cmd_line
+
+        Menu, wInfoMenu, Add, commandline: %display_line%, getWinfoCopyCmdLinePath
         if FileExist(cmd_line)
             Menu, wInfoMenu, Add, Explore to Command line path, getWinfoGotoCmdLinePath
     }
@@ -97,12 +106,10 @@ getWinfoCtrls() {
 return ctrlList
 }
 
-; displays the windows controls and details in a menu
-getWinfoCtrlsHandler:
-    getWinfoCtrlsHandler(getWinfoID)
-Return
+getWinfoCtrlsHandler() {
+    ; displays the windows controls and details in a menu
+    global getWinfoID
 
-getWinfoCtrlsHandler(getWinfoID) {
     ctrlList := getWinfoCtrls()
     menuList := []
 
@@ -186,9 +193,18 @@ getWinfoCmdLine(pid, this_path) {
     }
 }
 
-getWinfoGotoCmdLinePath() {
+_getWinfo_get_cmdline_path_from_id() {
     global getWinfoID
     WinGet, thisPID, PID, ahk_id %getWinfoID%
     WinGet, this_path, ProcessPath, ahk_id %getWinfoID%
-    explorer_show(getWinfoCmdLine(thisPID, this_path))
+    return getWinfoCmdLine(thisPID, this_path)
+}
+
+
+getWinfoGotoCmdLinePath() {
+    explorer_show(_getWinfo_get_cmdline_path_from_id())
+}
+
+getWinfoCopyCmdLinePath() {
+    Clipboard := _getWinfo_get_cmdline_path_from_id()
 }
