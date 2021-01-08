@@ -5,7 +5,7 @@ import os
 import json
 from functools import partial
 
-from PySide2 import QtWidgets, QtGui
+from a2qt import QtWidgets, QtGui
 
 import a2ahk
 import a2core
@@ -30,39 +30,75 @@ class SessionRestoreWindowLister(a2item_editor.A2ItemEditor):
         labels = ['Process Name', 'Window Title', 'Window Class', 'Position', 'Size', '']
         self.ui.proc_field = QtWidgets.QLineEdit()
         self.ui.proc_field.setEnabled(False)
-        self.add_data_label_widget('process', self.ui.proc_field, self.ui.proc_field.setText,
-                                   default_value='', label=labels[0])
+        self.add_data_label_widget(
+            'process',
+            self.ui.proc_field,
+            self.ui.proc_field.setText,
+            default_value='',
+            label=labels[0],
+        )
 
         self.ui.title_field = a2button_field.A2ButtonField()
         self.ui.title_field.setPlaceholderText('No Title')
-        self.add_data_label_widget('title', self.ui.title_field, self.ui.title_field.setText,
-                                   default_value=DEFAULT_TITLE, label=labels[1])
+        self.add_data_label_widget(
+            'title',
+            self.ui.title_field,
+            self.ui.title_field.setText,
+            default_value=DEFAULT_TITLE,
+            label=labels[1],
+        )
 
         self.ui.class_field = a2button_field.A2ButtonField()
-        self.add_data_label_widget('class', self.ui.class_field, self.ui.class_field.setText,
-                                   default_value='*', label=labels[2])
+        self.add_data_label_widget(
+            'class',
+            self.ui.class_field,
+            self.ui.class_field.setText,
+            default_value='*',
+            label=labels[2],
+        )
 
         self.ui.pos_field = a2coords_field.A2CoordsField()
         self.ui.size_field = a2coords_field.A2CoordsField()
 
-        self.add_data_label_widget('xy', self.ui.pos_field, self.ui.pos_field.set_value,
-                                   default_value=(0, 0), label='Coordinates')
-        self.add_data_label_widget('wh', self.ui.size_field, self.ui.size_field.set_value,
-                                   default_value=(0, 0), label='Window Size')
+        self.add_data_label_widget(
+            'xy',
+            self.ui.pos_field,
+            self.ui.pos_field.set_value,
+            default_value=(0, 0),
+            label='Coordinates',
+        )
+        self.add_data_label_widget(
+            'wh',
+            self.ui.size_field,
+            self.ui.size_field.set_value,
+            default_value=(0, 0),
+            label='Window Size',
+        )
 
         self.ui.ignore_check = QtWidgets.QCheckBox('Ignore this Window')
-        self.add_data_label_widget('ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked,
-                                   default_value=False)
+        self.add_data_label_widget(
+            'ignore', self.ui.ignore_check, self.ui.ignore_check.setChecked, default_value=False
+        )
 
-        self.ui.title_field.add_action('Set to exactly "" No Title', partial(self.ui.title_field.setText, ''))
-        self.ui.title_field.add_action('Set to "*" Any Title', partial(self.ui.title_field.setText, '*'))
-        self.ui.title_field.add_action('Insert ".*" Wildcard', partial(self.ui.title_field.insert, '.*'))
+        self.ui.title_field.add_action(
+            'Set to exactly "" No Title', partial(self.ui.title_field.setText, '')
+        )
+        self.ui.title_field.add_action(
+            'Set to "*" Any Title', partial(self.ui.title_field.setText, '*')
+        )
+        self.ui.title_field.add_action(
+            'Insert ".*" Wildcard', partial(self.ui.title_field.insert, '.*')
+        )
         self.title_menu = QtWidgets.QMenu('Available Titles')
         self.title_menu.aboutToShow.connect(self._build_title_menu)
         self.ui.title_field.menu.addMenu(self.title_menu)
 
-        self.ui.class_field.add_action('Set to "*" Any Class', partial(self.ui.class_field.setText, '*'))
-        self.ui.class_field.add_action('Insert ".*" Wildcard', partial(self.ui.class_field.insert, '.*'))
+        self.ui.class_field.add_action(
+            'Set to "*" Any Class', partial(self.ui.class_field.setText, '*')
+        )
+        self.ui.class_field.add_action(
+            'Insert ".*" Wildcard', partial(self.ui.class_field.insert, '.*')
+        )
         self.class_menu = QtWidgets.QMenu('Available Class Names')
         self.class_menu.aboutToShow.connect(self._built_classes_menu)
         self.ui.class_field.menu.addMenu(self.class_menu)
@@ -121,15 +157,18 @@ class SessionRestoreWindowLister(a2item_editor.A2ItemEditor):
     def add_process(self, name):
         """Append a process name to the current list."""
         import a2util
+
         # for now we're just filling with the data of 1st found window
         win_data = self._fetch_window_data(name)[0]
 
         new_name = a2util.get_next_free_number(name, self.data.keys(), ' ')
-        self.data[new_name] = {'process': name,
-                               'class': win_data[0],
-                               'title': win_data[1],
-                               'xy': (win_data[2], win_data[3]),
-                               'wh': (win_data[4], win_data[5])}
+        self.data[new_name] = {
+            'process': name,
+            'class': win_data[0],
+            'title': win_data[1],
+            'xy': (win_data[2], win_data[3]),
+            'wh': (win_data[4], win_data[5]),
+        }
 
         self.add_named_item(new_name)
         self.data_changed.emit()
@@ -145,6 +184,7 @@ class Draw(DrawCtrl):
     The frontend widget visible to the user with options
     to change the default behavior of the element.
     """
+
     def __init__(self, *args):
         super(Draw, self).__init__(*args)
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -275,10 +315,18 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
         this_size_dict = this_dict.get('setups', {})
         for this_win_dict in this_size_dict.values():
             xy, wh = this_win_dict.get('xy', (0, 0)), this_win_dict.get('wh', (0, 0))
-            window_list.append([this_win_dict['process'], this_win_dict.get('class', ''),
-                                this_win_dict.get('title', DEFAULT_TITLE),
-                                xy[0], xy[1], wh[0], wh[1],
-                                this_win_dict.get('ignore', False)])
+            window_list.append(
+                [
+                    this_win_dict['process'],
+                    this_win_dict.get('class', ''),
+                    this_win_dict.get('title', DEFAULT_TITLE),
+                    xy[0],
+                    xy[1],
+                    wh[0],
+                    wh[1],
+                    this_win_dict.get('ignore', False),
+                ]
+            )
         window_dict[size_key] = window_list
         if this_dict.get('icons', False):
             icons_flag = '%s_icons' % size_key
