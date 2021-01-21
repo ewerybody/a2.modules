@@ -63,5 +63,28 @@
     "scopeChange": true,
     "scopeMode": 1,
     "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "open_from_explorer()",
+    "functionMode": 0,
+    "key": [
+      "Win+C"
+    ],
+    "keyChange": true,
+    "label": "Open up from Explorer",
+    "multiple": true,
+    "name": "commandLine_ExplorerHotkey",
+    "scope": [
+      "ahk_class CabinetWClass ahk_exe explorer.exe"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "open_from_explorer.ahk",
+    "typ": "include"
   }
 ]
