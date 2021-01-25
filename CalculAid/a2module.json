@@ -34,7 +34,7 @@
       },
       {
         "enabled": true,
-        "label": "open up at cursor position",
+        "label": "Open up at cursor position",
         "name": "calculAid_openAtCursor",
         "typ": "check",
         "value": true
@@ -68,7 +68,7 @@
     "functionURL": "",
     "key": "Esc",
     "keyChange": true,
-    "label": "close the calculator",
+    "label": "Close the calculator",
     "mode": "ahk",
     "multiple": true,
     "name": "close_calc_hotkey",
