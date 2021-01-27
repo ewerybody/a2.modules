@@ -19,7 +19,7 @@ winr() {
         tt("web address...",0.5)
         if (!string_startswith(selection, "http"))
             selection := "https://" selection
-        winr_CatchedCallRun(selection)
+        Run, %selection%
     }
     else {
         ; loop set up project paths, if combination with selection fits: run it
