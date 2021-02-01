@@ -1,0 +1,32 @@
+﻿[
+  {
+    "author": "eric",
+    "date": "2021 1 31",
+    "description": "Draw a rectangle around some letters, get the text into your clipboard.",
+    "tags": [
+      "text"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ocr_tool()",
+    "functionMode": 0,
+    "key": [
+      "Win+Shift+O"
+    ],
+    "keyChange": true,
+    "label": "make some awesome stuff",
+    "multiple": true,
+    "name": "ocr_tool_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "ocr_tool.ahk",
+    "typ": "include"
+  }
+]
