@@ -13,7 +13,6 @@ icons._test_iconmove()
 ;rearrange_session_restore()
 ExitApp
 
-
 Return ;-----------------------------------
 ;#include sessionrestore.ahk
 ;#include <a2functions>
@@ -31,7 +30,7 @@ class _DesktopIcons
             this.list.push(new _DesktopIcon(A_Index - 1, parts[1]))
         }
     }
-    
+
     _test_iconmove()
     {
         icon_idx := 3
@@ -44,7 +43,7 @@ class _DesktopIcons
             sleep, 10
         }
     }
-    
+
     list_all()
     {
         text := ""
@@ -55,7 +54,6 @@ class _DesktopIcons
         return text
     }
 }
-
 
 class _DesktopIcon
 {
@@ -68,7 +66,7 @@ class _DesktopIcon
         this.name := name
         this.get_pos()
     }
-    
+
     ; set the position of an icon in virtual desktop space
     set_pos(x, y)
     {
@@ -76,21 +74,20 @@ class _DesktopIcon
         this.x := x
         this.y := y
     }
-    
+
     get_pos()
     {
         WinGet, progman_pid, PID, Program Manager ahk_class Progman
         hp_explorer := DllCall("OpenProcess", "uint", 0x18, "int", false, "uint", progman_pid)
         remote_buffer := DllCall("VirtualAllocEx", "uint", hp_explorer, "uint", 0, "uint", 0x1000, "uint", 0x1000, "uint", 0x4)
-        
+
         SendMessage, this.LVM_GETITEMPOSITION, % this.index, remote_buffer, SysListView321, Program Manager ahk_class Progman
-        
+
         VarSetCapacity(rect, 16, 0)
         DllCall("ReadProcessMemory", "uint", hp_explorer, "uint", remote_buffer, "uint", &rect, "uint", 16, "uint",0)
         DllCall("VirtualFreeEx", "uint", hp_explorer, "uint", remote_buffer, "uint", 0, "uint", 0x8000)
         DllCall("CloseHandle", "uint", hp_explorer)
-        
-        this.x := extract_integer(rect, 0)
-        this.y := extract_integer(rect, 4)
+
+        this.x := bytes_get_integer(rect, 0), this.y := bytes_get_integer(rect, 4)
     }
 }
