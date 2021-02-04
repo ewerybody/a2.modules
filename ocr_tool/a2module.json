@@ -19,7 +19,7 @@
       "Win+Shift+O"
     ],
     "keyChange": true,
-    "label": "make some awesome stuff",
+    "label": "Call the tool",
     "multiple": true,
     "name": "ocr_tool_Hotkey",
     "scopeChange": true,
@@ -28,5 +28,16 @@
   {
     "file": "ocr_tool.ahk",
     "typ": "include"
+  },
+  {
+    "items": [
+      "en-US",
+      "de-DE",
+      "FirstFromAvailableLanguages"
+    ],
+    "label": "Language",
+    "name": "ocr_tool_Language",
+    "typ": "combo",
+    "user_edit": false
   }
 ]
