@@ -2,7 +2,8 @@
   {
     "author": "eric",
     "date": "2021 1 31",
-    "description": "Draw a rectangle around some letters, get the text into your clipboard.",
+    "description": "Draw a rectangle around some letters,\nGet the text into your clipboard.",
+    "display_name": "OCR Tool",
     "tags": [
       "text"
     ],

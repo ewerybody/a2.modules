@@ -94,7 +94,6 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     a2log_debug("HTTPRequest response HEADER:" Headers, "gtranslate")
     a2log_debug("HTTPRequest response BODY:" response, "gtranslate")
 
-
     RegExMatch(response, "\[\""(.+?)\""", match)
     ;tranlation := uri_decode(match1)
     ;return tranlation

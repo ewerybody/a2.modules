@@ -3,6 +3,7 @@
     "author": "eric",
     "date": "2015",
     "description": "Super Windows+R that checks your selection and opens up according Browsers with the given locations/urls.",
+    "display_name": "WinR",
     "tags": [
       "web",
       "file"

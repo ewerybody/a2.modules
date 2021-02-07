@@ -3,6 +3,7 @@
     "author": "eric, Oliver Lipkau",
     "date": "2015",
     "description": "Adds simple closing functionality to the basic windows command line window.",
+    "display_name": "CommandLine",
     "tags": [],
     "typ": "nfo",
     "url": "",
