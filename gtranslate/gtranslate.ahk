@@ -13,7 +13,7 @@ __gtranslate_lngs := ""
 
 gtranslate(from="en", to="de") {
     global a2data
-    icon_path := a2data "modules\a2.modules\gtranslate\a2icon.png"
+    icon_path := a2data "modules\a2.modules\gtranslate\a2icon24.png"
     global __gtranslate_search, __gtranslate_lngs
     sel := clipboard_get() ; get selected text
 
@@ -53,9 +53,9 @@ gtranslate(from="en", to="de") {
         MsgBox No tranlation found for "%__gtranslate_search%".`nAre you connected to the internet?
     else {
         Menu, gtranslate_menu, Add, %__gtranslation%, gtranslate_insert
-        Menu, gtranslate_menu, Icon, %__gtranslation%, %icon_path%
+        Menu, gtranslate_menu, Icon, %__gtranslation%, %icon_path%,, 0
         Menu, gtranslate_menu, Add, Show in web browser, gtranslate_open_webpage
-        Menu, gtranslate_menu, Icon, Show in web browser, %icon_path%
+        Menu, gtranslate_menu, Icon, Show in web browser, %icon_path%,, 0
         Menu, gtranslate_menu, Show
         Menu, gtranslate_menu, DeleteAll
     }
