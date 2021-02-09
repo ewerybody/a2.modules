@@ -3,7 +3,7 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* new OCR Tool to get text from unselectable things on screen\n* CalculAid: new option to recycle already open \n  also repaired all the other options #2\n* DetailsPopup: renamed fixed variable cleanup, fixed #36\n* ExplorerCreateFile: Added Dialog to ask for Clipboard image file name, #35\n* ExplorerHotketys: Togglers now more reliable\n* ComfortResize: now makes use of cursor lib\n* getWinfo: displaying \"display cmd line string\" if too long #37\n* CommandLine: new Hotket to open from Explorer\n* Ouch. WinR was broken for web addresses\n\nMoved some rather experimental modules to a2.ModLab (SessionRestore, )",
+  "news": "* new OCR Tool to get text from unselectable things on screen\n* CalculAid: new option to recycle already open \n  also repaired all the other options #2\n* DetailsPopup: renamed fixed variable cleanup, fixed #36\n* ExplorerCreateFile: Added Dialog to ask for Clipboard image file name, #35\n* ExplorerHotketys: Togglers now more reliable\n* ComfortResize: now makes use of cursor lib\n* getWinfo: displaying \"display cmd line string\" if too long #37\n* CommandLine: new Hotket to open from Explorer\n* Ouch. WinR was broken for web addresses\n\nMoved some rather experimental modules to a2.ModLab (SessionRestore,  TaskbarRaiser, ScreenGrab, KeyDisplay)",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules/wiki",
   "version": "0.0.8",
