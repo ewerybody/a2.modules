@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* ExplorerHotkeys: Huge Update. Ported many things.\n* getWinfo:\n  - new menu option to get x|y|w|h into clipboard\n  - Added commandline info (if any)\n* WinR: now unquotes paths and has new option to always show in explorer\n* ExplorerCreateFile: added pasting images from clipboard\n* NEW module TaskbarRaiser",
+  "news": "* new OCR Tool to get text from unselectable things on screen\n* CalculAid: new option to recycle already open \n  also repaired all the other options #2\n* DetailsPopup: renamed fixed variable cleanup, fixed #36\n* ExplorerCreateFile: Added Dialog to ask for Clipboard image file name, #35\n* ExplorerHotketys: Togglers now more reliable\n* ComfortResize: now makes use of cursor lib\n* getWinfo: displaying \"display cmd line string\" if too long #37\n* CommandLine: new Hotket to open from Explorer\n* Ouch. WinR was broken for web addresses\n\nMoved some rather experimental modules to a2.ModLab (SessionRestore, )",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules/wiki",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "zip_size": 88441
 }
