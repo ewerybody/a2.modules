@@ -19,7 +19,7 @@ explorer_create_on_paste() {
     }
 
     current_path := explorer_get_path()
-    img_path := path_join(current_path, [img_name])
+    img_path := path_join(current_path, img_name)
     tt("Creating image from clipboard ...", 1)
     gdipbitmap_to_file(bitmap, img_path)
     gdip_shutdown(token)

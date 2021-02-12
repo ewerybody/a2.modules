@@ -45,7 +45,7 @@ _ocr_tool_start(data) {
 }
 
 _orc_tool_call(rect, lang) {
-    script_path := path_join(path_dirname(A_AhkPath), ["lib", "teadrinkerocr.ahk"])
+    script_path := path_join(path_dirname(A_AhkPath), "lib", "teadrinkerocr.ahk")
     shell := ComObjCreate("WScript.Shell")
     cmd = "%A_AhkPath%" "%script_path%"
     cmd .= " " rect.x " " rect.y " " rect.w " " rect.h " en"
