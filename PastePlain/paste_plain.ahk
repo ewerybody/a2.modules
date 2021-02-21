@@ -6,8 +6,16 @@ paste_plain_paste() {
     files := clipboard_get_files()
     if (files)
         paste_plain_build_filesmenu(files)
-    else
+
+    else {
+        ; It looks Ridiculous! But that's fixes it most of the time.
+        ; See our issue here: https://github.com/ewerybody/a2/issues/193
+        tmp := ClipboardAll
+        Clipboard := Clipboard
         clipboard_paste(Clipboard)
+        Clipboard := tmp
+        tmp := ""
+    }
 }
 
 paste_plain_build_filesmenu(files) {
@@ -19,7 +27,7 @@ paste_plain_build_filesmenu(files) {
         Menu, PastePlain_ShowFileMenu, Add, Basenames Only, paste_plain_basename
         Menu, PastePlain_ShowFileMenu, Add, /Forward/Slashes, paste_plain_forward
         Menu, PastePlain_ShowFileMenu, Add, \\Double\\Backslashes, paste_plain_double
-        
+
         ; Create another menu destined to become a submenu of the above menu.
         Menu, PastePlain_ShowFileClipMenu, Add, Plain Paths, paste_plain_to_clipboard
         Menu, PastePlain_ShowFileClipMenu, Add, Basenames, paste_plain_to_clipboard_basenames
@@ -27,10 +35,10 @@ paste_plain_build_filesmenu(files) {
         Menu, PastePlain_ShowFileClipMenu, Add, \\Double\\Backslashes, paste_plain_to_clipboard_double
         ; Create a submenu in the first menu (a right-arrow indicator). When the user selects it, the second menu is displayed.
         Menu, PastePlain_ShowFileMenu, Add, To Clipboard, :PastePlain_ShowFileClipMenu
-        
+
         if has_links
             Menu, PastePlain_ShowFileMenu, Add, Paste Shortcut Target Paths, paste_plain_link_paths
-        
+
         Menu, PastePlain_ShowFileMenu, Show
         Menu, PastePlain_ShowFileMenu, DeleteAll
     } else
