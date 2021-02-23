@@ -1,0 +1,72 @@
+﻿[
+  {
+    "author": "Wolfgang Reszel, Michael Telgkamp",
+    "date": "2021 2 23",
+    "description": "Hotkeys for Sound Volume control.",
+    "display_name": "",
+    "tags": [
+      "wip"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.4.0"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "volume_control_up()",
+    "functionMode": 0,
+    "key": [
+      "Win+Alt+Wheelup"
+    ],
+    "keyChange": true,
+    "label": "Volume Up",
+    "multiple": true,
+    "name": "VolumeControl_Up_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "volume_control_down()",
+    "functionMode": 0,
+    "key": [
+      "Win+Alt+Wheeldown"
+    ],
+    "keyChange": true,
+    "label": "Volume Down",
+    "multiple": true,
+    "name": "VolumeControl_Down_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "volume_control.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "volume_control_toggle_mute()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "Toggle Mute",
+    "multiple": true,
+    "name": "VolumeControl_Mute_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "decimals": 0,
+    "label": "Step",
+    "max": 20.0,
+    "min": 0.1,
+    "name": "VolumeControl_Increment",
+    "slider": true,
+    "step_len": 1.0,
+    "suffix": "",
+    "typ": "number",
+    "value": 5
+  }
+]
