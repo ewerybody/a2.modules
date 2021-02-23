@@ -1,0 +1,57 @@
+﻿[
+  {
+    "author": "Wolfgang Reszel, Jack Tissen",
+    "date": "2021 2 23",
+    "description": "Hotkeys for general window management. Ported from ac'tivAid.\nSome of these are Windows-built-in! But hy default there is no way to change and no toggle.",
+    "display_name": "",
+    "tags": [
+      "window"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "2.0.0"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "window_control_minimize()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "Minimize Window",
+    "multiple": true,
+    "name": "WindowControl_Minimize_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "window_control.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "window_control_maximize()",
+    "functionMode": 0,
+    "key": [
+      "Win+Up"
+    ],
+    "keyChange": true,
+    "label": "Maximize Window toggle",
+    "multiple": true,
+    "name": "WindowControl_Maximize_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "window_control_toggle_always_on_top()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "Toggle Always-On-Top",
+    "multiple": true,
+    "name": "WindowControl_AOT_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  }
+]
