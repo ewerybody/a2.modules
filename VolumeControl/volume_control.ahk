@@ -38,6 +38,8 @@ volume_control_down() {
 
 volume_control_toggle_mute() {
     SoundSet, +1,, Mute
-    master_mute := SoundGet(, "Mute")
-    tt("Master Mute: " master_mute, 1)
+    if SoundGet(, "Mute") == "On"
+        tt("Master: Muted", 1)
+    else
+        tt("Master Volume: " Round(SoundGet()), 1)
 }
