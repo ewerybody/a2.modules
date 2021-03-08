@@ -278,6 +278,8 @@ class Draw(DrawCtrl):
 
         hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
         a2util.write_utf8(self.hotstrings_file, hotstrings_code)
+        # 2 avoid a2-runtime autoreload, set archive flag immediately
+        a2util.set_archive(self.hotstrings_file, False)
 
         self.change()
 
