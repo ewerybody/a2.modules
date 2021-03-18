@@ -114,27 +114,27 @@ def iterate(hotstrings_dict):
 
 
 class HotstringsParser:
+    """
+    the resulting hotstrings dict::
+
+        # '' is the global scope
+        {'': {
+            'shortcut1': {
+                'text': some_string,
+                'ignore' True,
+                'mode': ...},
+            'shortcut2': {...}}
+
+         'scope_incl': {
+            'scope_string1': {
+                'shortcut1': {...},
+                'shortcut2': {...}},
+            'scope_string2': {
+                'shortcut': {...}}},
+
+         'scope_excl': {...}
+    """
     def __init__(self, path):
-        """
-        the resulting hotstrings dict::
-
-            # '' is the global scope
-            {'': {
-                'shortcut1': {
-                    'text': some_string,
-                    'ignore' True,
-                    'mode': ...},
-                'shortcut2': {...}}
-
-             'scope_incl': {
-                'scope_string1': {
-                    'shortcut1': {...},
-                    'shortcut2': {...}},
-                'scope_string2': {
-                    'shortcut': {...}}},
-
-             'scope_excl': {...}
-        """
         self.hs_dict = {'': {}}
 
         # while parsing parameters

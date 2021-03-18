@@ -8,10 +8,7 @@ import a2util
 import a2ctrl
 import a2core
 from a2element import DrawCtrl, EditCtrl
-from a2widget.a2item_editor import A2ItemEditor
-from a2widget.a2text_field import A2TextField
-from a2widget.a2input_dialog import A2ConfirmDialog
-from a2widget.a2more_button import A2MoreButton
+from a2widget import a2item_editor, a2text_field, a2input_dialog, a2more_button
 
 this_dir = os.path.dirname(__file__)
 if this_dir not in sys.path:
@@ -20,7 +17,7 @@ import hotstrings_io
 from hotstrings_io import Options
 
 
-ADD_SCOPE_TXT = 'add scope'
+ADD_SCOPE_TXT = 'Add Scope'
 GLOBAL_SCOPE_TXT = 'global'
 HOTSTRINGS_FILENAME = 'hotstrings.ahk'
 HS_CHECKBOXES = [
@@ -40,12 +37,16 @@ MODES = [
 CASE_ITEMS = ['Forward to text', 'Sensitive', 'Keep original']
 
 
-class HotStringsEditor(A2ItemEditor):
+class HotStringsEditor(a2item_editor.A2ItemEditor):
+    """
+    List widget to show & edit a single hotstrings group at a time.
+    """
+
     def __init__(self, user_cfg, parent):
         self.data = user_cfg
         super(HotStringsEditor, self).__init__(parent)
 
-        self.ui.text = A2TextField(self)
+        self.ui.text = a2text_field.A2TextField(self)
         self.add_data_widget(
             'text',
             self.ui.text,
@@ -89,8 +90,31 @@ class HotStringsEditor(A2ItemEditor):
 
 class Draw(DrawCtrl):
     """
-    The frontend widget visible to the user with options
-    to change the default behavior of the element.
+    The complete Hotstrings editor displaying all our groups,
+    assembling the resulting dictionary passing it to the AHK code generator.
+
+    A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
+    it can be scoped however you want making it work globally or on certain windows only,
+    it can also be enabled/disabled, renamed.
+    When doing imports new groups are created.
+
+    user_cfg be like:
+    {
+        'last_group': '',
+        'last_hotstring': '',
+        'groups': {
+            'global': {
+                'enabled': True,
+                'scope': '',
+                'hotstrings': {
+                    'shortcut1': {
+                        'text': some_string,
+                        'ignore' True,
+                        'mode': ...
+                    '...':
+            'some name': ...
+        ...
+    }
     """
 
     def __init__(self, *args):
@@ -124,7 +148,7 @@ class Draw(DrawCtrl):
         self.scope_combo = QtWidgets.QComboBox(self)
         self.scope_combo.currentIndexChanged.connect(self.on_scope_change)
         layout.addWidget(self.scope_combo)
-        self.scope_more_button = A2MoreButton(self)
+        self.scope_more_button = a2more_button.A2MoreButton(self)
         self.scope_more_button.menu_called.connect(self.build_scope_edit_menu)
         layout.addWidget(self.scope_more_button)
 
@@ -141,20 +165,20 @@ class Draw(DrawCtrl):
                 self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
             self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
 
-        self.scope_combo.addItem(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT)
+        self.scope_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
         self.scope_combo.blockSignals(False)
 
     def iter_scope_items(self):
         if not self.user_cfg:
-            yield '', GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
+            yield '', GLOBAL_SCOPE_TXT, a2ctrl.Icons.scope_global
         else:
             for scope_key, scope_data in self.user_cfg.items():
                 if scope_key == '':
-                    yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.inst().scope_global
+                    yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.scope_global
                 if scope_key == hotstrings_io.KEY_INCL:
-                    icon = a2ctrl.Icons.inst().scope
+                    icon = a2ctrl.Icons.scope
                 elif scope_key == hotstrings_io.KEY_EXCL:
-                    icon = a2ctrl.Icons.inst().scope_exclude
+                    icon = a2ctrl.Icons.scope_exclude
                 else:
                     continue
 
@@ -220,7 +244,7 @@ class Draw(DrawCtrl):
 
     def remove_scope(self):
         if self.current_scope:
-            dialog = A2ConfirmDialog(
+            dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
                 'Remove scope "%s..."' % self.scope_string[:30],
                 'The scope still contains Hotstings! These would be lost!\n'
@@ -258,6 +282,9 @@ class Draw(DrawCtrl):
             self.select_scope(scope_key, scope_string)
 
     def check(self, *args):
+        """
+        Write the hotstrings AHK code and call `change()`.
+        """
         if self.scope_key == '':
             self.user_cfg[''] = self.editor.data
         else:
@@ -274,27 +301,29 @@ class Draw(DrawCtrl):
         hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
         if hotstrings_code == self._hs_code_b4:
             return
+
         self._hs_code_b4 = hotstrings_code
 
         hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
-        a2util.write_utf8(self.hotstrings_file, hotstrings_code)
-        # 2 avoid a2-runtime autoreload, set archive flag immediately
-        a2util.set_archive(self.hotstrings_file, False)
-
+        self._write(hotstrings_code)
         self.change()
 
     def _check_hs_include_file(self):
-        # make sure at least an empty file is there to be included
+        """Make sure at least an empty file is there to be included."""
         os.makedirs(self.mod.data_path, exist_ok=True)
         if not os.path.isfile(self.hotstrings_file):
-            with open(self.hotstrings_file, 'w') as fobj:
-                fobj.write('')
+            self._write('')
+
+    def _write(self, hotstrings_code):
+        a2util.write_utf8(self.hotstrings_file, hotstrings_code)
+        # 2 avoid a2-runtime autoreload, set archive flag immediately
+        a2util.set_archive(self.hotstrings_file, False)
 
     def build_scope_edit_menu(self, menu):
         if self.scope_combo.currentIndex() != 0:
             menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
             menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Scope', self.remove_scope)
-        menu.addAction(a2ctrl.Icons.inst().list_add, 'Add Scope', self.add_scope_dialog)
+        menu.addAction(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT, self.add_scope_dialog)
 
     def build_list_context_menu(self, menu):
         menu.clear()
@@ -320,7 +349,7 @@ class Draw(DrawCtrl):
             target_scope = self.user_cfg[scope_key][scope_string]
 
         if self.editor.selected_name in target_scope:
-            dialog = A2ConfirmDialog(
+            dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
                 'Scope already contains "%s"!' % self.editor.selected_name,
                 'The target scope "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
