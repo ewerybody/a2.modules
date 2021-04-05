@@ -23,7 +23,7 @@
     "functionMode": 0,
     "key": "Win+R",
     "keyChange": true,
-    "label": "winr hotkey:",
+    "label": "WinR Hotkey:",
     "mode": "ahk",
     "multiple": true,
     "name": "winrhotkey",
