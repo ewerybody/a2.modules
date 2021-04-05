@@ -1,0 +1,3 @@
+## CalculAid
+
+Configurable Calculator opener.
