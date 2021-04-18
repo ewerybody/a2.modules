@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
 import os
 import sys
+import hashlib
+from copy import deepcopy
 
 from a2qt import QtWidgets, QtCore
 
@@ -17,9 +18,10 @@ import hotstrings_io
 from hotstrings_io import Options
 
 
-ADD_SCOPE_TXT = 'Add Scope'
+ADD_SCOPE_TXT = 'Add Group'
 GLOBAL_SCOPE_TXT = 'global'
-HOTSTRINGS_FILENAME = 'hotstrings.ahk'
+HOTSTRINGS = 'hotstrings'
+HOTSTRINGS_FILENAME = HOTSTRINGS + '.ahk'
 HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
     (Options.ignore.name, 'Ignore Characters Causing Replacement'),
@@ -35,6 +37,11 @@ MODES = [
     'Text - new. Similar to raw mode.',
 ]
 CASE_ITEMS = ['Forward to text', 'Sensitive', 'Keep original']
+ICONS = {
+    None: a2ctrl.Icons.scope_global,
+    hotstrings_io.KEY_INCL: a2ctrl.Icons.scope,
+    hotstrings_io.KEY_EXCL: a2ctrl.Icons.scope_exclude,
+}
 
 
 class HotStringsEditor(a2item_editor.A2ItemEditor):
@@ -142,6 +149,7 @@ class Draw(DrawCtrl):
         self._last_scope_index = 0
 
         self.is_expandable_widget = True
+        QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -155,28 +163,29 @@ class Draw(DrawCtrl):
         widget = QtWidgets.QWidget(self)
         layout = QtWidgets.QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.scope_combo = QtWidgets.QComboBox(self)
-        self.scope_combo.currentIndexChanged.connect(self.on_scope_change)
-        layout.addWidget(self.scope_combo)
-        self.scope_more_button = a2more_button.A2MoreButton(self)
-        self.scope_more_button.menu_called.connect(self.build_scope_edit_menu)
-        layout.addWidget(self.scope_more_button)
-
+        self.group_combo = QtWidgets.QComboBox(self)
+        self.group_combo.currentTextChanged.connect(self.on_scope_change)
+        layout.addWidget(self.group_combo)
+        self.more_button = a2more_button.A2MoreButton(self)
+        self.more_button.menu_called.connect(self.build_group_edit_menu)
+        layout.addWidget(self.more_button)
         self.editor.insert_scope_ui(widget)
-        QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
     def fill_scope_combo(self):
-        self._scope_combo_items = {0: ('', None)}
-        self.scope_combo.blockSignals(True)
-        self.scope_combo.clear()
+        # self._scope_combo_items = {0: ('', None)}
+        self.group_combo.blockSignals(True)
+        self.group_combo.clear()
 
-        for scope_key, scope_string, icon in self.iter_scope_items():
-            if scope_key != '':
-                self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
-            self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
+        for name, group in self.user_cfg.get('groups', {}).items():
+            self.group_combo.addItem(ICONS[group.get('scope_type')], name)
 
-        self.scope_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
-        self.scope_combo.blockSignals(False)
+        # for scope_key, scope_string, icon in self.iter_scope_items():
+        #     if scope_key != '':
+        #         self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
+        #     self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
+
+        self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
+        self.group_combo.blockSignals(False)
 
     def iter_scope_items(self):
         if not self.user_cfg:
@@ -295,24 +304,40 @@ class Draw(DrawCtrl):
         """
         Write the hotstrings AHK code and call `change()`.
         """
-        if self.scope_key == '':
-            self.user_cfg[''] = self.editor.data
-        else:
-            self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
-
-        # cleanup invalid and empty dictionary items
-        for key in list(self.user_cfg.keys()):
-            if key != '':
-                if key not in hotstrings_io.IN_EXCLUDE or not self.user_cfg[key]:
-                    del self.user_cfg[key]
-
+        self.current_group[HOTSTRINGS] = deepcopy(self.editor.data)
         self.set_user_value(self.user_cfg)
 
-        hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
-        if hotstrings_code == self._hs_code_b4:
+        # if self.scope_key == '':
+        #     self.user_cfg[''] = self.editor.data
+        # else:
+        #     self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
+
+        # NO MORE cleanup invalid and empty dictionary items
+        # for key in list(self.user_cfg.keys()):
+        #     if key != '':
+        #         if key not in hotstrings_io.IN_EXCLUDE or not self.user_cfg[key]:
+        #             del self.user_cfg[key]
+
+        # create an old-style hotstrings dictionary to pass it to the
+        # AHK-Hotstrings-code generator
+        hs_dict = {}
+        for group in self.user_cfg.get('groups', {}).values():
+            if not group.get('enabled', True):
+                continue
+
+            if scope_type := group.get('scope_type'):
+                target_dict = hs_dict.setdefault(scope_type, {})
+                for scope_str in group.get('scopes'):
+                    target_dict.setdefault(scope_str, {}).update(group.get(HOTSTRINGS))
+            else:
+                hs_dict.setdefault('', {}).update(group.get(HOTSTRINGS))
+
+        hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
+        code_hash = hashlib.sha1(hotstrings_code.encode('utf8'))
+        if code_hash == self._hs_code_b4:
             return
 
-        self._hs_code_b4 = hotstrings_code
+        self._hs_code_b4 = code_hash
 
         hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
         self._write(hotstrings_code)
@@ -329,7 +354,7 @@ class Draw(DrawCtrl):
         # 2 avoid a2-runtime autoreload, set archive flag immediately
         a2util.set_archive(self.hotstrings_file, False)
 
-    def build_scope_edit_menu(self, menu):
+    def build_group_edit_menu(self, menu):
         if self.scope_combo.currentIndex() != 0:
             menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
             menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Scope', self.remove_scope)
