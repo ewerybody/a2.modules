@@ -283,36 +283,23 @@ class Draw(DrawCtrl):
     #         self.select_scope(scope_key, scope_string)
 
     def check(self, *args):
-        """
-        Write the hotstrings AHK code and call `change()`.
-        """
-        self.current_group[HOTSTRINGS] = deepcopy(self.editor.data)
+        """Write the hotstrings AHK code and call `change()`."""
+        self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
         self.set_user_value(self.user_cfg)
-
-        # if self.scope_key == '':
-        #     self.user_cfg[''] = self.editor.data
-        # else:
-        #     self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
-
-        # NO MORE cleanup invalid and empty dictionary items
-        # for key in list(self.user_cfg.keys()):
-        #     if key != '':
-        #         if key not in hotstrings_io.IN_EXCLUDE or not self.user_cfg[key]:
-        #             del self.user_cfg[key]
 
         # create an old-style hotstrings dictionary to pass it to the
         # AHK-Hotstrings-code generator
         hs_dict = {}
-        for group in self.user_cfg.get('groups', {}).values():
-            if not group.get('enabled', True):
+        for group in self.user_cfg.get(Args.groups, {}).values():
+            if not group.get(Args.enabled, True):
                 continue
 
-            if scope_type := group.get('scope_type'):
+            if scope_type := group.get(Args.scope_type):
                 target_dict = hs_dict.setdefault(scope_type, {})
-                for scope_str in group.get('scopes'):
-                    target_dict.setdefault(scope_str, {}).update(group.get(HOTSTRINGS))
+                for scope_str in group.get(Args.scopes):
+                    target_dict.setdefault(scope_str, {}).update(group.get(Args.hotstrings))
             else:
-                hs_dict.setdefault('', {}).update(group.get(HOTSTRINGS))
+                hs_dict.setdefault('', {}).update(group.get(Args.hotstrings))
 
         hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
         code_hash = hashlib.sha1(hotstrings_code.encode('utf8'))
