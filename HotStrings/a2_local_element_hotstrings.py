@@ -240,24 +240,27 @@ class Draw(DrawCtrl):
         dialog.okayed.connect(self.scope_edit_done)
         dialog.show()
 
-    def remove_scope(self):
-        if self.current_scope:
+    def remove_group(self):
+        if self.current_name not in self.user_cfg.get(Args.groups, {}):
+            return
+
+        if self.current_group:
             dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
-                'Remove scope "%s..."' % self.scope_string[:30],
-                'The scope still contains Hotstings! These would be lost!\n'
-                'You can also <b>move</b> the Hotstrings to other scopes or '
-                'make them global via context menu.\nOr do you want to continue deletion?',
+                'Remove group "%s" ...' % self.current_name,
+                'The group still contains Hotstings! These would be lost!\n'
+                'You can also <b>move</b> the Hotstrings to other groups or '
+                'make them scoped via context menu.\nOr do you want to continue deletion?',
             )
             dialog.exec_()
             if not dialog.result:
                 return
 
-        del self.user_cfg[self.scope_key][self.scope_string]
-        self.fill_scope_combo()
-        self.scope_combo.setCurrentIndex(0)
-        self.on_scope_change(0)
-        self.delayed_check()
+        del self.user_cfg[Args.groups][self.current_name]
+        self.fill_group_combo()
+        # self.scope_combo.setCurrentIndex(0)
+        # self.on_scope_change(0)
+        self.check()
 
     # def scope_edit_done(self, scope_cfg):
     #     from a2widget.a2hotkey.hotkey_common import Vars
@@ -360,19 +363,16 @@ class Draw(DrawCtrl):
         menu.addAction(a2ctrl.Icons.delete, 'Remove Hotstring', self.editor.delete_item)
 
     def _on_move_hotstring(self):
-        scope_key, scope_string = self.sender().data()
-        if scope_string == GLOBAL_SCOPE_TXT:
-            target_scope = self.user_cfg['']
-        else:
-            target_scope = self.user_cfg[scope_key][scope_string]
+        target_name = self.sender().text()
+        target_group = self.user_cfg[Args.groups].get(target_name, {}).get(Args.hotstrings, {})
 
-        if self.editor.selected_name in target_scope:
+        if self.editor.selected_name in target_group:
             dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
-                'Scope already contains "%s"!' % self.editor.selected_name,
-                'The target scope "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
+                'Group already contains "%s"!' % self.editor.selected_name,
+                'The target group "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
                 'It would be <b>overwritten</b>! Do you want to continue?'
-                % (scope_string[:100], self.editor.selected_name),
+                % (target_name, self.editor.selected_name),
             )
             dialog.exec_()
             if not dialog.result:
