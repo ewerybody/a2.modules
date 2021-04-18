@@ -19,9 +19,15 @@ from hotstrings_io import Options
 
 
 ADD_SCOPE_TXT = 'Add Group'
+class Args:
+    enabled = 'enabled'
+    groups = 'groups'
+    hotstrings = 'hotstrings'
+    last_group = 'last_group'
+    scopes = 'scopes'
+    scope_type = 'scope_type'
 GLOBAL_SCOPE_TXT = 'global'
-HOTSTRINGS = 'hotstrings'
-HOTSTRINGS_FILENAME = HOTSTRINGS + '.ahk'
+HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
     (Options.ignore.name, 'Ignore Characters Causing Replacement'),
@@ -133,29 +139,20 @@ class Draw(DrawCtrl):
         if _check_legacy_data(self.user_cfg):
             self.delayed_check()
 
-        self.current_name = self.user_cfg.get('last_group', GLOBAL_SCOPE_TXT)
-        self.current_group = self.user_cfg.get('groups', {}).get(self.current_name, {})
+        self.current_name = self.user_cfg.get(Args.last_group, GLOBAL_SCOPE_TXT)
+        self.current_group = self.user_cfg.get(Args.groups, {}).get(self.current_name, {})
 
-        # old ...
-
-        # self.current_scope = self.user_cfg.get('', {})
-        self._scope_combo_items = {}
         self._setup_ui()
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
-        self.scope_key = ''
-        self.scope_string = ''
-        self._last_scope_index = 0
-
         self.is_expandable_widget = True
-        QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
+        QtCore.QTimer(self).singleShot(50, self.fill_group_combo)
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        # self.editor = HotStringsEditor(self.current_scope, self)
-        self.editor = HotStringsEditor(self.current_group.get(HOTSTRINGS, {}), self)
+        self.editor = HotStringsEditor(self.current_group.get(Args.hotstrings, {}), self)
         self.editor.list_menu_called.connect(self.build_list_context_menu)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -164,25 +161,24 @@ class Draw(DrawCtrl):
         layout = QtWidgets.QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
         self.group_combo = QtWidgets.QComboBox(self)
-        self.group_combo.currentTextChanged.connect(self.on_scope_change)
+        self.group_combo.currentTextChanged.connect(self.on_group_change)
         layout.addWidget(self.group_combo)
         self.more_button = a2more_button.A2MoreButton(self)
         self.more_button.menu_called.connect(self.build_group_edit_menu)
         layout.addWidget(self.more_button)
         self.editor.insert_scope_ui(widget)
 
-    def fill_scope_combo(self):
-        # self._scope_combo_items = {0: ('', None)}
+    def fill_group_combo(self):
         self.group_combo.blockSignals(True)
         self.group_combo.clear()
 
-        for name, group in self.user_cfg.get('groups', {}).items():
-            self.group_combo.addItem(ICONS[group.get('scope_type')], name)
-
-        # for scope_key, scope_string, icon in self.iter_scope_items():
-        #     if scope_key != '':
-        #         self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
-        #     self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
+        if self.user_cfg.get(Args.groups, {}):
+            for name, group in self.user_cfg.get(Args.groups, {}).items():
+                self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
+        else:
+            self.current_name = GLOBAL_SCOPE_TXT
+            self.current_scope = self.user_cfg[Args.groups] = {GLOBAL_SCOPE_TXT: {}}
+            self.group_combo.addItem(ICONS[None], GLOBAL_SCOPE_TXT)
 
         self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
         self.group_combo.blockSignals(False)
@@ -400,7 +396,8 @@ class Draw(DrawCtrl):
         target_scope[self.editor.selected_name] = hotstring_data
         self.editor.set_data(self.current_scope)
 
-        self.delayed_check()
+    def on_group_change(self, name):
+        name
 
 
 class Edit(EditCtrl):
@@ -419,7 +416,7 @@ class Edit(EditCtrl):
 
     @staticmethod
     def element_icon():
-        return a2ctrl.Icons.inst().hotkey
+        return a2ctrl.Icons.hotkey
 
 
 def _check_legacy_data(cfg):
@@ -434,17 +431,17 @@ def _check_legacy_data(cfg):
         if scope_type in cfg:
             for scope_key in cfg[scope_type].keys():
                 new_name = _legacy_move_group(cfg, scope_type, scope_key)
-                cfg['groups'][new_name]['scopes'] = [scope_key]
-                cfg['groups'][new_name]['scope_type'] = scope_type
+                cfg[Args.groups][new_name][Args.scopes] = [scope_key]
+                cfg[Args.groups][new_name][Args.scope_type] = scope_type
             changed = True
     return changed
 
 
 def _legacy_move_group(cfg, old_name, new_name):
-    cfg.setdefault('groups', {})
-    new_name = a2util.get_next_free_number(new_name, cfg['groups'].keys())
-    cfg['groups'][new_name] = {'hotstrings': {}}
-    cfg['groups'][new_name]['hotstrings'] = cfg[old_name]
+    cfg.setdefault(Args.groups, {})
+    new_name = a2util.get_next_free_number(new_name, cfg[Args.groups].keys())
+    cfg[Args.groups][new_name] = {Args.hotstrings: {}}
+    cfg[Args.groups][new_name][Args.hotstrings] = cfg[old_name]
     del cfg[old_name]
     return new_name
 
