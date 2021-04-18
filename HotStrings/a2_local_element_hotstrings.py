@@ -90,31 +90,33 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
 
 class Draw(DrawCtrl):
     """
-    The complete Hotstrings editor displaying all our groups,
-    assembling the resulting dictionary passing it to the AHK code generator.
+        The complete Hotstrings editor displaying all our groups,
+        assembling the resulting dictionary passing it to the AHK code generator.
 
-    A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
-    it can be scoped however you want making it work globally or on certain windows only,
-    it can also be enabled/disabled, renamed.
-    When doing imports new groups are created.
+        A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
+        it can be scoped however you want making it work globally or on certain windows only,
+        it can also be enabled/disabled, renamed.
+        When doing imports new groups are created. If there are multiple scopes
 
-    user_cfg be like:
+        user_cfg be like:
     {
         'last_group': '',
-        'last_hotstring': '',
+        'last_selection': '',
         'groups': {
             'global': {
                 'enabled': True,
-                'scope': '',
                 'hotstrings': {
                     'shortcut1': {
                         'text': some_string,
                         'ignore' True,
                         'mode': ...
                     '...':
-            'some name': ...
-        ...
-    }
+
+            'some name': {
+                'scopes': [],
+                'scope_type': 'scope_incl'
+                ...
+
     """
 
     def __init__(self, *args):
