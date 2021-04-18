@@ -120,11 +120,18 @@ class Draw(DrawCtrl):
     """
 
     def __init__(self, *args):
-        # cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(*args)
         self._hs_code_b4 = None
-        # getting global hotstrings on init
-        self.current_scope = self.user_cfg.get('', {})
+
+        if _check_legacy_data(self.user_cfg):
+            self.delayed_check()
+
+        self.current_name = self.user_cfg.get('last_group', GLOBAL_SCOPE_TXT)
+        self.current_group = self.user_cfg.get('groups', {}).get(self.current_name, {})
+
+        # old ...
+
+        # self.current_scope = self.user_cfg.get('', {})
         self._scope_combo_items = {}
         self._setup_ui()
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
@@ -139,7 +146,8 @@ class Draw(DrawCtrl):
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.editor = HotStringsEditor(self.current_scope, self)
+        # self.editor = HotStringsEditor(self.current_scope, self)
+        self.editor = HotStringsEditor(self.current_group.get(HOTSTRINGS, {}), self)
         self.editor.list_menu_called.connect(self.build_list_context_menu)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -387,6 +395,33 @@ class Edit(EditCtrl):
     @staticmethod
     def element_icon():
         return a2ctrl.Icons.inst().hotkey
+
+
+def _check_legacy_data(cfg):
+    """Make sure we use groups instead of ''-means global/scope_type pattern."""
+    changed = False
+    # move implied global scope '' to actual "global" group
+    if '' in cfg:
+        _legacy_move_group(cfg, '', GLOBAL_SCOPE_TXT)
+        changed = True
+    # move each scoped sub group to new group
+    for scope_type in hotstrings_io.IN_EXCLUDE:
+        if scope_type in cfg:
+            for scope_key in cfg[scope_type].keys():
+                new_name = _legacy_move_group(cfg, scope_type, scope_key)
+                cfg['groups'][new_name]['scopes'] = [scope_key]
+                cfg['groups'][new_name]['scope_type'] = scope_type
+            changed = True
+    return changed
+
+
+def _legacy_move_group(cfg, old_name, new_name):
+    cfg.setdefault('groups', {})
+    new_name = a2util.get_next_free_number(new_name, cfg['groups'].keys())
+    cfg['groups'][new_name] = {'hotstrings': {}}
+    cfg['groups'][new_name]['hotstrings'] = cfg[old_name]
+    del cfg[old_name]
+    return new_name
 
 
 def get_settings(_module_key, _cfg, db_dict, _user_cfg):
