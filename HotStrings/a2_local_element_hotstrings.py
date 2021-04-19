@@ -250,7 +250,7 @@ class Draw(DrawCtrl):
         if self.current_name not in self.user_cfg.get(Args.groups, {}):
             return
 
-        if self.current_group:
+        if self.current_group.get(Args.hotstrings):
             dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
                 'Remove group "%s" ...' % self.current_name,
@@ -346,8 +346,9 @@ class Draw(DrawCtrl):
             if name == self.current_name:
                 continue
 
-            action = submenu.addAction(ICONS[group.get(Args.scope_type)], name, self._on_move_hotstring)
-            # action.setData((this_key, this_string))
+            action = submenu.addAction(
+                ICONS[group.get(Args.scope_type)], name, self._on_move_hotstring
+            )
 
         if submenu.isEmpty():
             action = submenu.addAction('No other groups set up!')
