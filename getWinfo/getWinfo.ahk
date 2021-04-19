@@ -62,6 +62,8 @@ getWinfo() {
     Menu, wInfoPosMenu, Add, MousePos: %mouseX%`,%mouseY%, getWinfoMenuHandler
 
     Menu, wInfoMenu, Add, Pos: %X% x %Y% Size: %Width% x %Height% ..., :wInfoPosMenu
+
+    Menu, wInfoMenu, Add
     Menu, wInfoMenu, Add, Cancel, getWinfoMenuHandler
 
     CoordMode, Menu, Screen
