@@ -19,6 +19,9 @@ from hotstrings_io import Options
 
 
 ADD_SCOPE_TXT = 'Add Group'
+ADD_MSG = 'Pick a name for the new group:'
+
+
 class Args:
     enabled = 'enabled'
     groups = 'groups'
@@ -26,6 +29,8 @@ class Args:
     last_group = 'last_group'
     scopes = 'scopes'
     scope_type = 'scope_type'
+
+
 GLOBAL_SCOPE_TXT = 'global'
 HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
@@ -181,6 +186,7 @@ class Draw(DrawCtrl):
             self.group_combo.addItem(ICONS[None], GLOBAL_SCOPE_TXT)
 
         self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
+        self.group_combo.setCurrentText(self.current_name)
         self.group_combo.blockSignals(False)
 
     def select_group(self, group_name):
@@ -413,6 +419,7 @@ class Draw(DrawCtrl):
         self.current_name = name
         self.current_group = self.user_cfg.get(Args.groups, {}).get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
+        self.set_user_value(name, Args.last_group)
 
 
 class Edit(EditCtrl):
