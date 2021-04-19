@@ -183,11 +183,11 @@ class Draw(DrawCtrl):
         self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
         self.group_combo.blockSignals(False)
 
-    # def select_group(self, scope_key, scope_string):
-    #     for index, (this_key, this_string) in self._scope_combo_items.items():
-    #         if this_key == scope_key and this_string == scope_string:
-    #             self.scope_combo.setCurrentIndex(index)
-    #             break
+    def select_group(self, group_name):
+        current_groups = list(self.user_cfg.get('groups', {}))
+        if group_name not in current_groups:
+            group_name = self.user_cfg.get(Args.last_group, current_groups[0])
+        self.group_combo.setCurrentText(group_name)
 
     # def add_scope_dialog(self):
     #     from a2widget.a2hotkey import scope_dialog
@@ -381,16 +381,18 @@ class Draw(DrawCtrl):
         self.check()
 
     def add_group(self):
-        dialog = a2input_dialog.A2InputDialog(self, ADD_SCOPE_TXT, self._add_group_check)
+        dialog = a2input_dialog.A2InputDialog(
+            self, ADD_SCOPE_TXT, self._add_group_check, msg=ADD_MSG
+        )
         dialog.okayed.connect(self._on_add_group)
-        dialog.show()
+        dialog.exec_()
 
     def _add_group_check(self, name):
         if not name.strip():
             return 'Group name cannot be empty!'
         if name in self.user_cfg.get(Args.groups, {}):
             return 'Group name already exists!'
-        if name in hotstrings_io.IN_EXCLUDE:
+        if name in list(hotstrings_io.IN_EXCLUDE) + [ADD_SCOPE_TXT]:
             return 'Reserved Name not allowed!'
         return True
 
@@ -399,9 +401,18 @@ class Draw(DrawCtrl):
         self.user_cfg.setdefault(Args.groups, {})[new_group_name] = {}
         self.current_group = self.user_cfg[Args.groups][new_group_name]
         self.fill_group_combo()
+        self.select_group(new_group_name)
 
     def on_group_change(self, name):
-        name
+        if name == ADD_SCOPE_TXT:
+            self.add_group()
+            if self.group_combo.currentText() == ADD_SCOPE_TXT:
+                self.select_group(self.user_cfg.get(Args.last_group))
+            return
+
+        self.current_name = name
+        self.current_group = self.user_cfg.get(Args.groups, {}).get(name, {})
+        self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
 
 
 class Edit(EditCtrl):
