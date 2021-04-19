@@ -39,7 +39,7 @@ details_popup_handler(menu_name) {
     }
 
     Menu, DetailsSubMenu, Add
-    Menu, DetailsSubMenu, Add, Cancel, details_entry_handlerD
+    Menu, DetailsSubMenu, Add, Cancel, details_entry_handler
     Menu, DetailsSubMenu, Show
     Menu, DetailsSubMenu, DeleteAll
 }
