@@ -3,12 +3,13 @@
     "author": "eRiC",
     "date": "2016 10 23",
     "description": "Typing triggered actions! To correct spelling, insert longer texts or tricky letters by writing shortcuts. But also to trigger any Autohotkey action.",
+    "display_name": "",
     "tags": [
       "text"
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/wiki/Hotstrings",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "label": "Import Hotstrings",
