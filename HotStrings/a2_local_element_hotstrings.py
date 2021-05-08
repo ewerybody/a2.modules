@@ -194,7 +194,7 @@ class Draw(DrawCtrl):
         self.group_combo.blockSignals(False)
 
     def select_group(self, group_name):
-        current_groups = list(self.user_cfg.get('groups', {}))
+        current_groups = list(self.user_cfg.get(Args.groups, {}))
         if group_name not in current_groups:
             group_name = self.user_cfg.get(Args.last_group, current_groups[0])
         self.group_combo.setCurrentText(group_name)
@@ -340,6 +340,7 @@ class Draw(DrawCtrl):
             menu.addAction(a2ctrl.Icons.check, 'Enable Group', self.enable_group)
         action = menu.addAction(a2ctrl.Icons.edit, 'Edit Scope', self.edit_scope)
         action.setEnabled(False)
+        menu.addAction(a2ctrl.Icons.edit, 'Rename Group', self.rename_group)
         menu.addAction(a2ctrl.Icons.delete, 'Remove Group', self.remove_group)
         menu.addAction(a2ctrl.Icons.list_add, ADD_SCOPE_TXT, self.add_group)
 
@@ -425,6 +426,10 @@ class Draw(DrawCtrl):
         self.current_group = self.groups.get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
         self.set_user_value(name, Args.last_group)
+        self.user_cfg[Args.last_group] = name
+
+    def rename_group(self):
+        pass
 
 
 class Edit(EditCtrl):
