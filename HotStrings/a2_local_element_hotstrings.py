@@ -145,7 +145,7 @@ class Draw(DrawCtrl):
             self.delayed_check()
 
         self.current_name = self.user_cfg.get(Args.last_group, GLOBAL_SCOPE_TXT)
-        self.current_group = self.user_cfg.get(Args.groups, {}).get(self.current_name, {})
+        self.current_group = self.groups.get(self.current_name, {})
 
         self._setup_ui()
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
@@ -153,6 +153,10 @@ class Draw(DrawCtrl):
 
         self.is_expandable_widget = True
         QtCore.QTimer(self).singleShot(50, self.fill_group_combo)
+
+    @property
+    def groups(self):
+        return self.user_cfg.get(Args.groups, {})
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -177,8 +181,8 @@ class Draw(DrawCtrl):
         self.group_combo.blockSignals(True)
         self.group_combo.clear()
 
-        if self.user_cfg.get(Args.groups, {}):
-            for name, group in self.user_cfg.get(Args.groups, {}).items():
+        if self.groups:
+            for name, group in self.groups.items():
                 self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
         else:
             self.current_name = GLOBAL_SCOPE_TXT
@@ -326,7 +330,7 @@ class Draw(DrawCtrl):
 
     def _write(self, hotstrings_code):
         a2util.write_utf8(self.hotstrings_file, hotstrings_code)
-        # 2 avoid a2-runtime autoreload, set archive flag immediately
+        # To avoid a2-runtime auto-reload, set archive flag immediately
         a2util.set_archive(self.hotstrings_file, False)
 
     def build_group_edit_menu(self, menu):
@@ -342,7 +346,7 @@ class Draw(DrawCtrl):
     def build_list_context_menu(self, menu):
         menu.clear()
         submenu = menu.addMenu(a2ctrl.Icons.scope, 'Move to Group')
-        for name, group in self.iter_groups():
+        for name, group in self.groups.items():
             if name == self.current_name:
                 continue
 
@@ -418,7 +422,7 @@ class Draw(DrawCtrl):
             return
 
         self.current_name = name
-        self.current_group = self.user_cfg.get(Args.groups, {}).get(name, {})
+        self.current_group = self.groups.get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
         self.set_user_value(name, Args.last_group)
 
