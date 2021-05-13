@@ -431,7 +431,11 @@ class Draw(DrawCtrl):
 
     def rename_group(self):
         dialog = a2input_dialog.A2InputDialog(
-            self, RENAME_GRP, self._add_group_check, msg=MSG_RENAME % self.current_name
+            parent=self,
+            title=RENAME_GRP,
+            check_func=self._add_group_check,
+            text=self.current_name,
+            msg=MSG_RENAME % self.current_name,
         )
         dialog.okayed.connect(self._on_rename_group)
         dialog.exec_()
@@ -443,6 +447,7 @@ class Draw(DrawCtrl):
         del self.groups[old_name]
         self.fill_group_combo()
         self.select_group(new_name)
+        self.user_cfg[Args.last_group] = new_name
         self.set_user_value(self.user_cfg)
 
 
