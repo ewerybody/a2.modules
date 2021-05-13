@@ -19,8 +19,9 @@ from hotstrings_io import Options
 
 
 ADD_SCOPE_TXT = 'Add Group'
-ADD_MSG = 'Pick a name for the new group:'
-
+MSG_ADD = 'Pick a name for the new group:'
+MSG_RENAME = 'Pick a new name for the group "%s":'
+RENAME_GRP = 'Rename Group'
 
 class Args:
     enabled = 'enabled'
@@ -340,7 +341,7 @@ class Draw(DrawCtrl):
             menu.addAction(a2ctrl.Icons.check, 'Enable Group', self.enable_group)
         action = menu.addAction(a2ctrl.Icons.edit, 'Edit Scope', self.edit_scope)
         action.setEnabled(False)
-        menu.addAction(a2ctrl.Icons.edit, 'Rename Group', self.rename_group)
+        menu.addAction(a2ctrl.Icons.edit, RENAME_GRP, self.rename_group)
         menu.addAction(a2ctrl.Icons.delete, 'Remove Group', self.remove_group)
         menu.addAction(a2ctrl.Icons.list_add, ADD_SCOPE_TXT, self.add_group)
 
@@ -394,7 +395,7 @@ class Draw(DrawCtrl):
 
     def add_group(self):
         dialog = a2input_dialog.A2InputDialog(
-            self, ADD_SCOPE_TXT, self._add_group_check, msg=ADD_MSG
+            self, ADD_SCOPE_TXT, self._add_group_check, msg=MSG_ADD
         )
         dialog.okayed.connect(self._on_add_group)
         dialog.exec_()
@@ -429,7 +430,20 @@ class Draw(DrawCtrl):
         self.user_cfg[Args.last_group] = name
 
     def rename_group(self):
-        pass
+        dialog = a2input_dialog.A2InputDialog(
+            self, RENAME_GRP, self._add_group_check, msg=MSG_RENAME % self.current_name
+        )
+        dialog.okayed.connect(self._on_rename_group)
+        dialog.exec_()
+
+    def _on_rename_group(self, new_name):
+        old_name = self.current_name
+        self.groups[new_name] = self.current_group
+        self.current_name = new_name
+        del self.groups[old_name]
+        self.fill_group_combo()
+        self.select_group(new_name)
+        self.set_user_value(self.user_cfg)
 
 
 class Edit(EditCtrl):
