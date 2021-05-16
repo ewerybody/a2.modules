@@ -22,6 +22,11 @@ ADD_SCOPE_TXT = 'Add Group'
 MSG_ADD = 'Pick a name for the new group:'
 MSG_RENAME = 'Pick a new name for the group "%s":'
 RENAME_GRP = 'Rename Group'
+MSG_MOVE_CONFLICT = (
+    'Overwrite Warning!',
+    'The target group "%s"<br>already contains %i of the selected Hotstings!<br>'
+    '"<b>%s</b>"!<br>These would be <b>overwritten</b>! Do you want to continue?',
+)
 
 
 class Args:
@@ -103,6 +108,7 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
         )
 
         self.enable_search_field(False)
+        self.set_multi_selection(True)
 
     def insert_scope_ui(self, widget):
         self.ui.list_layout.insertWidget(0, widget)
@@ -172,7 +178,7 @@ class Draw(DrawCtrl):
         layout = QtWidgets.QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
         self.group_combo = QtWidgets.QComboBox(self)
-        self.group_combo.currentTextChanged.connect(self.on_group_change)
+        self.group_combo.currentTextChanged.connect(self._on_group_change)
         layout.addWidget(self.group_combo)
         self.more_button = a2more_button.A2MoreButton(self)
         self.more_button.menu_called.connect(self.build_group_edit_menu)
@@ -322,23 +328,29 @@ class Draw(DrawCtrl):
 
     def _on_move_hotstring(self):
         target_name = self.sender().text()
-        target_group = self.user_cfg[Args.groups].get(target_name, {}).get(Args.hotstrings, {})
+        target_group = self.groups.get(target_name, {}).get(Args.hotstrings, {})
 
-        if self.editor.selected_name in target_group:
+        move_these = []
+        conflicts = []
+        for name in self.editor.selected_names:
+            if name in target_group:
+                conflicts.append(name)
+            move_these.append(name)
+
+        if conflicts:
             dialog = a2input_dialog.A2ConfirmDialog(
-                self.main,
-                'Group already contains "%s"!' % self.editor.selected_name,
-                'The target group "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
-                'It would be <b>overwritten</b>! Do you want to continue?'
-                % (target_name, self.editor.selected_name),
+                self.main, MSG_MOVE_CONFLICT[0],
+                MSG_MOVE_CONFLICT[1] % (target_name, len(conflicts), ', '.join(conflicts)),
             )
             dialog.exec_()
             if not dialog.result:
                 return
 
-        hotstring_data = self.current_group[Args.hotstrings][self.editor.selected_name]
-        del self.current_group[Args.hotstrings][self.editor.selected_name]
-        target_group[self.editor.selected_name] = hotstring_data
+        for name in move_these:
+            hotstring_data = self.current_group[Args.hotstrings][name]
+            del self.current_group[Args.hotstrings][name]
+            target_group[name] = hotstring_data
+
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
         self.check()
 
@@ -374,7 +386,7 @@ class Draw(DrawCtrl):
         self.fill_group_combo()
         self.select_group(new_group_name)
 
-    def on_group_change(self, name):
+    def _on_group_change(self, name):
         if name == ADD_SCOPE_TXT:
             self.add_group()
             if self.group_combo.currentText() == ADD_SCOPE_TXT:
@@ -384,6 +396,7 @@ class Draw(DrawCtrl):
         self.current_name = name
         self.current_group = self.groups.get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
+        self.editor.select(None)
         self.set_user_value(name, Args.last_group)
         self.user_cfg[Args.last_group] = name
 
