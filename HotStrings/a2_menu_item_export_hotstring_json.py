@@ -12,9 +12,11 @@ def main(a2, mod):
 
     file_path, _filter = QtWidgets.QFileDialog.getSaveFileName(None, title, a2.paths.a2, '*.json')
 
-    if file_path:
-        import a2util
+    if not file_path:
+        return
 
-        name = 'hotstrings'
-        hs_current = mod.get_user_cfg()[name]
-        a2util.json_write(file_path, hs_current)
+    import a2util
+    from hotstrings_io import Args
+
+    groups = mod.get_user_cfg().get(Args.hotstrings, {}).get(Args.groups, {})
+    a2util.json_write(file_path, groups)
