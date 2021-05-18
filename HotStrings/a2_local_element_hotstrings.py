@@ -15,7 +15,7 @@ this_dir = os.path.dirname(__file__)
 if this_dir not in sys.path:
     sys.path.append(this_dir)
 import hotstrings_io
-from hotstrings_io import Options
+from hotstrings_io import Options, Args
 
 
 ADD_SCOPE_TXT = 'Add Group'
@@ -28,17 +28,6 @@ MSG_MOVE_CONFLICT = (
     '"<b>%s</b>"!<br>These would be <b>overwritten</b>! Do you want to continue?',
 )
 
-
-class Args:
-    enabled = 'enabled'
-    groups = 'groups'
-    hotstrings = 'hotstrings'
-    last_group = 'last_group'
-    scopes = 'scopes'
-    scope_type = 'scope_type'
-
-
-GLOBAL_SCOPE_TXT = 'global'
 HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
@@ -116,43 +105,43 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
 
 class Draw(DrawCtrl):
     """
-        The complete Hotstrings editor displaying all our groups,
-        assembling the resulting dictionary passing it to the AHK code generator.
+    The complete Hotstrings editor displaying all our groups,
+    assembling the resulting dictionary passing it to the AHK code generator.
 
-        A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
-        it can be scoped however you want making it work globally or on certain windows only,
-        it can also be enabled/disabled, renamed.
-        When doing imports new groups are created. If there are multiple scopes
+    A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
+    it can be scoped however you want making it work globally or on certain windows only,
+    it can also be enabled/disabled, renamed.
+    When doing imports new groups are created. If there are multiple scopes
 
-        user_cfg be like:
+    user_cfg be like:
     {
         'last_group': '',
         'last_selection': '',
         'groups': {
             'global': {
-                'enabled': True,
                 'hotstrings': {
                     'shortcut1': {
                         'text': some_string,
                         'ignore' True,
                         'mode': ...
-                    '...':
-
-            'some name': {
+                    'another...':
+            'some group name': {
+                'enabled': False,
                 'scopes': [],
-                'scope_type': 'scope_incl'
+                'scope_type': 'scope_incl',
+                'hotstrings': { ...}
                 ...
-
+    }
     """
 
     def __init__(self, *args):
         super(Draw, self).__init__(*args)
         self._hs_code_b4 = None
 
-        if _check_legacy_data(self.user_cfg):
+        if hotstrings_io.scopes_to_groups(self.user_cfg):
             self.delayed_check()
 
-        self.current_name = self.user_cfg.get(Args.last_group, GLOBAL_SCOPE_TXT)
+        self.current_name = self.user_cfg.get(Args.last_group, Args.default)
         self.current_group = self.groups.get(self.current_name, {})
 
         self._setup_ui()
@@ -193,9 +182,9 @@ class Draw(DrawCtrl):
             for name, group in self.groups.items():
                 self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
         else:
-            self.current_name = GLOBAL_SCOPE_TXT
-            self.current_scope = self.user_cfg[Args.groups] = {GLOBAL_SCOPE_TXT: {}}
-            self.group_combo.addItem(ICONS[None], GLOBAL_SCOPE_TXT)
+            self.current_name = Args.default
+            self.current_scope = self.user_cfg[Args.groups] = {Args.default: {}}
+            self.group_combo.addItem(ICONS[None], Args.default)
 
         self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
         self.group_combo.setCurrentText(self.current_name)
@@ -263,29 +252,14 @@ class Draw(DrawCtrl):
         self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
         self.set_user_value(self.user_cfg)
 
-        # create an old-style hotstrings dictionary to pass it to the
-        # AHK-Hotstrings-code generator
-        hs_dict = {}
-        for group in self.user_cfg.get(Args.groups, {}).values():
-            if not group.get(Args.enabled, True):
-                continue
-
-            if scope_type := group.get(Args.scope_type):
-                target_dict = hs_dict.setdefault(scope_type, {})
-                for scope_str in group.get(Args.scopes):
-                    target_dict.setdefault(scope_str, {}).update(group.get(Args.hotstrings))
-            else:
-                hs_dict.setdefault('', {}).update(group.get(Args.hotstrings))
-
+        hs_dict = hotstrings_io.groups_to_scopes(self.groups)
         hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
-        code_hash = hashlib.sha1(hotstrings_code.encode('utf8'))
+        code_hash = hashlib.sha1(hotstrings_code.encode('utf8')).hexdigest()
         if code_hash == self._hs_code_b4:
             return
 
         self._hs_code_b4 = code_hash
-
-        hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
-        self._write(hotstrings_code)
+        self._write(a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code)
         self.change()
 
     def _check_hs_include_file(self):
@@ -439,33 +413,6 @@ class Edit(EditCtrl):
     @staticmethod
     def element_icon():
         return a2ctrl.Icons.hotkey
-
-
-def _check_legacy_data(cfg):
-    """Make sure we use groups instead of ''-means global/scope_type pattern."""
-    changed = False
-    # move implied global scope '' to actual "global" group
-    if '' in cfg:
-        _legacy_move_group(cfg, '', GLOBAL_SCOPE_TXT)
-        changed = True
-    # move each scoped sub group to new group
-    for scope_type in hotstrings_io.IN_EXCLUDE:
-        if scope_type in cfg:
-            for scope_key in cfg[scope_type].keys():
-                new_name = _legacy_move_group(cfg, scope_type, scope_key)
-                cfg[Args.groups][new_name][Args.scopes] = [scope_key]
-                cfg[Args.groups][new_name][Args.scope_type] = scope_type
-            changed = True
-    return changed
-
-
-def _legacy_move_group(cfg, old_name, new_name):
-    cfg.setdefault(Args.groups, {})
-    new_name = a2util.get_next_free_number(new_name, cfg[Args.groups].keys())
-    cfg[Args.groups][new_name] = {Args.hotstrings: {}}
-    cfg[Args.groups][new_name][Args.hotstrings] = cfg[old_name]
-    del cfg[old_name]
-    return new_name
 
 
 def get_settings(_module_key, _cfg, db_dict, _user_cfg):

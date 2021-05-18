@@ -1,8 +1,7 @@
-"""
-Python module to handle Autohotkey Hotstrings stuff.
-"""
+"""Autohotkey Hotstrings stuff."""
 import enum
 import codecs
+import a2util
 
 
 # for the on/off options
@@ -11,6 +10,15 @@ class Options(enum.Enum):
     ignore = 'O'
     inside = '?'
     append = 'B0'
+
+class Args:
+    enabled = 'enabled'
+    groups = 'groups'
+    hotstrings = 'hotstrings'
+    last_group = 'last_group'
+    scopes = 'scopes'
+    scope_type = 'scope_type'
+    default = 'global'
 
 # for the dropdown menus
 OPTION_LISTS = {
@@ -29,7 +37,26 @@ KEY_EXCL = 'scope_excl'
 IN_EXCLUDE = (KEY_INCL, KEY_EXCL)
 
 
-def dict_to_ahkcode(hotstrings_data):
+def groups_to_scopes(group_dict: dict) -> dict:
+    """Create old-style hotstrings dictionary that can be passed
+    to the AHK-Hotstrings-code generator.
+    """
+    hs_dict = {}
+    for group in group_dict.values():
+        if not group.get(Args.enabled, True):
+            continue
+
+        if scope_type := group.get(Args.scope_type):
+            target_dict = hs_dict.setdefault(scope_type, {})
+            for scope_str in group.get(Args.scopes):
+                target_dict.setdefault(scope_str, {}).update(group.get(Args.hotstrings))
+        else:
+            hs_dict.setdefault('', {}).update(group.get(Args.hotstrings))
+    return hs_dict
+
+
+def dict_to_ahkcode(hotstrings_data: dict) -> str:
+    """From flat scoped dictionary create Autohotkey hotstrings code."""
     hs_global = []
     scope_incl = {}
     scope_excl = {}
@@ -115,7 +142,8 @@ def iterate(hotstrings_dict):
 
 class HotstringsParser:
     """
-    the resulting hotstrings dict::
+    Autohotkey hotstring code parser
+    to create a hotstrings dictionary::
 
         # '' is the global scope
         {'': {
@@ -252,6 +280,38 @@ class HotstringsParser:
             self.hs_dict[''][self.this_shortcut] = self.this_hs
         self.this_hs = {}
         self.hs_buffer = []
+
+
+def scopes_to_groups(cfg: dict) -> bool:
+    """Fix the incoming dictionary to make sure
+    we use groups instead of ''-means global/scope_type pattern.
+
+    Return True/False indicating changes were made.
+    """
+    changed = False
+    # move implied global scope '' to actual "global" group
+    if '' in cfg:
+        _move_group(cfg, '', Args.default)
+        changed = True
+
+    # move each scoped sub group to new group
+    for scope_type in IN_EXCLUDE:
+        if scope_type in cfg:
+            for scope_key in cfg[scope_type].keys():
+                new_name = _move_group(cfg, scope_type, scope_key)
+                cfg[Args.groups][new_name][Args.scopes] = [scope_key]
+                cfg[Args.groups][new_name][Args.scope_type] = scope_type
+            changed = True
+    return changed
+
+
+def _move_group(cfg: dict, old_name: str, new_name: str) -> str:
+    cfg.setdefault(Args.groups, {})
+    new_name = a2util.get_next_free_number(new_name, cfg[Args.groups].keys())
+    cfg[Args.groups][new_name] = {Args.hotstrings: {}}
+    cfg[Args.groups][new_name][Args.hotstrings] = cfg[old_name]
+    del cfg[old_name]
+    return new_name
 
 
 if __name__ == '__main__':
