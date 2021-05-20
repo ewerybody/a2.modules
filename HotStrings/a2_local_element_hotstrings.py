@@ -27,6 +27,12 @@ MSG_MOVE_CONFLICT = (
     'The target group "%s"<br>already contains %i of the selected Hotstings!<br>'
     '"<b>%s</b>"!<br>These would be <b>overwritten</b>! Do you want to continue?',
 )
+MSG_REMOVE_WARN = (
+    'Remove group "%s" ...',
+    'The group still contains Hotstings! These would be lost!\n'
+    'You can also <b>move</b> the Hotstrings to other groups or '
+    'make them scoped via context menu.\nOr do you want to continue deletion?',
+)
 
 HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
@@ -190,7 +196,7 @@ class Draw(DrawCtrl):
         self.group_combo.setCurrentText(self.current_name)
         self.group_combo.blockSignals(False)
 
-    def select_group(self, group_name):
+    def select_group(self, group_name=''):
         current_groups = list(self.user_cfg.get(Args.groups, {}))
         if group_name not in current_groups:
             group_name = self.user_cfg.get(Args.last_group, current_groups[0])
@@ -231,11 +237,7 @@ class Draw(DrawCtrl):
 
         if self.current_group.get(Args.hotstrings):
             dialog = a2input_dialog.A2ConfirmDialog(
-                self.main,
-                'Remove group "%s" ...' % self.current_name,
-                'The group still contains Hotstings! These would be lost!\n'
-                'You can also <b>move</b> the Hotstrings to other groups or '
-                'make them scoped via context menu.\nOr do you want to continue deletion?',
+                self.main, MSG_REMOVE_WARN[0] % self.current_name, MSG_REMOVE_WARN[1]
             )
             dialog.exec_()
             if not dialog.result:
@@ -243,8 +245,7 @@ class Draw(DrawCtrl):
 
         del self.user_cfg[Args.groups][self.current_name]
         self.fill_group_combo()
-        # self.scope_combo.setCurrentIndex(0)
-        # self.on_scope_change(0)
+        self.select_group()
         self.check()
 
     def check(self, *args):
@@ -313,7 +314,8 @@ class Draw(DrawCtrl):
 
         if conflicts:
             dialog = a2input_dialog.A2ConfirmDialog(
-                self.main, MSG_MOVE_CONFLICT[0],
+                self.main,
+                MSG_MOVE_CONFLICT[0],
                 MSG_MOVE_CONFLICT[1] % (target_name, len(conflicts), ', '.join(conflicts)),
             )
             dialog.exec_()
