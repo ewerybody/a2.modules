@@ -283,24 +283,35 @@ class HotstringsParser:
 
 
 def scopes_to_groups(cfg: dict) -> bool:
-    """Fix the incoming dictionary to make sure
-    we use groups instead of ''-means global/scope_type pattern.
+    """Fix incoming dictionary to make sure we use groups
+    instead of the oldschool ''-means global/scope_type pattern.
+    Or move groups from root to a `groups` dict.
 
     Return True/False indicating changes were made.
     """
     changed = False
-    # move implied global scope '' to actual "global" group
-    if '' in cfg:
-        _move_group(cfg, '', Args.default)
-        changed = True
-
-    # move each scoped sub group to new group
-    for scope_type in IN_EXCLUDE:
-        if scope_type in cfg:
-            for scope_key in cfg[scope_type].keys():
-                new_name = _move_group(cfg, scope_type, scope_key)
-                cfg[Args.groups][new_name][Args.scopes] = [scope_key]
-                cfg[Args.groups][new_name][Args.scope_type] = scope_type
+    # loop over root names, we might change length of cfg:
+    for name in list(cfg):
+        # move implied global scope '' to actual "global" group
+        if '' == name:
+            _move_group(cfg, '', Args.default)
+            changed = True
+            continue
+        # move each scoped sub group to new group
+        if name in IN_EXCLUDE:
+            for scope_key in cfg[name].keys():
+                new_name = _move_group(cfg, name, scope_key)
+                group = cfg[Args.groups][new_name]
+                # set scope values
+                group[Args.scopes] = [scope_key]
+                group[Args.scope_type] = name
+                # move hotstrings data out of "scope_key"
+                group[Args.hotstrings] = group[Args.hotstrings][scope_key]
+            changed = True
+            continue
+        # move root groups into groups sub dict
+        if isinstance(cfg[name], dict) and Args.hotstrings in cfg[name]:
+            _move_group(cfg, name, name)
             changed = True
     return changed
 
@@ -308,8 +319,11 @@ def scopes_to_groups(cfg: dict) -> bool:
 def _move_group(cfg: dict, old_name: str, new_name: str) -> str:
     cfg.setdefault(Args.groups, {})
     new_name = a2util.get_next_free_number(new_name, cfg[Args.groups].keys())
-    cfg[Args.groups][new_name] = {Args.hotstrings: {}}
-    cfg[Args.groups][new_name][Args.hotstrings] = cfg[old_name]
+    if Args.hotstrings in cfg[old_name]:
+        cfg[Args.groups][new_name] = cfg[old_name]
+    else:
+        cfg[Args.groups][new_name] = {Args.hotstrings: {}}
+        cfg[Args.groups][new_name][Args.hotstrings] = cfg[old_name]
     del cfg[old_name]
     return new_name
 
