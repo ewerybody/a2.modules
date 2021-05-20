@@ -17,20 +17,27 @@ def main(a2, mod):
     import hotstrings_io
     from hotstrings_io import Args
 
-    base, ext = os.path.splitext(os.path.basename(file_path))
-    ext = ext.lower()
+    base = os.path.basename(file_path)
+    ext = os.path.splitext(base)[1].lower()
     if ext == '.ahk':
         hs_input = hotstrings_io.file_to_dict(file_path)
     elif ext == '.json':
         hs_input = a2util.json_read(file_path)
+    else:
+        raise NotImplementedError('Unknown file type "%s"!' % ext)
 
     hotstrings_io.scopes_to_groups(hs_input)
 
     current_cfg = mod.get_user_cfg().get(Args.hotstrings, {})
     current_groups = current_cfg.get(Args.groups, {})
     current_names = list(current_groups)
+
     for name, group in hs_input.get(Args.groups, {}).items():
-        name = f'Imported - {base} {name}'
+        if not Args.hotstrings in group:
+            continue
+        if not len(group[Args.hotstrings]):
+            continue
+        name = f'Imported {base} - {name}'
         name = a2util.get_next_free_number(name, current_names)
         group[Args.enabled] = False
         current_groups[name] = group
