@@ -17,13 +17,13 @@
     "typ": "menu_item"
   },
   {
-    "label": "Export Hotstrings Code",
-    "script_name": "export_hotstring_ahk_code",
+    "label": "Export Hotstrings - All",
+    "script_name": "export_hotstrings",
     "typ": "menu_item"
   },
   {
-    "label": "Export Hotstrings JSON",
-    "script_name": "export_hotstring_json",
+    "label": "Export Hotstrings - Selected Group",
+    "script_name": "export_hotstring_selected",
     "typ": "menu_item"
   },
   {

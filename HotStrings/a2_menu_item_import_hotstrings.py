@@ -1,8 +1,8 @@
 ﻿# a2 menu item script "import_hotstrings"
+import a2core
 from a2qt import QtWidgets
 
-
-def main(a2, mod):
+def main(a2: a2core.A2Obj, mod):
     print('Import Hotstrings ... %s' % __name__)
 
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -13,7 +13,6 @@ def main(a2, mod):
 
     import os
     import a2util
-    import pprint
     import hotstrings_io
     from hotstrings_io import Args
 
