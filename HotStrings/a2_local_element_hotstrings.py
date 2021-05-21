@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
 import os
 import sys
+import hashlib
+from copy import deepcopy
 
 from a2qt import QtWidgets, QtCore
 
@@ -14,12 +15,26 @@ this_dir = os.path.dirname(__file__)
 if this_dir not in sys.path:
     sys.path.append(this_dir)
 import hotstrings_io
-from hotstrings_io import Options
+from hotstrings_io import Options, Args
 
 
-ADD_SCOPE_TXT = 'Add Scope'
-GLOBAL_SCOPE_TXT = 'global'
-HOTSTRINGS_FILENAME = 'hotstrings.ahk'
+ADD_SCOPE_TXT = 'Add Group'
+MSG_ADD = 'Pick a name for the new group:'
+MSG_RENAME = 'Pick a new name for the group "%s":'
+RENAME_GRP = 'Rename Group'
+MSG_MOVE_CONFLICT = (
+    'Overwrite Warning!',
+    'The target group "%s"<br>already contains %i of the selected Hotstings!<br>'
+    '"<b>%s</b>"!<br>These would be <b>overwritten</b>! Do you want to continue?',
+)
+MSG_REMOVE_WARN = (
+    'Remove group "%s" ...',
+    'The group still contains Hotstings! These would be lost!\n'
+    'You can also <b>move</b> the Hotstrings to other groups or '
+    'make them scoped via context menu.\nOr do you want to continue deletion?',
+)
+
+HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
     (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
     (Options.ignore.name, 'Ignore Characters Causing Replacement'),
@@ -35,6 +50,11 @@ MODES = [
     'Text - new. Similar to raw mode.',
 ]
 CASE_ITEMS = ['Forward to text', 'Sensitive', 'Keep original']
+ICONS = {
+    None: a2ctrl.Icons.scope_global,
+    hotstrings_io.KEY_INCL: a2ctrl.Icons.scope,
+    hotstrings_io.KEY_EXCL: a2ctrl.Icons.scope_exclude,
+}
 
 
 class HotStringsEditor(a2item_editor.A2ItemEditor):
@@ -83,6 +103,7 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
         )
 
         self.enable_search_field(False)
+        self.set_multi_selection(True)
 
     def insert_scope_ui(self, widget):
         self.ui.list_layout.insertWidget(0, widget)
@@ -96,48 +117,62 @@ class Draw(DrawCtrl):
     A Hotstrings group can have any name (except for internal '', 'scope_incl', 'scope_excl')
     it can be scoped however you want making it work globally or on certain windows only,
     it can also be enabled/disabled, renamed.
-    When doing imports new groups are created.
+    When doing imports new groups are created. If there are multiple scopes
 
     user_cfg be like:
     {
         'last_group': '',
-        'last_hotstring': '',
+        'last_selection': '',
         'groups': {
             'global': {
-                'enabled': True,
-                'scope': '',
                 'hotstrings': {
                     'shortcut1': {
                         'text': some_string,
                         'ignore' True,
                         'mode': ...
-                    '...':
-            'some name': ...
-        ...
+                    'another...':
+            'some group name': {
+                'enabled': False,
+                'scopes': [],
+                'scope_type': 'scope_incl',
+                'hotstrings': { ...}
+                ...
     }
     """
 
     def __init__(self, *args):
-        # cfg.setdefault('name', 'hotstrings')
         super(Draw, self).__init__(*args)
         self._hs_code_b4 = None
-        # getting global hotstrings on init
-        self.current_scope = self.user_cfg.get('', {})
-        self._scope_combo_items = {}
+
+        if hotstrings_io.scopes_to_groups(self.user_cfg):
+            self.delayed_check()
+
+        self.current_name = self._get_group_name()
+        self.current_group = self.groups.get(self.current_name, {})
+
         self._setup_ui()
         self.hotstrings_file = os.path.join(self.mod.data_path, HOTSTRINGS_FILENAME)
         self._check_hs_include_file()
 
-        self.scope_key = ''
-        self.scope_string = ''
-        self._last_scope_index = 0
-
         self.is_expandable_widget = True
+        QtCore.QTimer(self).singleShot(50, self.fill_group_combo)
+
+    @property
+    def groups(self):
+        return self.user_cfg.get(Args.groups, {})
+
+    def _get_group_name(self, group_name=None):
+        current_groups = list(self.groups)
+        if group_name not in current_groups:
+            group_name = self.user_cfg.get(Args.last_group)
+            if group_name not in current_groups:
+                group_name = current_groups[0]
+        return group_name
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.editor = HotStringsEditor(self.current_scope, self)
+        self.editor = HotStringsEditor(self.current_group.get(Args.hotstrings, {}), self)
         self.editor.list_menu_called.connect(self.build_list_context_menu)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -145,167 +180,94 @@ class Draw(DrawCtrl):
         widget = QtWidgets.QWidget(self)
         layout = QtWidgets.QHBoxLayout(widget)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.scope_combo = QtWidgets.QComboBox(self)
-        self.scope_combo.currentIndexChanged.connect(self.on_scope_change)
-        layout.addWidget(self.scope_combo)
-        self.scope_more_button = a2more_button.A2MoreButton(self)
-        self.scope_more_button.menu_called.connect(self.build_scope_edit_menu)
-        layout.addWidget(self.scope_more_button)
-
+        self.group_combo = QtWidgets.QComboBox(self)
+        self.group_combo.currentTextChanged.connect(self._on_group_change)
+        layout.addWidget(self.group_combo)
+        self.more_button = a2more_button.A2MoreButton(self)
+        self.more_button.menu_called.connect(self.build_group_edit_menu)
+        layout.addWidget(self.more_button)
         self.editor.insert_scope_ui(widget)
-        QtCore.QTimer(self).singleShot(50, self.fill_scope_combo)
 
-    def fill_scope_combo(self):
-        self._scope_combo_items = {0: ('', None)}
-        self.scope_combo.blockSignals(True)
-        self.scope_combo.clear()
+    def fill_group_combo(self):
+        self.group_combo.blockSignals(True)
+        self.group_combo.clear()
 
-        for scope_key, scope_string, icon in self.iter_scope_items():
-            if scope_key != '':
-                self._scope_combo_items[self.scope_combo.count()] = (scope_key, scope_string)
-            self.scope_combo.addItem(icon, scope_string.replace('\n', ' '))
-
-        self.scope_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
-        self.scope_combo.blockSignals(False)
-
-    def iter_scope_items(self):
-        if not self.user_cfg:
-            yield '', GLOBAL_SCOPE_TXT, a2ctrl.Icons.scope_global
+        if self.groups:
+            for name, group in self.groups.items():
+                self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
         else:
-            for scope_key, scope_data in self.user_cfg.items():
-                if scope_key == '':
-                    yield scope_key, GLOBAL_SCOPE_TXT, a2ctrl.Icons.scope_global
-                if scope_key == hotstrings_io.KEY_INCL:
-                    icon = a2ctrl.Icons.scope
-                elif scope_key == hotstrings_io.KEY_EXCL:
-                    icon = a2ctrl.Icons.scope_exclude
-                else:
-                    continue
+            self.current_name = Args.default
+            self.current_scope = self.user_cfg[Args.groups] = {Args.default: {}}
+            self.group_combo.addItem(ICONS[None], Args.default)
 
-                for scope_string in scope_data.keys():
-                    yield scope_key, scope_string, icon
+        self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
+        self.group_combo.setCurrentText(self.current_name)
+        self.group_combo.blockSignals(False)
 
-    def select_scope(self, scope_key, scope_string):
-        for index, (this_key, this_string) in self._scope_combo_items.items():
-            if this_key == scope_key and this_string == scope_string:
-                self.scope_combo.setCurrentIndex(index)
-                break
-
-    def add_scope_dialog(self):
-        from a2widget.a2hotkey import scope_dialog
-
-        dialog = scope_dialog.get_changable_no_global(self)
-        dialog.okayed.connect(self.scope_add_done)
-        dialog.rejected.connect(self._unselect_add_option)
-        dialog.show()
-
-    def on_scope_change(self, index):
-        if index == self.scope_combo.count() - 1:
-            self.add_scope_dialog()
-            return
-
-        self._last_scope_index = index
-
-        self.scope_key, self.scope_string = self._scope_combo_items[index]
-        if self.scope_key == '':
-            self.current_scope = self.user_cfg['']
-        else:
-            self.current_scope = self.user_cfg[self.scope_key][self.scope_string]
-        self.editor.set_data(self.current_scope)
-
-    def _unselect_add_option(self):
-        self.scope_combo.blockSignals(True)
-        self.scope_combo.setCurrentIndex(self._last_scope_index)
-        self.scope_combo.blockSignals(False)
-
-    def scope_add_done(self, scope_cfg):
-        from a2widget.a2hotkey.hotkey_common import Vars
-
-        scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
-        if scope_string:
-            mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
-            scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
-            self.user_cfg.setdefault(scope_key, {})[scope_string] = {}
-            self.fill_scope_combo()
-            self.select_scope(scope_key, scope_string)
+    def select_group(self, group_name=None):
+        group_name = self._get_group_name(group_name)
+        self.group_combo.setCurrentText(group_name)
+        self._on_group_change(group_name)
 
     def edit_scope(self):
         from a2widget.a2hotkey import scope_dialog, Vars
 
-        scope_dict = {}
-        scope_dict[Vars.scope_mode] = {hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}[
-            self.scope_key
-        ]
-        scope_dict[Vars.scope] = self.scope_string.split('\n')
+        scope_type_map = {hotstrings_io.KEY_INCL: 1, hotstrings_io.KEY_EXCL: 2}
+        scope_cfg = {
+            Vars.scope: self.current_group.get(Args.scopes, []),
+            Vars.scope_mode: scope_type_map.get(self.current_group.get(Args.scope_type), 0),
+            Vars.scope_change: True,
+        }
 
-        dialog = scope_dialog.get_changable_no_global(self, scope_dict)
+        dialog = scope_dialog.ScopeDialog(self, scope_cfg)
         dialog.okayed.connect(self.scope_edit_done)
         dialog.show()
 
-    def remove_scope(self):
-        if self.current_scope:
+    def scope_edit_done(self, scope_cfg):
+        from a2widget.a2hotkey.hotkey_common import Vars
+
+        for key, value in (Args.scopes, scope_cfg.get(Vars.scope)), (
+            Args.scope_type,
+            list(ICONS)[scope_cfg.get(Vars.scope_mode)],
+        ):
+            if value:
+                self.current_group[key] = value
+            elif key in self.current_group:
+                del self.current_group[key]
+
+        self.fill_group_combo()
+        self.check()
+
+    def remove_group(self):
+        if self.current_name not in self.user_cfg.get(Args.groups, {}):
+            return
+
+        if self.current_group.get(Args.hotstrings):
             dialog = a2input_dialog.A2ConfirmDialog(
-                self.main,
-                'Remove scope "%s..."' % self.scope_string[:30],
-                'The scope still contains Hotstings! These would be lost!\n'
-                'You can also <b>move</b> the Hotstrings to other scopes or '
-                'make them global via context menu.\nOr do you want to continue deletion?',
+                self.main, MSG_REMOVE_WARN[0] % self.current_name, MSG_REMOVE_WARN[1]
             )
             dialog.exec_()
             if not dialog.result:
                 return
 
-        del self.user_cfg[self.scope_key][self.scope_string]
-        self.fill_scope_combo()
-        self.scope_combo.setCurrentIndex(0)
-        self.on_scope_change(0)
-        self.delayed_check()
-
-    def scope_edit_done(self, scope_cfg):
-        from a2widget.a2hotkey.hotkey_common import Vars
-
-        scope_string = '\n'.join(scope_cfg.get(Vars.scope, []))
-        if scope_string:
-            mode_id = scope_cfg.get(Vars.scope_mode, 1) - 1
-            scope_key = [hotstrings_io.KEY_INCL, hotstrings_io.KEY_EXCL][mode_id]
-            if scope_key == self.scope_key and scope_string == self.scope_string:
-                return
-
-            # remove the current setting ...
-            del self.user_cfg[self.scope_key][self.scope_string]
-            # and the mode key if changed and empty
-            if scope_key != self.scope_key and not self.user_cfg[self.scope_key]:
-                del self.user_cfg[self.scope_key]
-
-            self.user_cfg.setdefault(scope_key, {})[scope_string] = self.current_scope
-            self.fill_scope_combo()
-            self.select_scope(scope_key, scope_string)
+        del self.user_cfg[Args.groups][self.current_name]
+        self.fill_group_combo()
+        self.select_group()
+        self.check()
 
     def check(self, *args):
-        """
-        Write the hotstrings AHK code and call `change()`.
-        """
-        if self.scope_key == '':
-            self.user_cfg[''] = self.editor.data
-        else:
-            self.user_cfg[self.scope_key][self.scope_string] = self.editor.data
-
-        # cleanup invalid and empty dictionary items
-        for key in list(self.user_cfg.keys()):
-            if key != '':
-                if key not in hotstrings_io.IN_EXCLUDE or not self.user_cfg[key]:
-                    del self.user_cfg[key]
-
+        """Write the hotstrings AHK code and call `change()`."""
+        self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
         self.set_user_value(self.user_cfg)
 
-        hotstrings_code = hotstrings_io.dict_to_ahkcode(self.user_cfg)
-        if hotstrings_code == self._hs_code_b4:
+        hs_dict = hotstrings_io.groups_to_scopes(self.groups)
+        hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
+        code_hash = hashlib.sha1(hotstrings_code.encode('utf8')).hexdigest()
+        if code_hash == self._hs_code_b4:
             return
 
-        self._hs_code_b4 = hotstrings_code
-
-        hotstrings_code = a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code
-        self._write(hotstrings_code)
+        self._hs_code_b4 = code_hash
+        self._write(a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code)
         self.change()
 
     def _check_hs_include_file(self):
@@ -316,56 +278,134 @@ class Draw(DrawCtrl):
 
     def _write(self, hotstrings_code):
         a2util.write_utf8(self.hotstrings_file, hotstrings_code)
-        # 2 avoid a2-runtime autoreload, set archive flag immediately
+        # To avoid a2-runtime auto-reload, set archive flag immediately
         a2util.set_archive(self.hotstrings_file, False)
 
-    def build_scope_edit_menu(self, menu):
-        if self.scope_combo.currentIndex() != 0:
-            menu.addAction(a2ctrl.Icons.inst().edit, 'Edit Scope', self.edit_scope)
-            menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Scope', self.remove_scope)
-        menu.addAction(a2ctrl.Icons.inst().list_add, ADD_SCOPE_TXT, self.add_scope_dialog)
+    def build_group_edit_menu(self, menu):
+        if self.current_group.get(Args.enabled, True):
+            menu.addAction(a2ctrl.Icons.check, 'Disable Group', self.disable_group)
+        else:
+            menu.addAction(a2ctrl.Icons.check, 'Enable Group', self.enable_group)
+        menu.addAction(a2ctrl.Icons.scope, 'Edit Scope', self.edit_scope)
+        menu.addAction(a2ctrl.Icons.edit, RENAME_GRP, self.rename_group)
+        menu.addAction(a2ctrl.Icons.delete, 'Remove Group', self.remove_group)
+        menu.addAction(a2ctrl.Icons.list_add, ADD_SCOPE_TXT, self.add_group)
 
     def build_list_context_menu(self, menu):
         menu.clear()
-        submenu = menu.addMenu(a2ctrl.Icons.inst().scope, 'Move to Scope ...')
-        for this_key, this_string, icon in self.iter_scope_items():
-            if self.scope_key == '' and this_key == '':
-                continue
-            elif self.scope_key == this_key and self.scope_string == this_string:
+        submenu = menu.addMenu(a2ctrl.Icons.scope, 'Move to Group')
+        for name, group in self.groups.items():
+            if name == self.current_name:
                 continue
 
-            action = submenu.addAction(icon, this_string[:100], self._on_move_hotstring)
-            action.setData((this_key, this_string))
+            action = submenu.addAction(
+                ICONS[group.get(Args.scope_type)], name, self._on_move_hotstring
+            )
+
         if submenu.isEmpty():
-            action = submenu.addAction('No Scopes set up yet!')
+            action = submenu.addAction('No other groups set up!')
             action.setEnabled(False)
-        menu.addAction(a2ctrl.Icons.inst().delete, 'Remove Hotstring', self.editor.delete_item)
+
+        menu.addAction(a2ctrl.Icons.delete, 'Remove Hotstring', self.editor.delete_item)
 
     def _on_move_hotstring(self):
-        scope_key, scope_string = self.sender().data()
-        if scope_string == GLOBAL_SCOPE_TXT:
-            target_scope = self.user_cfg['']
-        else:
-            target_scope = self.user_cfg[scope_key][scope_string]
+        target_name = self.sender().text()
+        target_group = self.groups.get(target_name, {}).get(Args.hotstrings, {})
 
-        if self.editor.selected_name in target_scope:
+        move_these = []
+        conflicts = []
+        for name in self.editor.selected_names:
+            if name in target_group:
+                conflicts.append(name)
+            move_these.append(name)
+
+        if conflicts:
             dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
-                'Scope already contains "%s"!' % self.editor.selected_name,
-                'The target scope "%s"\nalready contains a Hotstings like "<b>%s</b>"!\n'
-                'It would be <b>overwritten</b>! Do you want to continue?'
-                % (scope_string[:100], self.editor.selected_name),
+                MSG_MOVE_CONFLICT[0],
+                MSG_MOVE_CONFLICT[1] % (target_name, len(conflicts), ', '.join(conflicts)),
             )
             dialog.exec_()
             if not dialog.result:
                 return
 
-        hotstring_data = self.current_scope[self.editor.selected_name]
-        del self.current_scope[self.editor.selected_name]
-        target_scope[self.editor.selected_name] = hotstring_data
-        self.editor.set_data(self.current_scope)
+        for name in move_these:
+            hotstring_data = self.current_group[Args.hotstrings][name]
+            del self.current_group[Args.hotstrings][name]
+            target_group[name] = hotstring_data
 
-        self.delayed_check()
+        self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
+        self.check()
+
+    def disable_group(self):
+        self.current_group[Args.enabled] = False
+        self.check()
+
+    def enable_group(self):
+        if Args.enabled in self.current_group:
+            del self.current_group[Args.enabled]
+        self.check()
+
+    def add_group(self):
+        dialog = a2input_dialog.A2InputDialog(
+            self, ADD_SCOPE_TXT, self._add_group_check, msg=MSG_ADD
+        )
+        dialog.okayed.connect(self._on_add_group)
+        dialog.exec_()
+
+    def _add_group_check(self, name):
+        if not name.strip():
+            return 'Group name cannot be empty!'
+        if name in self.user_cfg.get(Args.groups, {}):
+            return 'Group name already exists!'
+        if name in list(hotstrings_io.IN_EXCLUDE) + [ADD_SCOPE_TXT]:
+            return 'Reserved Name not allowed!'
+        return True
+
+    def _on_add_group(self, new_group_name):
+        self.user_cfg.setdefault(Args.groups, {})[new_group_name] = {}
+        self.current_group = self.user_cfg[Args.groups][new_group_name]
+        self.fill_group_combo()
+        self.select_group(new_group_name)
+
+    def _on_group_change(self, name):
+        if name == ADD_SCOPE_TXT:
+            self.add_group()
+            if self.group_combo.currentText() == ADD_SCOPE_TXT:
+                self.select_group(self.user_cfg.get(Args.last_group))
+            return
+
+        if name == self.current_name:
+            return
+
+        print('_on_group_change: %s' % name)
+        self.current_name = name
+        self.current_group = self.groups.get(name, {})
+        self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
+        self.editor.select(None)
+        self.set_user_value(name, Args.last_group)
+        self.user_cfg[Args.last_group]  = name
+
+    def rename_group(self):
+        dialog = a2input_dialog.A2InputDialog(
+            parent=self,
+            title=RENAME_GRP,
+            check_func=self._add_group_check,
+            text=self.current_name,
+            msg=MSG_RENAME % self.current_name,
+        )
+        dialog.okayed.connect(self._on_rename_group)
+        dialog.exec_()
+
+    def _on_rename_group(self, new_name):
+        old_name = self.current_name
+        self.groups[new_name] = self.current_group
+        self.current_name = new_name
+        del self.groups[old_name]
+        self.fill_group_combo()
+        self.select_group(new_name)
+        self.user_cfg[Args.last_group] = new_name
+        self.set_user_value(self.user_cfg)
 
 
 class Edit(EditCtrl):
@@ -384,7 +424,7 @@ class Edit(EditCtrl):
 
     @staticmethod
     def element_icon():
-        return a2ctrl.Icons.inst().hotkey
+        return a2ctrl.Icons.hotkey
 
 
 def get_settings(_module_key, _cfg, db_dict, _user_cfg):
