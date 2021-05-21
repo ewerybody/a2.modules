@@ -147,7 +147,7 @@ class Draw(DrawCtrl):
         if hotstrings_io.scopes_to_groups(self.user_cfg):
             self.delayed_check()
 
-        self.current_name = self.user_cfg.get(Args.last_group, Args.default)
+        self.current_name = self._get_group_name()
         self.current_group = self.groups.get(self.current_name, {})
 
         self._setup_ui()
@@ -160,6 +160,14 @@ class Draw(DrawCtrl):
     @property
     def groups(self):
         return self.user_cfg.get(Args.groups, {})
+
+    def _get_group_name(self, group_name=None):
+        current_groups = list(self.groups)
+        if group_name not in current_groups:
+            group_name = self.user_cfg.get(Args.last_group)
+            if group_name not in current_groups:
+                group_name = current_groups[0]
+        return group_name
 
     def _setup_ui(self):
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -196,11 +204,10 @@ class Draw(DrawCtrl):
         self.group_combo.setCurrentText(self.current_name)
         self.group_combo.blockSignals(False)
 
-    def select_group(self, group_name=''):
-        current_groups = list(self.user_cfg.get(Args.groups, {}))
-        if group_name not in current_groups:
-            group_name = self.user_cfg.get(Args.last_group, current_groups[0])
+    def select_group(self, group_name=None):
+        group_name = self._get_group_name(group_name)
         self.group_combo.setCurrentText(group_name)
+        self._on_group_change(group_name)
 
     def edit_scope(self):
         from a2widget.a2hotkey import scope_dialog, Vars
@@ -356,7 +363,6 @@ class Draw(DrawCtrl):
         return True
 
     def _on_add_group(self, new_group_name):
-        self.current_name = new_group_name
         self.user_cfg.setdefault(Args.groups, {})[new_group_name] = {}
         self.current_group = self.user_cfg[Args.groups][new_group_name]
         self.fill_group_combo()
@@ -369,12 +375,16 @@ class Draw(DrawCtrl):
                 self.select_group(self.user_cfg.get(Args.last_group))
             return
 
+        if name == self.current_name:
+            return
+
+        print('_on_group_change: %s' % name)
         self.current_name = name
         self.current_group = self.groups.get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
         self.editor.select(None)
         self.set_user_value(name, Args.last_group)
-        self.user_cfg[Args.last_group] = name
+        self.user_cfg[Args.last_group]  = name
 
     def rename_group(self):
         dialog = a2input_dialog.A2InputDialog(
