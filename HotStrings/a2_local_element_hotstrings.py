@@ -105,6 +105,13 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
         self.enable_search_field(False)
         self.set_multi_selection(True)
 
+        self.item_changed.connect(self._check_new_item)
+
+    def _check_new_item(self, change_tuple):
+        old_name, new_name, item = change_tuple
+        if old_name == '' and new_name != '':
+            self.ui.text.setFocus()
+
     def insert_scope_ui(self, widget):
         self.ui.list_layout.insertWidget(0, widget)
 
@@ -194,7 +201,10 @@ class Draw(DrawCtrl):
 
         if self.groups:
             for name, group in self.groups.items():
-                self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
+                if not group.get(Args.enabled, True):
+                    self.group_combo.addItem(a2ctrl.Icons.clear, name)
+                else:
+                    self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
         else:
             self.current_name = Args.default
             self.current_scope = self.user_cfg[Args.groups] = {Args.default: {}}
