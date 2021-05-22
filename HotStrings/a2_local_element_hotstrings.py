@@ -18,7 +18,7 @@ import hotstrings_io
 from hotstrings_io import Options, Args
 
 
-ADD_SCOPE_TXT = 'Add Group'
+ADD_SCOPE_TXT = 'New Group'
 MSG_ADD = 'Pick a name for the new group:'
 MSG_RENAME = 'Pick a new name for the group "%s":'
 RENAME_GRP = 'Rename Group'
@@ -36,7 +36,7 @@ MSG_REMOVE_WARN = (
 
 HOTSTRINGS_FILENAME = Args.hotstrings + '.ahk'
 HS_CHECKBOXES = [
-    (Options.instant.name, 'Triggered Immediately (otherwise by Space, Enter ...)'),
+    (Options.instant.name, 'Trigger Immediately (otherwise Space, Enter ...)'),
     (Options.ignore.name, 'Ignore Characters Causing Replacement'),
     (Options.inside.name, 'Replace Inside Words'),
     (Options.append.name, "Don't Replace Abbreviation, Just append"),
@@ -204,6 +204,25 @@ class Draw(DrawCtrl):
         self.group_combo.setCurrentText(self.current_name)
         self.group_combo.blockSignals(False)
 
+    def check(self, *args):
+        """Write the hotstrings AHK code and call `change()`."""
+        self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
+        self.set_user_value(self.user_cfg)
+
+        hs_dict = hotstrings_io.groups_to_scopes(self.groups)
+        hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
+        code_hash = hashlib.sha1(hotstrings_code.encode('utf8')).hexdigest()
+        if code_hash == self._hs_code_b4:
+            return
+
+        self._hs_code_b4 = code_hash
+        self._write(a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code)
+        self.change()
+
+    def fill_and_check(self):
+        self.fill_group_combo()
+        self.check()
+
     def select_group(self, group_name=None):
         group_name = self._get_group_name(group_name)
         self.group_combo.setCurrentText(group_name)
@@ -235,8 +254,7 @@ class Draw(DrawCtrl):
             elif key in self.current_group:
                 del self.current_group[key]
 
-        self.fill_group_combo()
-        self.check()
+        self.fill_and_check()
 
     def remove_group(self):
         if self.current_name not in self.user_cfg.get(Args.groups, {}):
@@ -251,24 +269,8 @@ class Draw(DrawCtrl):
                 return
 
         del self.user_cfg[Args.groups][self.current_name]
-        self.fill_group_combo()
+        self.fill_and_check()
         self.select_group()
-        self.check()
-
-    def check(self, *args):
-        """Write the hotstrings AHK code and call `change()`."""
-        self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
-        self.set_user_value(self.user_cfg)
-
-        hs_dict = hotstrings_io.groups_to_scopes(self.groups)
-        hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
-        code_hash = hashlib.sha1(hotstrings_code.encode('utf8')).hexdigest()
-        if code_hash == self._hs_code_b4:
-            return
-
-        self._hs_code_b4 = code_hash
-        self._write(a2core.EDIT_DISCLAIMER % HOTSTRINGS_FILENAME + '\n' + hotstrings_code)
-        self.change()
 
     def _check_hs_include_file(self):
         """Make sure at least an empty file is there to be included."""
@@ -339,12 +341,12 @@ class Draw(DrawCtrl):
 
     def disable_group(self):
         self.current_group[Args.enabled] = False
-        self.check()
+        self.fill_and_check()
 
     def enable_group(self):
         if Args.enabled in self.current_group:
             del self.current_group[Args.enabled]
-        self.check()
+        self.fill_and_check()
 
     def add_group(self):
         dialog = a2input_dialog.A2InputDialog(
@@ -378,13 +380,12 @@ class Draw(DrawCtrl):
         if name == self.current_name:
             return
 
-        print('_on_group_change: %s' % name)
         self.current_name = name
         self.current_group = self.groups.get(name, {})
         self.editor.set_data(self.current_group.get(Args.hotstrings, {}))
         self.editor.select(None)
         self.set_user_value(name, Args.last_group)
-        self.user_cfg[Args.last_group]  = name
+        self.user_cfg[Args.last_group] = name
 
     def rename_group(self):
         dialog = a2input_dialog.A2InputDialog(
