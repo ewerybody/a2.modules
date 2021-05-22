@@ -305,25 +305,32 @@ class Draw(DrawCtrl):
 
     def build_list_context_menu(self, menu):
         menu.clear()
+
         submenu = menu.addMenu(a2ctrl.Icons.scope, 'Move to Group')
         for name, group in self.groups.items():
-            if name == self.current_name:
-                continue
-
-            action = submenu.addAction(
-                ICONS[group.get(Args.scope_type)], name, self._on_move_hotstring
-            )
-
-        if submenu.isEmpty():
-            action = submenu.addAction('No other groups set up!')
-            action.setEnabled(False)
+            if name != self.current_name:
+                submenu.addAction(ICONS[group.get(Args.scope_type)], name, self._move_hotstring)
+        submenu.addAction(a2ctrl.Icons.list_add, ADD_SCOPE_TXT, self._move_hotstring_to_new)
 
         menu.addAction(a2ctrl.Icons.delete, 'Remove Hotstring', self.editor.delete_item)
 
-    def _on_move_hotstring(self):
-        target_name = self.sender().text()
-        target_group = self.groups.get(target_name, {}).get(Args.hotstrings, {})
+    def _move_hotstring(self):
+        group_name = self.sender().text()
+        self._move_hotstrings_to(group_name)
 
+    def _move_hotstring_to_new(self):
+        dialog = a2input_dialog.A2InputDialog(
+            self, ADD_SCOPE_TXT, self._add_group_check, msg=MSG_ADD
+        )
+        dialog.okayed.connect(self._on_move_to_new)
+        dialog.exec_()
+
+    def _on_move_to_new(self, group_name):
+        self._move_hotstrings_to(group_name)
+        self.fill_group_combo()
+
+    def _move_hotstrings_to(self, group_name):
+        target_group = self.groups.setdefault(group_name, {}).setdefault(Args.hotstrings, {})
         move_these = []
         conflicts = []
         for name in self.editor.selected_names:
@@ -335,7 +342,7 @@ class Draw(DrawCtrl):
             dialog = a2input_dialog.A2ConfirmDialog(
                 self.main,
                 MSG_MOVE_CONFLICT[0],
-                MSG_MOVE_CONFLICT[1] % (target_name, len(conflicts), ', '.join(conflicts)),
+                MSG_MOVE_CONFLICT[1] % (group_name, len(conflicts), ', '.join(conflicts)),
             )
             dialog.exec_()
             if not dialog.result:
