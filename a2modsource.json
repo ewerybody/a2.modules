@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* Added Cancel items to `getWinfo` & `DetailsPopup` menus\n* Some work on new Module `WindowControl`\n* new Module `VolumeControl`\n* `HotStrings`: Biiig update!\n  + file removed archive attr after write from UI\n  + So its not autoreloaded and loaded at the same time causing double runtimes in flight.\n  + group add and change finished\n  + widget remembers last group selected\n  + fixed remove empty group dialog check\n  + added groups property, fixed move op\n  + fixed group selection remembering\n  + group renaming done\n  + rename group remembers last selection, current name now also in dialog\n  + Scope dialog reimplemented\n  + move multiple hotstrings between groups\n  + fixed import/export options for the module menu\n  + `scopes_to_groups` made to handle impored hotstrings as well\n  + fixed hotstrings `remove_group` to properly select afterwards\n  + import finished\n  + format selection now in File Save Dialog\n  + adding and removing groups properly selects new/old group\n  + Adding new shortcuts selects Text fields afterwards\n  + Disabled groups show an X icon in group list drop down\n  + Moving hotstrings can now happen to New Group as well!\n  + README.md updated with its documentaion",
+  "news": "* `HotStrings`: Fix for new/empty setups. a2#232",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules/wiki",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "zip_size": 88441
 }

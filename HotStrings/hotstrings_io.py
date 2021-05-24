@@ -51,7 +51,7 @@ def groups_to_scopes(group_dict: dict) -> dict:
             for scope_str in group.get(Args.scopes):
                 target_dict.setdefault(scope_str, {}).update(group.get(Args.hotstrings))
         else:
-            hs_dict.setdefault('', {}).update(group.get(Args.hotstrings))
+            hs_dict.setdefault('', {}).update(group.get(Args.hotstrings, {}))
     return hs_dict
 
 

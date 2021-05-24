@@ -1,15 +1,15 @@
 ﻿[
   {
     "author": "eRiC",
-    "date": "2016 10 23",
+    "date": "",
     "description": "System wide typing triggered actions! To correct spelling, insert longer words with tricky letters or even whole texts as well as fire Autohotkey ... by writing shortcuts.",
     "display_name": "",
     "tags": [
       "text"
     ],
     "typ": "nfo",
-    "url": "https://github.com/ewerybody/a2.modules/wiki/Hotstrings",
-    "version": "0.2"
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/HotStrings",
+    "version": "0.3"
   },
   {
     "label": "Import Hotstrings",

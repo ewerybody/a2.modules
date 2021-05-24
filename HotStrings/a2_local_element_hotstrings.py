@@ -169,6 +169,9 @@ class Draw(DrawCtrl):
         return self.user_cfg.get(Args.groups, {})
 
     def _get_group_name(self, group_name=None):
+        if not self.groups:
+            return Args.default
+
         current_groups = list(self.groups)
         if group_name not in current_groups:
             group_name = self.user_cfg.get(Args.last_group)
@@ -207,7 +210,8 @@ class Draw(DrawCtrl):
                     self.group_combo.addItem(ICONS[group.get(Args.scope_type)], name)
         else:
             self.current_name = Args.default
-            self.current_scope = self.user_cfg[Args.groups] = {Args.default: {}}
+            self.user_cfg[Args.groups] = {Args.default: {}}
+            self.current_group = self.groups[self.current_name]
             self.group_combo.addItem(ICONS[None], Args.default)
 
         self.group_combo.addItem(a2ctrl.Icons.list_add, ADD_SCOPE_TXT)
@@ -217,6 +221,7 @@ class Draw(DrawCtrl):
     def check(self, *args):
         """Write the hotstrings AHK code and call `change()`."""
         self.current_group[Args.hotstrings] = deepcopy(self.editor.data)
+        self.user_cfg[Args.groups][self.current_name] = self.current_group
         self.set_user_value(self.user_cfg)
 
         hs_dict = hotstrings_io.groups_to_scopes(self.groups)
@@ -279,8 +284,10 @@ class Draw(DrawCtrl):
                 return
 
         del self.user_cfg[Args.groups][self.current_name]
+        # self.current_name = self._get_group_name()
+        # self.current_group = self.groups.get(self.current_name, {})
+        self.select_group(self.current_name)
         self.fill_and_check()
-        self.select_group()
 
     def _check_hs_include_file(self):
         """Make sure at least an empty file is there to be included."""
@@ -392,9 +399,6 @@ class Draw(DrawCtrl):
             self.add_group()
             if self.group_combo.currentText() == ADD_SCOPE_TXT:
                 self.select_group(self.user_cfg.get(Args.last_group))
-            return
-
-        if name == self.current_name:
             return
 
         self.current_name = name
