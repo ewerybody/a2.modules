@@ -19,7 +19,6 @@ details_popup_menu() {
 }
 
 details_popup_handler(menu_name) {
-
     global details_popup_data, _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
     these_entries := details_popup_data[menu_name]
@@ -38,7 +37,8 @@ details_popup_handler(menu_name) {
             Menu, DetailsSubMenu, Add, %name%, details_entry_handler
     }
 
-    Menu, DetailsSubMenu, Add
+    if (!_details_handled_entries.Length())
+        Menu, DetailsSubMenu, Add
     Menu, DetailsSubMenu, Add, Cancel, details_entry_handler
     Menu, DetailsSubMenu, Show
     Menu, DetailsSubMenu, DeleteAll
