@@ -5,11 +5,10 @@
     "description": "To paste detail information into specific forms or just anything from a simple menu under the cursor.",
     "display_name": "",
     "tags": [
-      "text",
-      "wip"
+      "text"
     ],
     "typ": "nfo",
-    "url": "https://github.com/ewerybody/a2.modules/blob/master/DetailsPopup/README.md#detailspopup",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/DetailsPopup#detailspopup",
     "version": "0.2"
   },
   {
