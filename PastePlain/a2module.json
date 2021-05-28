@@ -3,12 +3,13 @@
     "author": "Eric Werner",
     "date": "2017 10 20",
     "description": "To paste text without <b>formatting</b> and <b>file paths or names</b> instead of the actual files.",
+    "display_name": "",
     "tags": [
       "text",
       "file"
     ],
     "typ": "nfo",
-    "url": "https://github.com/ewerybody/a2.modules/wiki/PastePlain",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/PastePlain#pasteplain",
     "version": "0.1"
   },
   {

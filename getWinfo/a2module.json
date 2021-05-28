@@ -3,12 +3,13 @@
     "author": "ewerybody",
     "date": "",
     "description": "Gathers title, window class, handle, process Id, process name, path, window size, positon, controls and command line information in a menu to get into the clipboard.",
+    "display_name": "",
     "tags": [
       "window",
       "code"
     ],
     "typ": "nfo",
-    "url": "https://github.com/ewerybody/a2.modules/wiki/getWinfo",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo",
     "version": "0.5"
   },
   {

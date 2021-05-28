@@ -1,13 +1,14 @@
-[
+﻿[
   {
     "author": "Eric Werner",
     "date": "2017 3 28",
-    "description": "A module to support german users on english keyboards.",
+    "description": "A module to support <b>german users</b> on <b>english keyboards</b>.",
+    "display_name": "",
     "tags": [
       "text"
     ],
     "typ": "nfo",
-    "url": "https://github.com/ewerybody/a2.modules/wiki/tastatur",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur",
     "version": "0.1"
   },
   {
