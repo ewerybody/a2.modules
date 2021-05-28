@@ -1,4 +1,6 @@
-# A user interface for Autohotkeys typing activated string replacements or command triggering.
+# HotStrings
+
+### A user interface for Autohotkeys typing activated string replacements or command triggering.
 
 from the original Autohotkey Hotstrings documentation - [**autohotkey.com/docs/Hotstrings**](https://autohotkey.com/docs/Hotstrings.htm):
 > Although hotstrings are mainly used to expand abbreviations as you type them (auto-replace), they can also be used to launch any scripted action. In this respect, they are similar to hotkeys except that they are typically composed of more than one character (that is, a string).
