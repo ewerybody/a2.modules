@@ -17,6 +17,8 @@ class Draw(DrawCtrl):
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
+        if self._fix_user_data():
+            self.set_user_value(self.user_cfg)
         self.editor = DetailsLister(self.user_cfg, self)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -27,6 +29,17 @@ class Draw(DrawCtrl):
         self.set_user_value(self.user_cfg)
         self.change()
 
+    def _fix_user_data(self):
+        """Move strings to the `data` dict if any."""
+        changed = False
+        for key, values in self.user_cfg.items():
+            for item in list(values):
+                if isinstance(values[item], str):
+                    values.setdefault('data', {})[item] = values[item]
+                    del values[item]
+                    changed = True
+        return changed
+
 
 class DetailsLister(A2ItemEditor):
     def __init__(self, cfg, parent):
@@ -35,22 +48,23 @@ class DetailsLister(A2ItemEditor):
         super(DetailsLister, self).__init__(parent=parent)
 
         self.key_value_table = KeyValueTable(self)
-        self.ui.config_layout.addRow(self.key_value_table)
         self.key_value_table.changed.connect(self._update_data)
+        self.enlist_widget('data', self.key_value_table, self.key_value_table.set_data, {})
+        self.add_row(self.key_value_table)
 
-    def draw_data(self, item_name):
-        """Fill the ui with the data from selected item."""
-        self.blockSignals(True)
-        self._drawing = True
-        self._current_data = self.data.get(item_name, {})
-        self.key_value_table.set_data(self._current_data)
-        self._drawing = False
-        self.blockSignals(False)
+        single_check = QtWidgets.QCheckBox(self)
+        single_check.setText('Finish after first selected item')
+        self.add_data_widget(
+            'single_item', single_check, single_check.setChecked, default_value=False
+        )
 
     def _update_data(self):
         if self.selected_name:
-            self.data[self.selected_name] = self.key_value_table.get_data()
-            self.data_changed.emit()
+            have_data = self.data[self.selected_name]['data']
+            table_data = self.key_value_table.get_data()
+            if have_data != table_data:
+                self.data[self.selected_name]['data'] = table_data
+                self.data_changed.emit()
 
 
 class Edit(EditCtrl):

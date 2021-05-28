@@ -3,13 +3,14 @@
     "author": "eric",
     "date": "2019 8 26",
     "description": "To paste detail information into specific forms or just anything from a simple menu under the cursor.",
+    "display_name": "",
     "tags": [
       "text",
       "wip"
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "disablable": true,

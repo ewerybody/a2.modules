@@ -21,14 +21,20 @@ details_popup_menu() {
 details_popup_handler(menu_name) {
     global details_popup_data, _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
-    these_entries := details_popup_data[menu_name]
+    these_entries := details_popup_data[menu_name]["data"]
+    single_item := details_popup_data[menu_name]["single_item"]
 
     if (menu_name == "Cancel" and !these_entries)
         Return
 
+    if (single_item AND _details_handled_entries.Length()) {
+        _details_cleanup()
+        return
+    }
+
     if (these_entries.Count() == _details_handled_entries.Length()) {
         _details_cleanup()
-        tt("All Pasted! Nothing more to add! :)", 1)
+        a2tip("All Pasted!")
         Return
     }
 
@@ -46,13 +52,13 @@ details_popup_handler(menu_name) {
 
 details_entry_handler(entry_name) {
     global details_popup_data, _details_popup_menu_name, a2data
-    these_entries := details_popup_data[_details_popup_menu_name]
+    these_entries := details_popup_data[_details_popup_menu_name]["data"]
 
     if (entry_name == "Cancel" and A_ThisMenuItemPos > these_entries.Length())
         Return
 
     ; entry_name might be a simple number! Make sure this is a string pointing into the object:
-    value := details_popup_data[_details_popup_menu_name]["" entry_name ""]
+    value := these_entries["" entry_name ""]
     cmd_path := a2data "modules\a2.modules\DetailsPopup\details_paste_entry.ahk"
 
     cmd = "%A_AhkPath%" "%cmd_path%" "%value%"
