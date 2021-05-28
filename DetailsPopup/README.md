@@ -1,4 +1,6 @@
-# Key/Value store UI for things to paste into fields.
+# DetailsPopup
+
+### A Key/Value store UI for things to paste into fields.
 
 ![dp](https://user-images.githubusercontent.com/218956/120041081-f3a65380-c007-11eb-99bf-8a928e430c95.gif)
 
