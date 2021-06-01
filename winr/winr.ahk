@@ -12,28 +12,28 @@ winr() {
         winr_CallDialog()
     }
     else if FileExist(selection) {
-        tt("path exists...",0.5)
+        a2tip("path exists...",0.5)
         winr_CatchedCallRun(selection)
     }
     else if (string_is_web_address(selection)) {
-        tt("web address...",0.5)
+        a2tip("web address...",0.5)
         if (!string_startswith(selection, "http"))
             selection := "https://" selection
         Run, %selection%
     }
     else {
         ; loop set up project paths, if combination with selection fits: run it
-        StringReplace, slashed, selection, /, \, All
+        slashed := StrReplace(selection, "/", "\")
         for i, ppath in winr_paths {
             ppath = %ppath%\%slashed%
             if FileExist(ppath) {
-                tt("Found relative path ...",0.5)
+                a2tip("Found relative path ...",0.5)
                 winr_CatchedCallRun(ppath)
                 Return
             }
         }
 
-        tt("Does not exist!`nI don't know what todo with your selection...", 1)
+        a2tip("Does not exist!`nI don't know what todo with your selection...", 1)
         winr_CallDialog()
         sleep, 300
         SendInput, %selection%
@@ -53,6 +53,7 @@ winr_CallDialog() {
 }
 
 winr_CatchedCallRun(path) {
+    path := StrReplace(path, "/", "\")
     global winr_explore_check
     if winr_explore_check
         explorer_show(path)
@@ -60,7 +61,7 @@ winr_CatchedCallRun(path) {
         Run, %path%,, UseErrorLevel
         if ErrorLevel {
             explorer_show(path)
-            tt("but I cound not 'Run' it!`nExploring to ...:", 1.5, 1)
+            a2tip_add("but I cound not 'Run' it!`nExploring to ...:", 1.5)
         }
     }
 }
