@@ -23,12 +23,12 @@ class ComfortResizeObject
 
     mouse := {}
     window := {}
-        
+
     horizontal := ""
     vertical := ""
     double_click := 0
     resizeable := 1
-        
+
     dist_x := 0
     dist_y := 0
     offset_x := 0
@@ -60,7 +60,7 @@ class ComfortResizeObject
         diffx := Abs(this.mouse["lastx"] - this.mouse["x"])
         diffx := Abs(this.mouse["lasty"] - this.mouse["y"])
         If (diffx < this.dist_threshold AND diffy < this.dist_threshold)
-        {   
+        {
             If (A_Priorhotkey = A_Thishotkey AND A_TickCount - click_time < this.double_click_threshold)
                 this.double_click := 1
             Else
@@ -71,12 +71,12 @@ class ComfortResizeObject
         }
         Else
             this.double_click := 0
-        
+
         this.mouse["lastx"] := this.mouse["x"]
         this.mouse["lasty"] := this.mouse["y"]
         click_time := A_TickCount
     }
-    
+
     init_window() {
         index := screen_get_index("A")
         this.workarea := new Screen_Workarea(index)
@@ -115,7 +115,7 @@ class ComfortResizeObject
         ; this.is_center := 1
         this.is_center := (this.horizontal == "Center" AND this.vertical == "Center")
     }
-    
+
     check_win_geometry() {
         ; gets position and size of the window
         idstr := this.window["idstr"]
@@ -127,7 +127,7 @@ class ComfortResizeObject
         this.window["x2"] := x + w
         this.window["y2"] := y + h
     }
-    
+
     is_mouse_pressed() {
         GetKeyState, button_state, RButton, P
 		IfInString, A_ThisHotkey, MButton
@@ -146,10 +146,8 @@ class ComfortResizeObject
         GetKeyState, shift_state, Shift, P
         If ( (shift_state = "D" AND cr_RasterAlways = 0) OR (shift_state = "U" AND cr_RasterAlways = 1) )
         {
-            tmp_x = %cr_RasterX%
-            tmp_y = %cr_RasterY%
-            StringReplace, tmp_x, tmp_x, `:, /
-            StringReplace, tmp_y, tmp_y, `:, /
+            tmp_x := StrReplace(cr_RasterX, ":", "/")
+            tmp_y := StrReplace(cr_RasterY, ":", "/")
             IfInString tmp_x, /
             {
                 StringSplit, tmp_x, tmp_x, /
@@ -349,7 +347,7 @@ comfort_resize_main() {
     cr := New ComfortResizeObject
     cr.init_mouse_pos()
     cr.check_double_click()
- 
+
     SetBatchLines, 2000
     cr.putty_enter()
 
@@ -365,7 +363,7 @@ comfort_resize_main() {
             cr.get_offsets()
             if (cr.is_low_distance())
                 continue
-            
+
             minmax_state := WinGetMinMax(cr.window["idstr"])
             if (cr.maximized_win_restore(minmax_state))
                 return
@@ -394,7 +392,7 @@ comfort_resize_main() {
 		}
 		; Sleep, 10
 	} ; Loop End
-	
+
     cr.putty_exit()
 	cr.restore_cursor()
 }

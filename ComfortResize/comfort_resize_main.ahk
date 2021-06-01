@@ -84,10 +84,8 @@ comfort_resize_main() {
             GetKeyState, cr_CtrlState, Ctrl, P
             If ( (cr_ShiftState = "D" AND cr_RasterAlways = 0) OR (cr_ShiftState = "U" AND cr_RasterAlways = 1) )
             {
-                cr_RasterXtmp = %cr_RasterX%
-                cr_RasterYtmp = %cr_RasterY%
-                StringReplace, cr_RasterXtmp, cr_RasterXtmp, `:, /
-                StringReplace, cr_RasterYtmp, cr_RasterYtmp, `:, /
+                cr_RasterXtmp := StrReplace(cr_RasterX, ":", "/")
+                cr_RasterYtmp := StrReplace(cr_RasterY, ":", "/")
                 IfInString cr_RasterXtmp, /
                 {
                     StringSplit, cr_RasterXtmp, cr_RasterXtmp, /

@@ -54,12 +54,12 @@ paste_plain_basename() {
 }
 
 paste_plain_forward() {
-    StringReplace, txt, clipboard, \, /, All
+    txt := StrReplace(clipboard, "\", "/")
     clipboard_paste(txt)
 }
 
 paste_plain_double() {
-    StringReplace, txt, clipboard, \, \\, All
+    txt := StrReplace(clipboard, "\", "\\")
     clipboard_paste(txt)
 }
 
@@ -73,11 +73,11 @@ paste_plain_to_clipboard_basenames() {
 }
 
 paste_plain_to_clipboard_forward() {
-    StringReplace, clipboard, clipboard, \, /, All
+    clipboard := StrReplace(clipboard, "\", "/")
 }
 
 paste_plain_to_clipboard_double() {
-    StringReplace, clipboard, clipboard, \, \\, All
+    clipboard := StrReplace(clipboard, "\", "\\")
 }
 
 paste_plain_link_paths() {
@@ -88,8 +88,8 @@ paste_plain_link_paths() {
         if OutTarget
             txt := txt OutTarget "`n"
     }
-    StringTrimRight, txt, txt, 1
-    clipboard_paste(txt)
+    ; cut the last linebreak and paste
+    clipboard_paste(SubStr(txt, 1, -1))
 }
 
 
@@ -99,8 +99,8 @@ _paste_plain_basenames() {
     txt := ""
     for i, item in clipboard_get_files()
         txt := txt path_basename(item) "`n"
-    StringTrimRight, txt, txt, 1
-    return txt
+    ; cut the last linebreak and return
+    return SubStr(txt, 1, -1)
 }
 
 _paste_plain_links_in_files(files) {
