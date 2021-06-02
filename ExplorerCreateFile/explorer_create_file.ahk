@@ -55,8 +55,9 @@ explorer_create_file_handler(menu_name) {
 
         Send, F5
         sleep 1000
-        explorer_select(file_base)
     }
+
+    explorer_select(file_base)
 }
 
 _explorer_create_file_get_icon_path(name, data) {
