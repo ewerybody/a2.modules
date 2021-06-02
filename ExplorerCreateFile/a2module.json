@@ -57,5 +57,9 @@
   {
     "file": "explorer_create_on_paste.ahk",
     "typ": "include"
+  },
+  {
+    "name": "file_list",
+    "typ": "a2_local_element"
   }
 ]

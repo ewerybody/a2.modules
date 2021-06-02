@@ -1,14 +1,13 @@
 explorer_create_file_popup() {
     ; Provide a menu popup to aid simple file creation.
 
-    ; TODO: Embedd this into an a2 interface
     global explorer_create_file_data, a2data
-    explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
-    , Python: {ext: "py", file_name: "__init__", content: "", ask: true}
-    , JSON: {ext: "json", file_name: "some_data", content: "", ask: true}
-    , Text: {ext: "txt", file_name: "text", content: "", ask: true}}
+    ; TODO: before throwing this away, make a default?
+    ; explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
+    ; , Python: {ext: "py", file_name: "__init__", content: "", ask: true}
+    ; , JSON: {ext: "json", file_name: "some_data", content: "", ask: true}
+    ; , Text: {ext: "txt", file_name: "text", content: "", ask: true}}
 
-    ; add menu entries on demand...
     for name, data in explorer_create_file_data
     {
         Menu, MyMenu, Add, %name%, explorer_create_file_handler
