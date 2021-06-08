@@ -19,6 +19,8 @@ class Draw(DrawCtrl):
 
         if self._fix_user_data():
             self.set_user_value(self.user_cfg)
+            self.change()
+
         self.editor = DetailsLister(self.user_cfg, self)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -32,7 +34,7 @@ class Draw(DrawCtrl):
     def _fix_user_data(self):
         """Move strings to the `data` dict if any."""
         changed = False
-        for key, values in self.user_cfg.items():
+        for values in self.user_cfg.values():
             for item in list(values):
                 if isinstance(values[item], str):
                     values.setdefault('data', {})[item] = values[item]
