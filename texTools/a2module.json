@@ -1,15 +1,16 @@
 ﻿[
   {
     "author": "eric",
-    "date": "2015",
-    "description": "Work In Progress module for text manipulation tool snippets. Ideas welcome!",
+    "date": "",
+    "description": "Text manipulation tool snippets. Ideas welcome!",
+    "display_name": "",
     "tags": [
       "text",
       "wip"
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "file": "wordCount.ahk",
@@ -42,5 +43,39 @@
     "suffix": "s",
     "typ": "number",
     "value": 3
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "texTools_upper()",
+    "functionMode": 0,
+    "key": [
+      "Alt+Shift+Up"
+    ],
+    "keyChange": true,
+    "label": "Make selected text UPPER case",
+    "multiple": true,
+    "name": "texTools_Upper_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "texTools.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "texTools_lower()",
+    "functionMode": 0,
+    "key": [
+      "Alt+Shift+Down"
+    ],
+    "keyChange": true,
+    "label": "Make selected text lower case",
+    "multiple": true,
+    "name": "texTools_lower_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
   }
 ]
