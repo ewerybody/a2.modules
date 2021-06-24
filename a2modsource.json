@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* `HotStrings`: Fix for new/empty setups. a2#232",
+  "news": "**DetailsPopup**:\n  * Fixed separators adding up in menu #44 fixed\n  * new tooltip indicating wait for clipboard #45 fixed\n  * one can now paste with Enter/Return key #46 fixed\n  * single item paste implemented #43\n  * added README, new help url\n\n**ORC tool**: description better (Not everyone knows what OCR is)\n\n**WinR**:\n  * replaced with updated functions a2tip() and StrReplace()\n  * ensured to use backslashes for running files/explorer show\n\n**ExplorerCreateFile**:\n  * now gets icons from system via new `icon_from_type`\n  * now with new item editor #47\n  * also selects file if already existent\n\n**commandLine**: fixed occasional missing focus on cmd win\n**texTools**: new functions UPPER lower",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules/wiki",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "zip_size": 88441
 }
