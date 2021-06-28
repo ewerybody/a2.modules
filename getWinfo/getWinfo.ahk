@@ -3,7 +3,7 @@
 ; in a menu that you can click to get the item in your clipboard
 
 getWinfo() {
-    tt("getting Winfo ...", 1)
+    a2tip("getting Winfo ...")
     Sleep, 50
     global getWinfoID
     WinGet, getWinfoID, ID, A
@@ -73,7 +73,7 @@ getWinfo() {
     ; cleanup
     Menu, wInfoMenu, DeleteAll
     Menu, wInfoPosMenu, DeleteAll
-    tt()
+    a2tip()
 }
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
@@ -84,14 +84,14 @@ getWinfoMenuHandler:
     StringGetPos, iTmp, getWinfoID, %A_Space%
     StringTrimLeft, getWinfoID, getWinfoID, (iTmp + 1)
     Clipboard := getWinfoID
-    tt( getWinfoID, 0.5 )
+    a2tip(getWinfoID, 0.5)
 return
 
 ; to recover lost windows
 getWinfoSetToCursor:
     CoordMode, Mouse, Screen
     MouseGetPos, mousex, mousey
-    tt( getWinfoID " to " mousex "x" mousey,2)
+    a2tip( getWinfoID " to " mousex "x" mousey,2)
     ;position the windowtitle under the cursor so one can move it instantly:
     WinActivate, ahk_id %getWinfoID%
     WinWait, ahk_id %getWinfoID%
@@ -118,9 +118,10 @@ getWinfoCtrlsHandler() {
     startTime := A_TickCount
     for i, ctrl in ctrlList {
         tookTime := A_TickCount - startTime
-        if ( tookTime > 500 )
+        if ( tookTime > 500 ) {
             if ( mod(i, 10) == 10 )
-            tt( "gathering controls... " tookTime "`n" ctrl )
+                a2tip("gathering controls... " tookTime "`n" ctrl)
+        }
 
         menuName := "getWinfoCtrlMenu" i
         menuList.insert(menuName)
