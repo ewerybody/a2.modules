@@ -8,6 +8,12 @@ explorer_create_file_popup() {
     ; , JSON: {ext: "json", file_name: "some_data", content: "", ask: true}
     ; , Text: {ext: "txt", file_name: "text", content: "", ask: true}}
 
+    if !explorer_create_file_data
+    {
+        MsgBox, No files set up!, Please open the user interface of "ExplorerCreateFile" and add at least one file type.
+        Return
+    }
+
     for name, data in explorer_create_file_data
     {
         Menu, MyMenu, Add, %name%, explorer_create_file_handler
