@@ -47,11 +47,16 @@ explorer_create_file_handler(menu_name) {
 
     if !file_name
         file_name := menu_name
+
     if string_startswith(data["ext"], ".")
-        file_base := file_name . data["ext"]
+        ext := data["ext"]
     else
-        file_base := file_name "." data["ext"]
-    file_path := path_join(explorer_get_path(), file_base)
+        ext := "." data["ext"]
+
+    if !string_endswith(file_name, ext)
+        file_name := file_name . ext
+
+    file_path := path_join(explorer_get_path(), file_name)
 
     if FileExist(file_path) {
         MsgBox, 48, File Already Exists, There is already a file with that name here!
@@ -63,7 +68,7 @@ explorer_create_file_handler(menu_name) {
         sleep 1000
     }
 
-    explorer_select(file_base)
+    explorer_select(file_name)
 }
 
 _explorer_create_file_get_icon_path(name, data) {
