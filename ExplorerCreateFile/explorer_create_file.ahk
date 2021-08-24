@@ -16,21 +16,21 @@ explorer_create_file_popup() {
 
     for name, data in explorer_create_file_data
     {
-        Menu, MyMenu, Add, %name%, explorer_create_file_handler
+        Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
         icon_path := _explorer_create_file_get_icon_path(name, data)
         if (icon_path) {
             if ("," in icon_path) {
                 parts := StrSplit(icon_path, ",")
                 icon_path := parts[1]
                 icon_nr := parts[2]
-                Menu, MyMenu, Icon, %name%, %icon_path%, %icon_nr%
+                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
             } else {
-                Menu, MyMenu, Icon, %name%, %icon_path%
+                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
             }
         }
     }
-    Menu, MyMenu, Show
-    Menu, MyMenu, DeleteAll
+    Menu, ExplorerCreateFileMenu, Show
+    Menu, ExplorerCreateFileMenu, DeleteAll
 }
 
 explorer_create_file_handler(menu_name) {
