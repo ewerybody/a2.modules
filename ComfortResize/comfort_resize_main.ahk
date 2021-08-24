@@ -22,14 +22,18 @@ comfort_resize_main() {
     CoordMode, Mouse, Screen
     MouseGetPos, mouse_x, mouse_y, window_id
 
+    ahk_id := "ahk_id " . window_id
+    WinGetClass, cr_actClass, %ahk_id%
+    ; Ignore desktop and taskbar area
+    if (cr_actClass ~= "(WorkerW|Shell_TrayWnd)")
+        Return
+
+    if (cr_actClass == "Putty")
+        SendMessage WM_ENTERSIZEMOVE, , , , %ahk_id%
+
     double_click := _comfort_resize_get_doubleclick(mouse_x, mouse_y)
     ; remember the current mouse cursor
     current_cursor := A_Cursor
-
-    ahk_id := "ahk_id " . window_id
-    WinGetClass, cr_actClass, %ahk_id%
-    if (cr_actClass = "Putty")
-        SendMessage WM_ENTERSIZEMOVE, , , , %ahk_id%
 
     SetBatchLines, 2000
     window_get_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
@@ -313,7 +317,7 @@ _comfort_resize_get_doubleclick(mx, my) {
         double_click = 1
         last_dbl_click := A_TickCount
     } Else
-        double_click = 0
+    double_click = 0
 
     ; msg .= "quick_enough: " . quick_enough . "(" . diff_t . "), late_enough: " . late_enough . "(" . diff_last . ")"
     ; a2log_debug(msg, "comfort_resize")
@@ -332,16 +336,16 @@ _cr_set_region(ByRef cr_WinHor, ByRef cr_WinVer, mouse_x, mouse_y, x, y, w, h) {
     ; Fensterregion ermitteln. Die neun Regionen ergeben sich als
     ; Horizontal * Vertikal = (left,center,right)*(up,center,down)
     If (mouse_x < x + w / 4)
-        cr_WinHor := "Left"
+    cr_WinHor := "Left"
     Else If (mouse_x < x + 3 * w / 4)
-        cr_WinHor := "Center"
+    cr_WinHor := "Center"
     Else
         cr_WinHor := "Right"
 
     If (mouse_y < y + h / 4)
-        cr_WinVer := "Up"
+    cr_WinVer := "Up"
     Else If (mouse_y < y + 3 * h / 4)
-        cr_WinVer := "Center"
+    cr_WinVer := "Center"
     Else
         cr_WinVer := "Down"
 }
