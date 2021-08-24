@@ -3,6 +3,7 @@
     "author": "eric",
     "date": "2015",
     "description": "ExplorerHotkeys does mean things to your Windows Explorer!",
+    "display_name": "",
     "tags": [
       "file"
     ],
@@ -185,6 +186,25 @@
     "name": "ExplorerHotkeys_DuplicateWindowHotkey",
     "scope": [
       "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "a2tip(\"Explorer Up\")\nSend, !{Up}",
+    "functionMode": 0,
+    "functionSend": "SendRaw, a2tip(\"!{Up}\")\nSend, !{Up}",
+    "functionURL": "Run, un, .",
+    "key": "XButton1",
+    "keyChange": true,
+    "label": "Go \"Up\" instead of Back",
+    "multiple": true,
+    "name": "ExplorerHotkeys_BackHotkey",
+    "scope": [
+      "ahk_class CabinetWClass ahk_exe explorer.exe"
     ],
     "scopeChange": true,
     "scopeMode": 1,
