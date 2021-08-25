@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "disablable": true,
@@ -132,7 +132,7 @@
   },
   {
     "disablable": true,
-    "enabled": true,
+    "enabled": false,
     "functionCode": "ftpExplorerCopy()",
     "functionMode": 0,
     "key": "Alt+V",
@@ -150,7 +150,7 @@
   },
   {
     "disablable": true,
-    "enabled": true,
+    "enabled": false,
     "functionCode": "ExplorerHotkeys_NavOnOff()",
     "functionMode": 0,
     "functionSend": "Send, {Alt}vn{Enter}",
@@ -174,26 +174,7 @@
   },
   {
     "disablable": true,
-    "enabled": true,
-    "functionCode": "ExplorerHotkeys_DuplicateWindow()",
-    "functionMode": 0,
-    "key": [
-      "Ctrl+Shift+D"
-    ],
-    "keyChange": true,
-    "label": "Duplicate Explorer Window",
-    "multiple": true,
-    "name": "ExplorerHotkeys_DuplicateWindowHotkey",
-    "scope": [
-      "ahk_class CabinetWClass"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "disablable": true,
-    "enabled": true,
+    "enabled": false,
     "functionCode": "a2tip(\"Explorer Up\")\nSend, !{Up}",
     "functionMode": 0,
     "functionSend": "SendRaw, a2tip(\"!{Up}\")\nSend, !{Up}",
@@ -208,6 +189,21 @@
     ],
     "scopeChange": true,
     "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "ExplorerHotkeys_ReloadAll()",
+    "functionMode": 0,
+    "key": [
+      "Win+Shift+E"
+    ],
+    "keyChange": true,
+    "label": "Reload Explorer process & windows",
+    "multiple": true,
+    "name": "ExplorerHotkeys_ReloadAllHotkey",
+    "scopeChange": true,
     "typ": "hotkey"
   }
 ]
