@@ -18,15 +18,27 @@ explorer_create_file_popup() {
     {
         Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
         icon_path := _explorer_create_file_get_icon_path(name, data)
+        icon_nr := ""
         if (icon_path) {
             if ("," in icon_path) {
                 parts := StrSplit(icon_path, ",")
                 icon_path := parts[1]
                 icon_nr := parts[2]
-                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
-            } else {
-                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
             }
+
+            if (!FileExist(icon_path)) {
+                path := path_expand_env(icon_path)
+                ; We don't need to bend icon_path to the found path
+                ; Setting icons with %envvars% works right away!
+                if (!FileExist(path))
+                    Continue
+                ; icon_path := path
+            }
+
+            if (icon_nr != "")
+                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
+            else
+                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
         }
     }
     Menu, ExplorerCreateFileMenu, Show
