@@ -1,7 +1,7 @@
 explorer_create_file_popup() {
     ; Provide a menu popup to aid simple file creation.
 
-    global explorer_create_file_data, a2data
+    global explorer_create_file_data
     ; TODO: before throwing this away, make a default?
     ; explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
     ; , Python: {ext: "py", file_name: "__init__", content: "", ask: true}
@@ -96,7 +96,7 @@ _explorer_create_file_get_icon_path(name, data) {
     }
     ; We used to have icons shipped with this module..
     ; TODO: maybe a backup from ui/resources?
-    icon_path := a2data "modules\a2.modules\ExplorerCreateFile\" icon_name
+    icon_path := path_neighbor(A_LineFile, icon_name)
     if FileExist(icon_path)
         return icon_path
 }

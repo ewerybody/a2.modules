@@ -12,8 +12,7 @@ __gtranslate_search := ""
 __gtranslate_lngs := ""
 
 gtranslate(from="en", to="de") {
-    global a2data
-    icon_path := a2data "modules\a2.modules\gtranslate\a2icon24.png"
+    icon_path := path_neighbor(A_LineFile, "a2icon24.png")
     global __gtranslate_search, __gtranslate_lngs
     sel := clipboard_get() ; get selected text
 

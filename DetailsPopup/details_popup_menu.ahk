@@ -1,5 +1,5 @@
 details_popup_menu() {
-    global details_popup_data, _details_handled_entries, a2data
+    global details_popup_data, _details_handled_entries
     _details_handled_entries := []
 
     count := 0
@@ -51,7 +51,7 @@ details_popup_handler(menu_name) {
 }
 
 details_entry_handler(entry_name) {
-    global details_popup_data, _details_popup_menu_name, a2data
+    global details_popup_data, _details_popup_menu_name
     these_entries := details_popup_data[_details_popup_menu_name]["data"]
 
     if (entry_name == "Cancel" and A_ThisMenuItemPos > these_entries.Length())
@@ -59,7 +59,7 @@ details_entry_handler(entry_name) {
 
     ; entry_name might be a simple number! Make sure this is a string pointing into the object:
     value := these_entries["" entry_name ""]
-    cmd_path := a2data "modules\a2.modules\DetailsPopup\details_paste_entry.ahk"
+    cmd_path := path_neighbor(A_LineFile, "details_paste_entry.ahk")
 
     cmd = "%A_AhkPath%" "%cmd_path%" "%value%"
     shell := ComObjCreate("WScript.Shell")
