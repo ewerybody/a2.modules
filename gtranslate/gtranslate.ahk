@@ -34,12 +34,11 @@ gtranslate(from="en", to="de") {
             IfMsgBox No
                 return
         }
-
         url := "https://translate.google.com/translate"
-        url .= "?sl=" to
-        url .= "&tl=" from
+        url .= "?sl=" from
+        url .= "&tl=" to
         url .= "&js=y&prev=_t&hl=en&ie=UTF-8&u="
-        url .= uri_url_encode(__gtranslate_search)
+        url .= uri_encode(__gtranslate_search)
         url .= "&edit-text=&act=url"
         Run, %url%
         return
