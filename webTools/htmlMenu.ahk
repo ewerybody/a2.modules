@@ -13,6 +13,7 @@ HtmlMenu() {
     Menu, MyMenu, Add, img, HtmlMenuHandler
     Menu, MyMenu, Add, video, HtmlMenuHandler
     Menu, MyMenu, Add, testHTML, HtmlMenuHandler
+    Menu, MyMenu, Add, encodeURL, HtmlMenuHandler
     Menu, MyMenu, Show
 	Menu, MyMenu, DeleteAll
 }
@@ -56,6 +57,9 @@ HtmlMenuHandler() {
     Else If (A_ThisMenuItem == "video") {
         code = <video width="960" height="540" controls>`n<source src="%sel%" type="video/mp4">`n</video>
         clipboard_paste(code)
+    }
+    Else If (A_ThisMenuItem == "encodeURL") {
+        clipboard_paste(uri_encode(sel))
     }
     Else {
         ; handle simple surrounding with the tags:

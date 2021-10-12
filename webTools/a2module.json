@@ -1,35 +1,20 @@
-[
+﻿[
   {
     "author": "eric",
     "date": "2015 5 28",
     "description": "So far only some simple things to make more of your selection when posting to Forums or Blog posts on the internet...",
+    "display_name": "",
     "tags": [
       "web",
       "code"
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.2"
+    "version": "0.3"
   },
   {
     "file": "BBCodeMenu.ahk",
     "typ": "include"
-  },
-  {
-    "disablable": true,
-    "enabled": true,
-    "functionCode": "BBCodeMenu()",
-    "functionMode": 0,
-    "key": "Ctrl+Alt+B",
-    "keyChange": true,
-    "label": "enclose selection with bbCode:",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "BBCodeMenuHotkey",
-    "scope": [],
-    "scopeChange": true,
-    "scopeMode": 0,
-    "typ": "hotkey"
   },
   {
     "file": "HtmlMenu.ahk",
@@ -46,6 +31,22 @@
     "mode": "ahk",
     "multiple": true,
     "name": "HtmlMenuHotkey",
+    "scope": [],
+    "scopeChange": true,
+    "scopeMode": 0,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "BBCodeMenu()",
+    "functionMode": 0,
+    "key": "Ctrl+Alt+B",
+    "keyChange": true,
+    "label": "enclose selection with bbCode:",
+    "mode": "ahk",
+    "multiple": true,
+    "name": "BBCodeMenuHotkey",
     "scope": [],
     "scopeChange": true,
     "scopeMode": 0,
