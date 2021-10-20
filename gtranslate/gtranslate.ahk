@@ -21,7 +21,8 @@ gtranslate(from="en", to="de") {
 
     if (__gtranslate_search == "")
     {
-        InputBox, UserInput, gtranslate, Enter something to translate..., , 640, 150
+        msg := "Enter something to translate (" from " > " to ") ..."
+        InputBox, UserInput, gtranslate, %msg%, , 640, 150
         if ErrorLevel
             return
         else
