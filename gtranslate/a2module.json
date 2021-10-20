@@ -3,13 +3,29 @@
     "author": "Eric Werner",
     "date": "2017 3 17",
     "description": "Makes use of translate.googleapis.com to translate short text snippets or whole websites. WIP...",
+    "display_name": "",
     "tags": [
       "lookup",
       "text"
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "gtranslate_any()",
+    "functionMode": 0,
+    "key": [
+      "RAlt+RShift+L"
+    ],
+    "keyChange": true,
+    "label": "Translate Anything",
+    "multiple": true,
+    "name": "gtranslate_AnyHotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
   },
   {
     "file": "gtranslate.ahk",

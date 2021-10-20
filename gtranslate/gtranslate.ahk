@@ -19,6 +19,7 @@ gtranslate(from="en", to="de") {
     __gtranslate_search := trim(sel, " `n`t`r")
     __gtranslate_lngs = %from%|%to%
 
+    ; No Selection:
     if (__gtranslate_search == "")
     {
         msg := "Enter something to translate (" from " > " to ") ..."
@@ -113,4 +114,44 @@ gtranslate_open_webpage(ItemName, ItemPos, MenuName) {
     url .= lng_from_to[1] "/" lng_from_to[2] "/"
     url .= __gtranslate_search
     Run, %url%
+}
+
+gtranslate_any(){
+    icon_path := path_neighbor(A_LineFile, "a2icon24.png")
+    user_cfg := Jxon_Load(a2.db.find(A_LineFile, "user_cfg"))
+    languages := Jxon_Read(path_neighbor(A_LineFile, "languages.json"))
+    last_selected_any := a2.db.find(A_LineFile, "last_selected_any")
+
+    for name, data in user_cfg.gtranslate_lister {
+        Menu, gtranslate_anymenu, Add, %name%, _gtranslate_any_handler
+        Menu, gtranslate_anymenu, Icon, %name%, %icon_path%,, 0
+    }
+
+    for lang, short in languages
+    {
+        Menu, gtranslate_submenu, Add, %lang%: %short%, _gtranslate_any_lang_handler
+        ; NOPE! Adding icons to ALL of the languages takes a couple seconds!!
+        ; Menu, gtranslate_submenu, Icon, %lang%: %short%, %icon_path%,, 0
+    }
+    Menu, gtranslate_anymenu, Add, All Languages, :gtranslate_submenu
+    Menu, gtranslate_anymenu, Icon, All Languages, %icon_path%,, 0
+    if (last_selected_any)
+    {
+        Menu, gtranslate_anymenu, Add, %last_selected_any%, _gtranslate_any_lang_handler
+        Menu, gtranslate_anymenu, Icon, %last_selected_any%, %icon_path%,, 0
+    }
+
+    Menu, gtranslate_anymenu, Show
+    Menu, gtranslate_anymenu, DeleteAll
+}
+
+_gtranslate_any_lang_handler(sel){
+    parts := StrSplit(sel, ": ")
+    a2.db.find_set(A_LineFile, "last_selected_any", sel)
+    gtranslate("auto", parts[2])
+}
+
+_gtranslate_any_handler(sel){
+    parts := StrSplit(sel, " > ")
+    gtranslate(parts[1], parts[2])
 }
