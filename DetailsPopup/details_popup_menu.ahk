@@ -61,7 +61,7 @@ details_entry_handler(entry_name) {
     value := these_entries["" entry_name ""]
     cmd_path := path_neighbor(A_LineFile, "details_paste_entry.ahk")
 
-    cmd = "%A_AhkPath%" "%cmd_path%" "%value%"
+    cmd = "%A_AhkPath%" "%cmd_path%" "%value%" %DetailsPopup_CheckSend%
     shell := ComObjCreate("WScript.Shell")
     exec := shell.Exec(cmd)
 
