@@ -13,5 +13,5 @@ open_from_explorer() {
     win_id := WinExist("ahk_pid " pid)
     a2tip("commandLine from Explorer: (pid: " pid " hwnd: " win_id ")`n" path)
 
-    window_activate(win_id)
+    window_activate(win_id, 1)
 }
