@@ -3,6 +3,7 @@
     "author": "eric",
     "date": "2019 5 1",
     "description": "Create different files directly in the current Explorer directory.\t\t\t\t",
+    "display_name": "",
     "tags": [
       "file",
       "code",
@@ -10,7 +11,7 @@
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "disablable": true,
@@ -36,27 +37,57 @@
     "typ": "include"
   },
   {
+    "children": [
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "explorer_create_on_paste()",
+        "functionMode": 0,
+        "key": [
+          "Ctrl+V"
+        ],
+        "keyChange": true,
+        "label": "Create Files from Clipboard (images)",
+        "multiple": true,
+        "name": "ExplorerCreateFile_PasteHotkey",
+        "scope": [
+          "ahk_class CabinetWClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "label": "Default Image name",
+        "label_over_field": false,
+        "name": "ExplorerCreateFile_DefaultImageName",
+        "password_mode": false,
+        "typ": "string",
+        "value": "Clipboard Image"
+      },
+      {
+        "items": [
+          ".png",
+          ".jpg",
+          ".gif",
+          ".bmp",
+          ".tif"
+        ],
+        "label": "Default Image Extension",
+        "name": "ExplorerCreateFile_DefaultImageExt",
+        "typ": "combo",
+        "user_edit": false
+      },
+      {
+        "file": "explorer_create_on_paste.ahk",
+        "typ": "include"
+      }
+    ],
     "disablable": true,
     "enabled": false,
-    "functionCode": "explorer_create_on_paste()",
-    "functionMode": 0,
-    "key": [
-      "Ctrl+V"
-    ],
-    "keyChange": true,
-    "label": "Create Files from Clipboard (images)",
-    "multiple": true,
-    "name": "ExplorerCreateFile_PasteHotkey",
-    "scope": [
-      "ahk_class CabinetWClass"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "file": "explorer_create_on_paste.ahk",
-    "typ": "include"
+    "label": "Create Image Files from Clipboard",
+    "name": "ExplorerCreateFile_Group",
+    "typ": "group"
   },
   {
     "name": "file_list",
