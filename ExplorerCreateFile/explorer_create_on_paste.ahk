@@ -30,7 +30,7 @@ explorer_create_on_paste() {
         img_path := path_join(current_path, img_name)
     }
 
-    tt("Creating image from clipboard ...", 1)
+    a2tip("Creating image from clipboard ...")
     gdipbitmap_to_file(bitmap, img_path)
     gdip_shutdown(token)
     explorer_select(img_name)
