@@ -11,7 +11,7 @@
     ],
     "typ": "nfo",
     "url": "",
-    "version": "0.2"
+    "version": "0.3"
   },
   {
     "disablable": true,
@@ -35,6 +35,10 @@
   {
     "file": "explorer_create_file.ahk",
     "typ": "include"
+  },
+  {
+    "name": "file_list",
+    "typ": "a2_local_element"
   },
   {
     "children": [
@@ -88,9 +92,5 @@
     "label": "Create Image Files from Clipboard",
     "name": "ExplorerCreateFile_Group",
     "typ": "group"
-  },
-  {
-    "name": "file_list",
-    "typ": "a2_local_element"
   }
 ]
