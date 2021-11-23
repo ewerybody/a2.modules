@@ -3,10 +3,11 @@
     "author": "eRiC",
     "date": "2015 10 10",
     "description": "Opening and closing the Windows calculator based on hotkeys.",
+    "display_name": "",
     "tags": [],
     "typ": "nfo",
     "url": "",
-    "version": "0.2"
+    "version": "0.2.1"
   },
   {
     "children": [

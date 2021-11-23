@@ -51,7 +51,7 @@ calculAid_open() {
 
 calculAid_get_current() {
     this_lng := SubStr(A_Language, -1)
-    names := {09: "Calculator", 07: "Taschenrechner"}
+    names := {09: "Calculator", 07: "Rechner"}
     this_name := names[this_lng]
 
     calc_ids := []
@@ -80,5 +80,5 @@ calculAid_wait_for_new(found_ids) {
         if (t1 > 1000)
             Break
     }
-    MsgBox, nothing found!`ntries: %tries%
+    ; MsgBox, nothing found!`ntries: %tries%
 }
