@@ -2,7 +2,7 @@
   {
     "author": "eric",
     "date": "2019 5 1",
-    "description": "Create different files directly in the current Explorer directory.\t\t\t\t",
+    "description": "Create different files directly in the current Explorer directory.",
     "display_name": "",
     "tags": [
       "file",
@@ -10,7 +10,7 @@
       "explorer"
     ],
     "typ": "nfo",
-    "url": "",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#explorercreatefile",
     "version": "0.3"
   },
   {
