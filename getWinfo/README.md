@@ -2,9 +2,9 @@
 
 ### A quick window information getter.
 
-Press the hotkey.\
-Get a menu with stats about the currently active window.\
-Click and entry to copy a value.\
+Press the **hotkey**. (<kbd>**Win+Shift+W**</kbd> by default)\
+Get a **menu** with stats about the currently active window.\
+**Click** and entry to copy a value.\
 
 > ![example](https://i.imgur.com/pXwhkrp.png)
 
