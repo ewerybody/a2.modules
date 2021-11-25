@@ -6,8 +6,8 @@
     "display_name": "",
     "tags": [],
     "typ": "nfo",
-    "url": "",
-    "version": "0.2.1"
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid",
+    "version": "0.2.2"
   },
   {
     "children": [
@@ -27,7 +27,7 @@
         "label": "Standard Hotkey",
         "mode": "ahk",
         "multiple": true,
-        "name": "calcul8hotkey",
+        "name": "calculAid_Hotkey",
         "scope": [],
         "scopeChange": true,
         "scopeMode": 0,
@@ -36,7 +36,7 @@
       {
         "enabled": true,
         "label": "Open up at cursor position",
-        "name": "calculAid_openAtCursor",
+        "name": "calculAid_OpenAtCursor",
         "typ": "check",
         "value": true
       },
@@ -49,7 +49,7 @@
       },
       {
         "label": "Activate already open Calculator/Open New when focused.",
-        "name": "CalculAid_ReuseOpenOne",
+        "name": "calculAid_ReuseOpenOne",
         "typ": "check",
         "value": true
       }
@@ -57,7 +57,7 @@
     "disablable": true,
     "enabled": true,
     "label": "Open up the Calculator",
-    "name": "calcOpenGroup",
+    "name": "calculAid_OpenGroup",
     "typ": "group"
   },
   {
@@ -72,7 +72,7 @@
     "label": "Close the calculator",
     "mode": "ahk",
     "multiple": true,
-    "name": "close_calc_hotkey",
+    "name": "calculAid_CloseHotkey",
     "scope": [
       "Calculator ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe",
       "Calculator ahk_class CalcFrame ahk_exe calc.exe"

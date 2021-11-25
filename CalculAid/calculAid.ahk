@@ -9,8 +9,6 @@
 ; nice to have in a2 anyway.
 
 calculAid_open() {
-    global calculAid_openAtCursor, calculAid_AlwaysOnTop, CalculAid_ReuseOpenOne
-
     ; TODO fix the selected number to calculator-thing:
     ; sel := clipboard_get()
     ; RegExMatch(sel, "[0-9.,+-]+", numbers)
@@ -20,9 +18,9 @@ calculAid_open() {
     found_ids := calculAid_get_current()
     calc_is_active := string_is_in_array(current_id, found_ids)
 
-    if (CalculAid_ReuseOpenOne and found_ids.MaxIndex() and !calc_is_active)
+    if (calculAid_ReuseOpenOne and found_ids.MaxIndex() and !calc_is_active)
     {
-        tt("CalculAid: found one activating ...", 1)
+        a2tip("CalculAid: found one activating ...")
         this := found_ids[1]
         WinActivate, ahk_id %this%
         Return
@@ -30,7 +28,7 @@ calculAid_open() {
 
     ; This calls to open a Calculator, but the PID is useless.
     ; Windows will now use ApplicationFrameHost.exe to host a Calculator
-    tt("CalculAid: Calling new ...", 1)
+    a2tip("CalculAid: Calling new ...")
     Run, calc.exe,, UseErrorLevel, calcPID
 
     ; We'll have to wait a moment for it to be available
