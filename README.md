@@ -5,6 +5,8 @@ The standard [**a2**](https://github.com/ewerybody/a2) Autohotkey scripts module
 Documentation is <kbd>WIP!</kbd> migrating from [the wiki](https://github.com/ewerybody/a2.modules/wiki) to have all docs in the repository itself ...
 
 Stable modules with documentation in the repository already:
+* [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid)
+* [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize)
 * [**DetailsPopup**](https://github.com/ewerybody/a2.modules/tree/master/DetailsPopup#detailspopup)
 * [**ExplorerCreateFile**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#ExplorerCreateFile)
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo)
@@ -15,8 +17,6 @@ Stable modules with documentation in the repository already:
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr)
 
 Modules in need of documentation:
-* [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid)
-* [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize)
 * [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys)
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher)
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl)
