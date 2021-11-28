@@ -75,7 +75,8 @@
     "name": "calculAid_CloseHotkey",
     "scope": [
       "Calculator ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe",
-      "Calculator ahk_class CalcFrame ahk_exe calc.exe"
+      "Calculator ahk_class CalcFrame ahk_exe calc.exe",
+      "Rechner ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe"
     ],
     "scopeChange": false,
     "scopeMode": 1,
