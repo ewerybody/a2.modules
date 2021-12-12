@@ -2,12 +2,12 @@
   {
     "author": "eric, Oliver Lipkau",
     "date": "2015",
-    "description": "Adds simple closing functionality to the basic windows command line window.",
+    "description": "Connects Explorer and CommandLine and adds simple closing functionality.",
     "display_name": "CommandLine",
     "tags": [],
     "typ": "nfo",
     "url": "",
-    "version": "0.3"
+    "version": "0.4"
   },
   {
     "disablable": true,
@@ -19,7 +19,7 @@
     "label": "Close commandline window",
     "mode": "ahk",
     "multiple": false,
-    "name": "closeHotkey3",
+    "name": "commandLine_closeHotkeyEsc",
     "scope": [
       "ahk_class ConsoleWindowClass"
     ],
@@ -38,7 +38,7 @@
     "label": "Close commandline window",
     "mode": "ahk",
     "multiple": false,
-    "name": "closeHotkey1",
+    "name": "commandLine_closeHotkeyAltF4",
     "scope": [
       "ahk_class ConsoleWindowClass"
     ],
@@ -57,7 +57,7 @@
     "label": "Close commandline window",
     "mode": "ahk",
     "multiple": false,
-    "name": "closeHotkey2",
+    "name": "commandLine_closeHotkeyCtrlW",
     "scope": [
       "ahk_class ConsoleWindowClass"
     ],
@@ -86,6 +86,30 @@
   },
   {
     "file": "open_from_explorer.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "commandLine_invoke()",
+    "functionMode": 0,
+    "key": [
+      "~Enter"
+    ],
+    "keyChange": false,
+    "label": "catch Enter on Explorer Adress bar",
+    "multiple": false,
+    "name": "commandLine_Hotkey",
+    "scope": [
+      "ahk_class CabinetWClass",
+      "ahk_class ExploreWClass"
+    ],
+    "scopeChange": false,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "commandLine.ahk",
     "typ": "include"
   }
 ]
