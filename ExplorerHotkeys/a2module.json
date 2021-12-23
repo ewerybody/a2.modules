@@ -2,14 +2,14 @@
   {
     "author": "eric",
     "date": "2015",
-    "description": "ExplorerHotkeys does mean things to your Windows Explorer!",
+    "description": "Some extra Hotkeys for your Windows Filebrowser.",
     "display_name": "",
     "tags": [
       "file"
     ],
     "typ": "nfo",
-    "url": "",
-    "version": "0.2"
+    "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
+    "version": "0.3"
   },
   {
     "disablable": true,
@@ -137,7 +137,7 @@
     "functionMode": 0,
     "key": "Alt+V",
     "keyChange": true,
-    "label": "from an FTP-Explorer get the http-url into the clipboard",
+    "label": "from FTP-Explorer get http-url into Clipboard",
     "mode": "ahk",
     "multiple": true,
     "name": "ftpExplorerCopyHotkey",
@@ -157,7 +157,7 @@
     "functionURL": "Run, ",
     "key": "Alt+N",
     "keyChange": true,
-    "label": "Toggle the Navigation Panel (Experimental)",
+    "label": "Toggle Navigation Panel (Experimental)",
     "mode": "ahk",
     "multiple": true,
     "name": "ExplorerHotkeys_NavOnOff",
