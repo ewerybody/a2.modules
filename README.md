@@ -9,6 +9,7 @@ Stable modules with documentation in the repository already:
 * [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize)
 * [**DetailsPopup**](https://github.com/ewerybody/a2.modules/tree/master/DetailsPopup#detailspopup)
 * [**ExplorerCreateFile**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#ExplorerCreateFile)
+* [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys)
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo)
 * [**Hotstrings**](https://github.com/ewerybody/a2.modules/tree/master/HotStrings#hotstrings)
 * [**PastePlain**](https://github.com/ewerybody/a2.modules/tree/master/PastePlain#pasteplain)
@@ -17,7 +18,6 @@ Stable modules with documentation in the repository already:
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr)
 
 Modules in need of documentation:
-* [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys)
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher)
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl)
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl)
