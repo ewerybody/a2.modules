@@ -11,3 +11,5 @@ With options to
 * **Make is use a Raster while holding <b><kbd>Shift</kbd></b> key** - 
 * **Maximize on Doubleclick** - according to the 9 regions: left/right regions: maximize horizontaly, top/bottom region: maximize vertically, center: maximize whole window.
   This also **toggles** the maximization in the according regions.
+
+This one was partially ported from the original ac'tivAid ComfortResize by Bernd Schandl, [Wolfgang Reszel](https://github.com/Tekl), [Michael Telgkamp](https://telgkamp.de).
