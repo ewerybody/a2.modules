@@ -30,10 +30,9 @@ gtranslate(from="en", to="de") {
             __gtranslate_search := trim(UserInput)
     }
     else if string_is_web_address(__gtranslate_search) {
-        global gtranslate_ask_website_translate
         if gtranslate_ask_website_translate {
             MsgBox, 1, Translate the web adress with translate.google.com?
-            IfMsgBox No
+            IfMsgBox Cancel
                 return
         }
         url := "https://translate.google.com/translate"
