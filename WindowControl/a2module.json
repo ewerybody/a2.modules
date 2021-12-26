@@ -2,7 +2,7 @@
   {
     "author": "Wolfgang Reszel, Jack Tissen",
     "date": "2021 2 23",
-    "description": "Hotkeys for general window management. Ported from ac'tivAid.\nSome of these are Windows-built-in! But hy default there is no way to change and no toggle.",
+    "description": "Hotkeys for general window management. Ported from ac'tivAid.\nSome of these are Windows-built-in! But by default there is no way to change and no toggle.",
     "display_name": "",
     "tags": [
       "window"

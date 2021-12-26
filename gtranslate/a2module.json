@@ -2,15 +2,15 @@
   {
     "author": "Eric Werner",
     "date": "2017 3 17",
-    "description": "Makes use of translate.googleapis.com to translate short text snippets or whole websites. WIP...",
+    "description": "Makes use of translate.googleapis.com to translate short text snippets or whole websites.",
     "display_name": "",
     "tags": [
       "lookup",
       "text"
     ],
     "typ": "nfo",
-    "url": "",
-    "version": "0.2"
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate",
+    "version": "0.3"
   },
   {
     "disablable": true,
