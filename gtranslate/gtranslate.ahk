@@ -31,7 +31,7 @@ gtranslate(from="en", to="de") {
     }
     else if string_is_web_address(__gtranslate_search) {
         if gtranslate_ask_website_translate {
-            MsgBox, 1, Translate the web adress with translate.google.com?
+            MsgBox, 1, Translate whole webpage?, Open translate.google.com with selected URL`nto have the whole page translated`n%from% > %to%?
             IfMsgBox Cancel
                 return
         }
