@@ -13,12 +13,12 @@ Stable modules with documentation in the repository already:
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo) - A quick window information getter.
 * [**Hotstrings**](https://github.com/ewerybody/a2.modules/tree/master/HotStrings#hotstrings) - A user interface for Autohotkeys typing activated string replacements or command triggering.
 * [**PastePlain**](https://github.com/ewerybody/a2.modules/tree/master/PastePlain#pasteplain) - Paste text without formatting or file paths from your clipboard.
+* [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
 * [**tastatur**](https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur) - A module to support german users on english keyboards.
 * [**TestAHK**](https://github.com/ewerybody/a2.modules/tree/master/TestAHK#testahk) - Tiny little Autohotkey snippet to test other Autohotkey snippets.
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr) - Super Windows+R to open selected paths or URLs.
 
 Modules in need of documentation:
-* [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [commandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
