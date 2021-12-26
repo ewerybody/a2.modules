@@ -1,15 +1,16 @@
-[
+﻿[
   {
     "author": "eric werner",
     "date": "2016 8 24",
-    "description": "Simple backslash/forwardslash handling on active selection. Shows a menu:\n  1.: toggle \\ to /\n  2.: single \\ to double backslash \\\\\n  3.: double \\\\ to single \\ backslash",
+    "description": "Simple backslash/forwardslash handling on active selection.<br>Shows a menu:\n  1.: toggle \\ to /\n  2.: single \\ to double backslash \\\\\n  3.: double \\\\ to single \\ backslash",
+    "display_name": "",
     "tags": [
       "code",
       "file",
       "text"
     ],
     "typ": "nfo",
-    "url": "",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher",
     "version": "0.1"
   },
   {
