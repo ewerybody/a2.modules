@@ -11,6 +11,7 @@ Stable modules with documentation in the repository already:
 * [**ExplorerCreateFile**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#ExplorerCreateFile) - Create different files directly in the current Explorer directory.
 * [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys) - Some extra shortcuts for your Windows Filebrowser.
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo) - A quick window information getter.
+* [**gtranslate**](https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate) - To translate short text snippets or whole websites.
 * [**Hotstrings**](https://github.com/ewerybody/a2.modules/tree/master/HotStrings#hotstrings) - A user interface for Autohotkeys typing activated string replacements or command triggering.
 * [**PastePlain**](https://github.com/ewerybody/a2.modules/tree/master/PastePlain#pasteplain) - Paste text without formatting or file paths from your clipboard.
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
@@ -22,7 +23,6 @@ Modules in need of documentation:
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [commandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
-* [**gtranslate**](https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate) - To translate short text snippets or whole websites.
 * [**OCR Tool**](https://github.com/ewerybody/a2.modules/tree/master/ocr_tool#ocr_tool) - Simple <b>Optical Character Recognition</b> to read unselectable text.
 * [texTools](https://github.com/ewerybody/a2.modules/tree/master/texTools#texTools) - Text manipulation tool snippets. Ideas welcome!
 * [webTools](https://github.com/ewerybody/a2.modules/tree/master/webTools#webTools) - Snippets to work with your selection for things on the internet...
