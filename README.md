@@ -13,7 +13,7 @@ Stable modules with documentation in the repository already:
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo) - A quick window information getter.
 * [**gtranslate**](https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate) - To translate short text snippets or whole websites.
 * [**Hotstrings**](https://github.com/ewerybody/a2.modules/tree/master/HotStrings#hotstrings) - A user interface for Autohotkeys typing activated string replacements or command triggering.
-* [**OCR Tool**](https://github.com/ewerybody/a2.modules/tree/master/ocr_tool#ocr_tool) - Simple <b>Optical Character Recognition</b> to read unselectable text.
+* [**OCR Tool**](https://github.com/ewerybody/a2.modules/tree/master/ocr_tool#ocr-tool) - Simple <b>Optical Character Recognition</b> to read unselectable text.
 * [**PastePlain**](https://github.com/ewerybody/a2.modules/tree/master/PastePlain#pasteplain) - Paste text without formatting or file paths from your clipboard.
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
 * [**tastatur**](https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur) - A module to support german users on english keyboards.
