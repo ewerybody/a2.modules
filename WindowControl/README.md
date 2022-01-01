@@ -1,6 +1,6 @@
 # WindowControl
 
-### Hotkeys for general window management.
+Hotkeys for general window management.
 
 ### Minimize Window <kbd>Win+RButton</kbd>
 
@@ -16,6 +16,6 @@ Toggles the current "Keep-in-Foreground" state (aka Always-On-Top) and shows a t
 
 ## remarks
 
-This is supposed to be port of the very omnipotent **WindowsControl** from ac'tivAid back in the days by [Wolfgang Reszel](https://github.com/Tekl) and Jack Tissen. Sadly there has not been much time to perform the whole porting and only some few functions are available here. But some functionality actually moved into Windows built-in functions. We still lack the complete overview there and any help collecting things is much appreciated!
+This is supposed to be port of the very omnipotent **WindowsControl** from ac'tivAid back in the days by [Wolfgang Reszel](https://github.com/Tekl) and Jack Tissen. Sadly there has not been much time to perform the whole porting and only some few functions are available here. That being said: some functionality is actually implemented in the a2 window library and some moved into Windows built-in functions. We still lack the complete overview there and any help collecting things is much appreciated!
 
 ...
