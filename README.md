@@ -18,11 +18,12 @@ Stable modules with documentation in the repository already:
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
 * [**tastatur**](https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur) - A module to support german users on english keyboards.
 * [**TestAHK**](https://github.com/ewerybody/a2.modules/tree/master/TestAHK#testahk) - Tiny little Autohotkey snippet to test other Autohotkey snippets.
+* [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr) - Super Windows+R to open selected paths or URLs.
+
 
 Modules in need of documentation:
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
-* [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [commandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
 * [texTools](https://github.com/ewerybody/a2.modules/tree/master/texTools#texTools) - Text manipulation tool snippets. Ideas welcome!
 * [webTools](https://github.com/ewerybody/a2.modules/tree/master/webTools#webTools) - Snippets to work with your selection for things on the internet...
