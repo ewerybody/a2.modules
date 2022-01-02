@@ -8,8 +8,8 @@
       "wip"
     ],
     "typ": "nfo",
-    "url": "",
-    "version": "0.4.0"
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#volumecontrol",
+    "version": "0.4.1"
   },
   {
     "disablable": true,
@@ -46,18 +46,6 @@
     "typ": "include"
   },
   {
-    "disablable": true,
-    "enabled": false,
-    "functionCode": "volume_control_toggle_mute()",
-    "functionMode": 0,
-    "keyChange": true,
-    "label": "Toggle Mute",
-    "multiple": true,
-    "name": "VolumeControl_Mute_Hotkey",
-    "scopeChange": true,
-    "typ": "hotkey"
-  },
-  {
     "decimals": 0,
     "label": "Step",
     "max": 20.0,
@@ -68,5 +56,17 @@
     "suffix": "",
     "typ": "number",
     "value": 5
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "volume_control_toggle_mute()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "Toggle Mute",
+    "multiple": true,
+    "name": "VolumeControl_Mute_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
   }
 ]
