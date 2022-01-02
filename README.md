@@ -7,6 +7,7 @@ Documentation is <kbd>WIP!</kbd> migrating from [the wiki](https://github.com/ew
 Stable modules with documentation in the repository already:
 * [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid) - A configurable Calculator opener.
 * [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize) - Fuzzy window manipulation via 9 nice big zones 
+* [CommandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
 * [**DetailsPopup**](https://github.com/ewerybody/a2.modules/tree/master/DetailsPopup#detailspopup) - A Key/Value store UI for things to paste into fields.
 * [**ExplorerCreateFile**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#ExplorerCreateFile) - Create different files directly in the current Explorer directory.
 * [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys) - Some extra shortcuts for your Windows Filebrowser.
@@ -18,12 +19,10 @@ Stable modules with documentation in the repository already:
 * [**Slasher**](https://github.com/ewerybody/a2.modules/tree/master/Slasher#Slasher) - Simple backslash/forwardslash handling on active selection.
 * [**tastatur**](https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur) - A module to support german users on english keyboards.
 * [**TestAHK**](https://github.com/ewerybody/a2.modules/tree/master/TestAHK#testahk) - Tiny little Autohotkey snippet to test other Autohotkey snippets.
+* [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr) - Super Windows+R to open selected paths or URLs.
 
-
 Modules in need of documentation:
-* [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
-* [commandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
 * [texTools](https://github.com/ewerybody/a2.modules/tree/master/texTools#texTools) - Text manipulation tool snippets. Ideas welcome!
 * [webTools](https://github.com/ewerybody/a2.modules/tree/master/webTools#webTools) - Snippets to work with your selection for things on the internet...
