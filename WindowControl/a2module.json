@@ -8,14 +8,17 @@
       "window"
     ],
     "typ": "nfo",
-    "url": "",
-    "version": "2.0.0"
+    "url": "https://github.com/ewerybody/a2.modules/blob/master/WindowControl/README.md#windowcontrol",
+    "version": "2.0.1"
   },
   {
     "disablable": true,
     "enabled": false,
     "functionCode": "window_control_minimize()",
     "functionMode": 0,
+    "key": [
+      "Win+Rbutton"
+    ],
     "keyChange": true,
     "label": "Minimize Window",
     "multiple": true,
@@ -47,6 +50,9 @@
     "enabled": true,
     "functionCode": "window_control_toggle_always_on_top()",
     "functionMode": 0,
+    "key": [
+      "Win+Home"
+    ],
     "keyChange": true,
     "label": "Toggle Always-On-Top",
     "multiple": true,
