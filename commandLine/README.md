@@ -28,3 +28,5 @@ For Example: If you have ImageMagick installed and want to convert an image in y
 << magick some_image.gif some_image.png
 ```
 Will perform the command hidden without you having to open up the path in cmd, goto the path, execute the command, and close the cmd window again.
+
+Note: Contrary to the actual commandline window there is no such auto-completion Explorer adress bar. But this wouldn't be impossible to pull of. If you want this or have ideas about it please [file an issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3ACommandLine) and lets chat!
