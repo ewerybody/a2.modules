@@ -13,3 +13,5 @@ Sets the amount of steps taken on the volume scale used by the Volume Up/Down ho
 ### Toggle Mute
 
 Sets the audio mute state On or Off according to the current state.
+
+This one currently has no default key. If you have a good idea about what key to take for this by default, I'd like to hear about it! Thanks!
