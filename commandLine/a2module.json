@@ -6,64 +6,73 @@
     "display_name": "CommandLine",
     "tags": [],
     "typ": "nfo",
-    "url": "",
+    "url": "https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine",
     "version": "0.4"
   },
   {
-    "disablable": true,
+    "children": [
+      {
+        "disablable": true,
+        "enabled": false,
+        "functionCode": "WinClose",
+        "functionMode": 0,
+        "functionURL": "Run, ",
+        "key": "Ctrl+W",
+        "keyChange": false,
+        "label": "Close on Control+W",
+        "mode": "ahk",
+        "multiple": false,
+        "name": "commandLine_closeHotkeyCtrlW",
+        "scope": [
+          "ahk_class ConsoleWindowClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": true,
+        "functionCode": "WinClose",
+        "functionMode": 0,
+        "key": "Esc",
+        "keyChange": false,
+        "label": "Close on Escape",
+        "mode": "ahk",
+        "multiple": false,
+        "name": "commandLine_closeHotkeyEsc",
+        "scope": [
+          "ahk_class ConsoleWindowClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": true,
+        "enabled": false,
+        "functionCode": "WinClose",
+        "functionMode": 0,
+        "functionURL": "Run, ",
+        "key": "Alt+F4",
+        "keyChange": false,
+        "label": "Close on Alt+F4",
+        "mode": "ahk",
+        "multiple": false,
+        "name": "commandLine_closeHotkeyAltF4",
+        "scope": [
+          "ahk_class ConsoleWindowClass"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      }
+    ],
+    "disablable": false,
     "enabled": true,
-    "functionCode": "WinClose",
-    "functionMode": 0,
-    "key": "Esc",
-    "keyChange": false,
     "label": "Close commandline window",
-    "mode": "ahk",
-    "multiple": false,
-    "name": "commandLine_closeHotkeyEsc",
-    "scope": [
-      "ahk_class ConsoleWindowClass"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "disablable": true,
-    "enabled": false,
-    "functionCode": "WinClose",
-    "functionMode": 0,
-    "functionURL": "Run, ",
-    "key": "Alt+F4",
-    "keyChange": false,
-    "label": "Close commandline window",
-    "mode": "ahk",
-    "multiple": false,
-    "name": "commandLine_closeHotkeyAltF4",
-    "scope": [
-      "ahk_class ConsoleWindowClass"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "disablable": true,
-    "enabled": false,
-    "functionCode": "WinClose",
-    "functionMode": 0,
-    "functionURL": "Run, ",
-    "key": "Ctrl+W",
-    "keyChange": false,
-    "label": "Close commandline window",
-    "mode": "ahk",
-    "multiple": false,
-    "name": "commandLine_closeHotkeyCtrlW",
-    "scope": [
-      "ahk_class ConsoleWindowClass"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
+    "name": "commandLine_CloseGroup",
+    "typ": "group"
   },
   {
     "disablable": true,
@@ -89,27 +98,40 @@
     "typ": "include"
   },
   {
-    "disablable": true,
-    "enabled": true,
-    "functionCode": "commandLine_invoke()",
-    "functionMode": 0,
-    "key": [
-      "~Enter"
-    ],
-    "keyChange": false,
-    "label": "catch Enter on Explorer Adress bar",
-    "multiple": false,
-    "name": "commandLine_Hotkey",
-    "scope": [
-      "ahk_class CabinetWClass",
-      "ahk_class ExploreWClass"
-    ],
-    "scopeChange": false,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
     "file": "commandLine.ahk",
     "typ": "include"
+  },
+  {
+    "children": [
+      {
+        "text": "Use one of these prefixes for:\n<b>&lt;</b> for visible execution\n<b>&lt;&lt;</b> for hidden execution",
+        "typ": "label"
+      },
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "commandLine_invoke()",
+        "functionMode": 0,
+        "key": [
+          "~Enter"
+        ],
+        "keyChange": false,
+        "label": "catch Enter on Explorer Adress bar",
+        "multiple": false,
+        "name": "commandLine_Hotkey",
+        "scope": [
+          "ahk_class CabinetWClass",
+          "ahk_class ExploreWClass"
+        ],
+        "scopeChange": false,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      }
+    ],
+    "disablable": true,
+    "enabled": true,
+    "label": "Use Explorer Address bar as commandline interface",
+    "name": "commandLine_ExplorerPrefixGroup",
+    "typ": "group"
   }
 ]
