@@ -1,9 +1,16 @@
 ﻿wordCount() {
-    global wordCount_tooltip_timeout
 	txt := clipboard_get()
+    if (!txt) {
+        a2tip("wordCount: Nothing selected!")
+        Return
+    }
+
     words := StrSplit(txt, [A_Tab, A_Space, "`n", "`r"])
 	StringLen, length, txt
-    
     lines := StrSplit(txt, "`n")
-	tt(length " characters`n" words.maxIndex() " words`n" lines.maxIndex() " lines", wordCount_tooltip_timeout)
+
+    msg := "wordCount: " words.MaxIndex() "`n"
+    msg .= "characters: " length "`n"
+    msg .= "lines: " lines.MaxIndex() "`n"
+	a2tip(msg, wordCount_tooltip_timeout)
 }
