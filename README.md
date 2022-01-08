@@ -2,9 +2,9 @@
 
 The standard [**a2**](https://github.com/ewerybody/a2) Autohotkey script modules collection.
 
-Documentation is <kbd>WIP!</kbd> migrating from [the wiki](https://github.com/ewerybody/a2.modules/wiki) to have all docs in the repository itself ...
+Mostly but not exclusively this about re-implementing the oldschool extensions from the outdated **ac'tivAid** project for the a2 platform. So quite some ideas and code is not original to this project and credit goes to these fine folks: [**Wolfgang Reszel**](https://github.com/Tekl), [**Michael Telgkamp**](https://telgkamp.de), **David Hilberath**, **Dirk Schwarzmann**, **Jack Tissen**, Alexander Taubenkorb, Bernd Schandl, Chris Mallett, Elmar Sonnenschein, Florian Schenk, Holomind, jla, Jossekin Beilharz, Jürg, Oliver Pfeiffer, Patrick Eder, Rajat, Robert Deimel, Stephan Noy, Werner Piel, wOxxOm
 
-Stable modules with documentation in the repository already:
+
 * [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid) - A configurable Calculator opener.
 * [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize) - Fuzzy window manipulation via 9 nice big zones 
 * [CommandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
@@ -24,3 +24,7 @@ Stable modules with documentation in the repository already:
 * [webTools](https://github.com/ewerybody/a2.modules/tree/master/webTools#webTools) - Snippets to work with your selection for things on the internet...
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
 * [**WinR**](https://github.com/ewerybody/a2.modules/tree/master/winr#winr) - Super Windows+R to open selected paths or URLs.
+
+Once there were many many more Extensions in ac'tiveAid but due to limited resources and or lack of interest so far these have not yet been ported. Although a2 needs way less boilerplate code porting to more modern Autohotkey is not really trivial. A tutorial on that will follow.
+
+Thanks for the interest. Please feel free to [file an issue](https://github.com/ewerybody/a2.modules/issues/new) and chat.
