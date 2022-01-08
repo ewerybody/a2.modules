@@ -8,3 +8,4 @@ This makes use of a **Windows built-in OCR solution** the credit for doing the A
 
 ![](https://i.imgur.com/6D0blo3.gif)
 
+For ideas or problems about this please: [file an **OCR Tool** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3Aocr_tool)

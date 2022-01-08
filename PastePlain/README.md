@@ -18,3 +18,5 @@ With **copied files** it enables you to **paste paths** or just the **short name
 
 ![](https://i.imgur.com/x3WxNCA.gif)
 
+
+If you have further ideas or requests please: [file a **PastePlain** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3APastePlain)

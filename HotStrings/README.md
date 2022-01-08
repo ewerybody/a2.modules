@@ -48,5 +48,8 @@ Pretty much whats [documented for the original functionality](https://autohotkey
 * **Send Method**
   * **Default** does not specify the send method for the Hotstring
   * **SendInput**, **SendPlay**, **SendEvent** will make the Hotstring use the specified Send method.<br>
-  
+
   Please also see [the Autohotkey documentation](https://autohotkey.com/docs/Hotstrings.htm#SendMode) about SendModes.
+
+
+For ideas or problems about this please: [file a **HotStrings** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3AHotStrings)

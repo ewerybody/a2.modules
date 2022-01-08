@@ -10,3 +10,6 @@ Default Hotkey: <kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>H</kbd>
 
 Example use on the Autohotkey documentation:
 ![test.ahk test image](http://i.imgur.com/0izJEFi.gif)
+
+
+[file a **TestAHK** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3ATestAHK)

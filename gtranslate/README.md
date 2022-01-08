@@ -21,3 +21,6 @@ Check this to make it try use the proxy settings from the **main a2 ui advanced 
 
 ### ☑ Ask me before translating a website
 When selecting a URL gtranslate would try to bring you to a tranalated version of the urls website. You might want to translate the actual words in the URL though. This will ask you before doing either.
+
+
+[file a **gtranslate** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3Agtranslate)

@@ -3,7 +3,7 @@
 Snippets to work with your selection for things on the internet...
 
 ### html tools menu <kbd>Ctrl+Alt+H</kbd>
-* a - enclose with HTML hyperlink code like `<a href=https://github.com>asd</a>`  
+* a - enclose with HTML hyperlink code like `<a href=https://github.com>asd</a>`
   **Note**: This one has some special behavior:
   * with URL in clipboard this will put the URL into the `href` argument
   * with text selected the text goes between the `> <`.
@@ -27,3 +27,5 @@ Snippets to work with your selection for things on the internet...
 * B - Enclose with `[B]` tags to make **bold**/fat or **strong** text.
 * `<kbd>` - Enclose with `<kbd>` tags to display a keyboard shortcut (This is one for **GitHub**! No idea where else this works)
 
+
+[file a **WebTools** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3AWebTools)

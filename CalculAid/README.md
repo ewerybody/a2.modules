@@ -21,8 +21,7 @@ Detecting this Calculator window is surely something since Windows 10... Well it
 * Calculator for english
 * Rechner for german
 * ...
- 
+
 feel free to contribute more :)\
+[file a **CalculAid** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3ACalculAid)\
 _Thanks already!_
-
-

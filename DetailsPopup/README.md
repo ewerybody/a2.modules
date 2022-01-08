@@ -8,3 +8,5 @@
 * Each selection removes the item from current list until all is pasted or canceled.
 * "**Finish after first selected item**" ends the pasting process already when one item was pasted.
 * Import/Export data via JSON files from the Module menu.
+
+For any further input and ideas please: [file a **DetailsPopup** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3ADetailsPopup)

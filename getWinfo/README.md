@@ -25,5 +25,4 @@ like `WindowName WindowHandle WindowText` one line per control.
 - **Pos** - A submenu with the windows topleft x/y position, width/height dimensions and an option to bring the window to the current cursor positon (In case it went off the screen)
 - **Cancel** - Dismisses the menu.
 
-
-
+[file a **getWinfo** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3AgetWinfo)

@@ -4,7 +4,7 @@
 
 For example this URL that you cannot click:
 
->     https://github.com/ewerybody/a2 
+>     https://github.com/ewerybody/a2
 
 * Just tripple click it to select
 * <kbd>Win+R</kbd> and
@@ -14,3 +14,6 @@ This allows handling of:
 * **File** or **Directory** full paths: Opens them directly or in your file browser.
   * **relative paths** by searching in a given list of parent paths.
 * **URL**: Opens URL in webbrowser.
+
+
+If you need more functionality for this or have any ideas: [file a **WinR** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3AWinR) Much appreciated!
