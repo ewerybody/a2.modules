@@ -27,4 +27,4 @@ It's like a **2 stage hotkey**:
 🆕 Now also with the officially accepted [Latin Capital Letter Sharp S](https://unicode-table.com/en/1E9E/): `ẞ`
 
 
-[file a **tastatur** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3Atastatur)
+Ideas?: [file a **tastatur** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3Atastatur)
