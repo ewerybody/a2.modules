@@ -8,7 +8,6 @@ from copy import deepcopy
 from a2qt import QtWidgets, QtCore
 
 import a2ctrl
-import a2widget.a2hotkey
 import a2element.hotkey
 from a2element import DrawCtrl, EditCtrl
 from a2widget import a2item_editor, a2input_dialog, a2hotkey
@@ -44,19 +43,14 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         )
         self.set_data(cfg)
 
-        self._hk_user_cfg = {}
-        hk_config = deepcopy(_DEFAULT_HOTKEY)
-        self._dummymod = _ModStub(hk_config)
-        self.hotkey = a2element.hotkey.Draw(self, hk_config, self._dummymod, self._hk_user_cfg)
+        self.hotkey = a2element.hotkey.Draw(self, deepcopy(_DEFAULT_HOTKEY))
+        self.hotkey.changed.connect(self._changed)
         self.add_row(self.hotkey)
+
         self.selected_name_changed.connect(self._update_hotkey)
 
-        self.hotkey.hotkey_button.hotkey_changed.connect(self._changed)
-        self.hotkey.hotkey_button.scope_changed.connect(self._changed)
-        self.hotkey.checkbox.clicked.connect(self._changed)
-
         if cfg:
-            self.ui.item_list.select_names([sorted(cfg.keys())[0]])
+            self.ui.item_list.select_names([sorted(cfg)[0]])
 
     def add_item(self):
         dialog = NewDialog(self, self.data.keys())
@@ -81,12 +75,7 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         )
         self.hotkey.label.setText(text)
         this_cfg = self.data.get(name, {})
-        self.hotkey.checkbox.blockSignals(True)
-        self.hotkey.hotkey_button.blockSignals(True)
-        self.hotkey.hotkey_button.set_config(this_cfg)
-        self.hotkey.checkbox.setChecked(this_cfg.get('enabled', True))
-        self.hotkey.checkbox.blockSignals(False)
-        self.hotkey.hotkey_button.blockSignals(False)
+        self.hotkey.set_config(this_cfg)
 
     def _changed(self):
         self.data[self.selected_name] = self.hotkey.get_user_dict()
@@ -94,20 +83,6 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
 
     def set_list_width(self, value):
         self.ui.list_layout_widget.setMaximumWidth(value)
-
-
-class _ModStub:
-    """A fake module to be able to receive element changes."""
-
-    def __init__(self, config):
-        self.config = config
-        self.enabled = False
-
-    def set_user_cfg(self, cfg, this, name):
-        cfg[name] = this
-
-    def change(self):
-        pass
 
 
 class NewDialog(a2input_dialog.A2ConfirmDialog):
@@ -229,13 +204,14 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     Not stuffing data into a dict like this :/.
     """
     for translation_name, translation_cfg in user_cfg.items():
-        Vars = a2widget.a2hotkey.Vars
         if not translation_cfg.get('enabled', False):
             continue
 
         key = a2ctrl.get_cfg_value(cfg, translation_cfg, 'key')
-        scope = a2ctrl.get_cfg_value(cfg, translation_cfg, Vars.scope, list)
-        scope_mode = a2ctrl.get_cfg_value(cfg, translation_cfg, Vars.scope_mode, int)
+        if not key or not key[0]:
+            continue
+        scope = a2ctrl.get_cfg_value(cfg, translation_cfg, a2hotkey.Vars.scope, list)
+        scope_mode = a2ctrl.get_cfg_value(cfg, translation_cfg, a2hotkey.Vars.scope_mode, int)
         try:
             from_lang, to_lang = translation_name.split(gtranslate_langs.SEPARATOR)
         except ValueError:
