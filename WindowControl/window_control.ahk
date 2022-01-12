@@ -18,27 +18,36 @@ window_control_minimize() {
 
 window_control_maximize() {
     ; Toggle maximize/restore for the active window.
-    window_control_check_MouseHotkey()
-
-    WinGet, this_id, ID, A
+    win_id := window_control_check_MouseHotkey()
     window_toggle_maximize(win_id)
 }
 
 window_control_toggle_always_on_top() {
     ; Toggle always-on-top aka AOT for the active window.
-    window_control_check_MouseHotkey()
-
-    WinGet, wc_ExStyle, ExStyle, A
-    WinGetClass, win_class, A
+    win_id := window_control_check_MouseHotkey()
+    WinGetClass, win_class, ahk_id %win_id%
+    WinGetTitle, title, ahk_id %win_id%
     If win_class in Shell_TrayWnd,Progman
         Return
 
-    if (wc_ExStyle & 0x8) {
-        WinSet, AlwaysOnTop, Off, A
-        tt("AlwaysOnTop: OFF", 1)
+    aot_state := window_is_aot(win_id)
+
+    if (window_is_aot(win_id)) {
+        window_set_aot(0, win_id)
+
+        state := window_is_aot(win_id)
+        if (!state)
+            a2tip("AlwaysOnTop: OFF")
+        Else
+            MsgBox, Setting AOT OFF didn't work!!!`nstate: %state%
     } Else {
-        WinSet, AlwaysOnTop, On, A
-        tt("AlwaysOnTop: ON", 1)
+        window_set_aot(1, win_id)
+
+        state := window_is_aot(win_id)
+        if (state)
+            a2tip("AlwaysOnTop: ON")
+        Else
+            MsgBox, Setting AOT ON didn't work!!!`nstate: %state%
     }
 }
 
@@ -50,4 +59,8 @@ window_control_check_MouseHotkey() {
         MouseGetPos,,,win_id
         window_activate(win_id)
     }
+    Else
+        WinGet, win_id, ID, A
+
+    return win_id
 }
