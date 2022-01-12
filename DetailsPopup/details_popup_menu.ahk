@@ -1,5 +1,5 @@
 details_popup_menu() {
-    global details_popup_data, _details_handled_entries
+    global _details_handled_entries
     _details_handled_entries := []
 
     count := 0
@@ -19,7 +19,7 @@ details_popup_menu() {
 }
 
 details_popup_handler(menu_name) {
-    global details_popup_data, _details_popup_menu_name, _details_handled_entries
+    global _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
     these_entries := details_popup_data[menu_name]["data"]
     single_item := details_popup_data[menu_name]["single_item"]
