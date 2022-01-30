@@ -5,7 +5,6 @@
 volume_control_up() {
     master_volume := SoundGet()
 
-    global volume_control_log_change, VolumeControl_Increment
     if(volume_control_log_change) {
         new_volume := master_volume*1.445
         if (new_volume < 0.1)
@@ -16,14 +15,20 @@ volume_control_up() {
     if (new_volume > 99)
         new_volume := 100
 
-    tt("Master Volume: " Round(new_volume) , 1)
-    SoundSet, %new_volume%
+    _volume_control_set(new_volume)
 }
+
+
+_volume_control_set(new_volume) {
+    a2tip("Master Volume: " Round(new_volume))
+    SoundSet, %new_volume%
+    Sleep, 25
+}
+
 
 volume_control_down() {
     master_volume := SoundGet()
 
-    global volume_control_log_change, VolumeControl_Increment
     if(volume_control_log_change)
         new_volume := master_volume*1.445
     else
@@ -32,14 +37,13 @@ volume_control_down() {
     if (new_volume < 0.1)
         new_volume := 0
 
-    tt("Master Volume: " Round(new_volume), 1)
-    SoundSet, %new_volume%
+    _volume_control_set(new_volume)
 }
 
 volume_control_toggle_mute() {
     SoundSet, +1,, Mute
     if SoundGet(, "Mute") == "On"
-        tt("Master: Muted", 1)
+        a2tip("Master: Muted")
     else
-        tt("Master Volume: " Round(SoundGet()), 1)
+        a2tip("Master Volume: " Round(SoundGet()))
 }
