@@ -30,7 +30,7 @@ volume_control_down() {
     master_volume := SoundGet()
 
     if(volume_control_log_change)
-        new_volume := master_volume*1.445
+        new_volume := master_volume*0.694
     else
         new_volume := master_volume - VolumeControl_Increment
 

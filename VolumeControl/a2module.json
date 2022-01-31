@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#volumecontrol",
-    "version": "0.4.1"
+    "version": "0.5.0"
   },
   {
     "disablable": true,
@@ -68,5 +68,11 @@
     "name": "VolumeControl_Mute_Hotkey",
     "scopeChange": true,
     "typ": "hotkey"
+  },
+  {
+    "label": "Logarithmic Behaviour",
+    "name": "volume_control_log_change",
+    "typ": "check",
+    "value": false
   }
 ]
