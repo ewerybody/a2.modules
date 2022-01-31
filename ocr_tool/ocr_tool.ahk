@@ -30,8 +30,8 @@ _ocr_tool_read(data) {
     ; data.gdip_token := gdip_startup()
     ; data-object was amended with .x .y .w. .h from dragtangle
     global ocr_tool_Language
-    ; text := teadrinkerocr(data, ocr_tool_Language)
-    text := _orc_tool_call(data, ocr_tool_Language)
+    text := teadrinkerocr(data, ocr_tool_Language)
+    ; text := _orc_tool_call(data, ocr_tool_Language)
     if (text) {
         Clipboard := text
         tt("OCR Tool: put " StringLen(text) " characters to Clipboard`n" SubStr(text, 1, 100), 2)
@@ -48,7 +48,7 @@ _orc_tool_call(rect, lang) {
     script_path := path_join(a2.paths.ahklib, "teadrinkerocr.ahk")
     shell := ComObjCreate("WScript.Shell")
     cmd = "%A_AhkPath%" "%script_path%"
-    cmd .= " " rect.x " " rect.y " " rect.w " " rect.h " en"
+    cmd .= " " rect.x " " rect.y " " rect.w " " rect.h " " lang
     exec := shell.Exec(cmd)
     sleep, 200
 
