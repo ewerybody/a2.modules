@@ -62,10 +62,10 @@ class DetailsLister(A2ItemEditor):
 
     def _update_data(self):
         if self.selected_name:
-            have_data = self.data[self.selected_name]['data']
+            have_data = self.data.get(self.selected_name, {}).get('data', {})
             table_data = self.key_value_table.get_data()
             if have_data != table_data:
-                self.data[self.selected_name]['data'] = table_data
+                self.data.setdefault(self.selected_name, {})['data'] = table_data
                 self.data_changed.emit()
 
 
