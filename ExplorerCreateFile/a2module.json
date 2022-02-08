@@ -11,34 +11,43 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#explorercreatefile",
-    "version": "0.3"
+    "version": "0.4"
   },
   {
+    "children": [
+      {
+        "file": "explorer_create_file.ahk",
+        "typ": "include"
+      },
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "explorer_create_file_popup()",
+        "functionMode": 0,
+        "key": [
+          "LAlt+C"
+        ],
+        "keyChange": true,
+        "label": "Hotkey to call the popup menu",
+        "multiple": true,
+        "name": "ExplorerCreateFile_Hotkey",
+        "scope": [
+          "ahk_class CabinetWClass ahk_exe Explorer.EXE"
+        ],
+        "scopeChange": true,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "name": "file_list",
+        "typ": "a2_local_element"
+      }
+    ],
     "disablable": true,
     "enabled": true,
-    "functionCode": "explorer_create_file_popup()",
-    "functionMode": 0,
-    "key": [
-      "LAlt+C"
-    ],
-    "keyChange": true,
-    "label": "Popup CreateFile Menu",
-    "multiple": true,
-    "name": "ExplorerCreateFile_Hotkey",
-    "scope": [
-      "ahk_class CabinetWClass ahk_exe Explorer.EXE"
-    ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "file": "explorer_create_file.ahk",
-    "typ": "include"
-  },
-  {
-    "name": "file_list",
-    "typ": "a2_local_element"
+    "label": "Types Popup Menu",
+    "name": "ExplorerCreateFile_MenuGroup",
+    "typ": "group"
   },
   {
     "children": [
@@ -51,7 +60,7 @@
           "Ctrl+V"
         ],
         "keyChange": true,
-        "label": "Create Files from Clipboard (images)",
+        "label": "Hotkey to act on \"paste\"",
         "multiple": true,
         "name": "ExplorerCreateFile_PasteHotkey",
         "scope": [
@@ -62,7 +71,7 @@
         "typ": "hotkey"
       },
       {
-        "label": "Default Image name",
+        "label": "Default Image Name",
         "label_over_field": false,
         "name": "ExplorerCreateFile_DefaultImageName",
         "password_mode": false,
@@ -89,7 +98,7 @@
     ],
     "disablable": true,
     "enabled": false,
-    "label": "Create Image Files from Clipboard",
+    "label": "Create Files from Clipboard",
     "name": "ExplorerCreateFile_Group",
     "typ": "group"
   }
