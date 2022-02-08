@@ -1,7 +1,7 @@
 import a2ctrl
 from a2qt import QtWidgets
 from a2element import DrawCtrl, EditCtrl
-from a2widget import a2item_editor, a2text_field
+from a2widget import a2item_editor, a2text_field, a2combo
 
 
 class Draw(DrawCtrl):
@@ -37,6 +37,11 @@ class Draw(DrawCtrl):
         content = a2text_field.A2CodeField(self)
         self.editor.add_data_label_widget(
             'content', content, content.setText, content.editing_finished, '', 'Default Content'
+        )
+
+        type_combo = a2combo.A2Combo(self)
+        self.editor.add_data_label_widget(
+            'encoding', type_combo, type_combo.setCurrentText, default_value=0, label='Encoding'
         )
 
         ask_check = QtWidgets.QCheckBox('Ask for file name', self)
