@@ -70,11 +70,14 @@ explorer_create_file_handler(menu_name) {
 
     file_path := path_join(explorer_get_path(), file_name)
 
+    static ahk_encodings := ["UTF-8", "UTF-8-RAW", "UTF-16", "UTF-16-RAW"]
+    encoding := ahk_encodings[data["encoding"] + 1]
+
     if FileExist(file_path) {
         MsgBox, 48, File Already Exists, There is already a file with that name here!
     } else {
         content := data["content"]
-        FileAppend , %content%, %file_path%
+        FileAppend , %content%, %file_path%, %encoding%
 
         Send, F5
         sleep 1000

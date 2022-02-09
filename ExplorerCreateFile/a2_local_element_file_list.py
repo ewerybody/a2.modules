@@ -1,3 +1,4 @@
+import a2ahk
 import a2ctrl
 from a2qt import QtWidgets
 from a2element import DrawCtrl, EditCtrl
@@ -40,8 +41,9 @@ class Draw(DrawCtrl):
         )
 
         type_combo = a2combo.A2Combo(self)
+        type_combo.addItems(a2ahk.ENCODINGS)
         self.editor.add_data_label_widget(
-            'encoding', type_combo, type_combo.setCurrentText, default_value=0, label='Encoding'
+            'encoding', type_combo, type_combo.setCurrentIndex, default_value=0, label='Encoding'
         )
 
         ask_check = QtWidgets.QCheckBox('Ask for file name', self)
