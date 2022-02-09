@@ -1,7 +1,6 @@
 explorer_create_file_popup() {
     ; Provide a menu popup to aid simple file creation.
 
-    global explorer_create_file_data
     ; TODO: before throwing this away, make a default?
     ; explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
     ; , Python: {ext: "py", file_name: "__init__", content: "", ask: true}
@@ -17,40 +16,19 @@ explorer_create_file_popup() {
     for name, data in explorer_create_file_data
     {
         Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
-        icon_path := _explorer_create_file_get_icon_path(name, data)
-        icon_nr := ""
-        if (icon_path) {
-            if ("," in icon_path) {
-                parts := StrSplit(icon_path, ",")
-                icon_path := parts[1]
-                icon_nr := parts[2]
-            }
-
-            if (!FileExist(icon_path)) {
-                path := path_expand_env(icon_path)
-                ; We don't need to bend icon_path to the found path
-                ; Setting icons with %envvars% works right away!
-                if (!FileExist(path))
-                    Continue
-                ; icon_path := path
-            }
-
-            if (icon_nr != "")
-                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
-            else
-                Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
-        }
+        _explorer_create_file_add_menu_icon(name, data)
     }
     Menu, ExplorerCreateFileMenu, Show
     Menu, ExplorerCreateFileMenu, DeleteAll
 }
 
-explorer_create_file_handler(menu_name) {
-    global explorer_create_file_data
 
+explorer_create_file_handler(menu_name) {
     data := explorer_create_file_data[menu_name]
+
     file_name := data["file_name"]
-    if (data["ask"]) {
+    if (data["ask"])
+    {
         msg := "Please enter a name for the new file:"
         InputBox, file_name, %menu_name% File Name, %msg%,,, 130,,,,, %file_name%
         if ErrorLevel
@@ -102,4 +80,33 @@ _explorer_create_file_get_icon_path(name, data) {
     icon_path := path_neighbor(A_LineFile, icon_name)
     if FileExist(icon_path)
         return icon_path
+}
+
+_explorer_create_file_add_menu_icon(name, data) {
+    icon_path := _explorer_create_file_get_icon_path(name, data)
+    if !icon_path
+        Return
+
+    icon_nr := ""
+    if ("," in icon_path) {
+        parts := StrSplit(icon_path, ",")
+        icon_path := parts[1]
+        icon_nr := parts[2]
+    }
+
+    if (!FileExist(icon_path)) {
+        path := path_expand_env(icon_path)
+        ; We don't need to bend icon_path to the found path
+        ; Setting icons with %envvars% works right away!
+        if (!FileExist(path)) {
+            a2log_debug("No icon path:" path, "ExplorerCreateFile")
+            Return
+        }
+        ; icon_path := path
+    }
+
+    if (icon_nr != "")
+        Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
+    else
+        Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
 }

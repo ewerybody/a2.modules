@@ -12,6 +12,8 @@ class Draw(DrawCtrl):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.editor = a2item_editor.A2ItemEditor(self)
+        self.editor.ui.item_editor_layout.setStretch(0, 1)
+        self.editor.ui.item_editor_layout.setStretch(1, 4)
         self.editor.ignore_default_values = False
         self.editor.set_data(self.user_cfg)
         self.editor.data_changed.connect(self.delayed_check)
