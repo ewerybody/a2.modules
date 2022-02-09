@@ -2,7 +2,7 @@
 
 The standard [**a2**](https://github.com/ewerybody/a2) Autohotkey script modules collection.
 
-Mostly but not exclusively this about re-implementing the oldschool extensions from the outdated **ac'tivAid** project for the a2 platform. So quite some ideas and code is not original to this project and credit goes to these fine folks: [**Wolfgang Reszel**](https://github.com/Tekl), [**Michael Telgkamp**](https://telgkamp.de), **David Hilberath**, **Dirk Schwarzmann**, **Jack Tissen**, Alexander Taubenkorb, Bernd Schandl, Chris Mallett, Elmar Sonnenschein, Florian Schenk, Holomind, jla, Jossekin Beilharz, Jürg, Oliver Pfeiffer, Patrick Eder, Rajat, Robert Deimel, Stephan Noy, Werner Piel, wOxxOm
+Mostly but not exclusively this is about re-implementing the extensions from the outdated **ac'tivAid** project for the a2 platform. So quite some ideas and code are not original to this project and credit goes to these fine folks: [**Wolfgang Reszel**](https://github.com/Tekl), [**Michael Telgkamp**](https://telgkamp.de), **David Hilberath**, **Dirk Schwarzmann**, **Jack Tissen**, Alexander Taubenkorb, Bernd Schandl, Chris Mallett, Elmar Sonnenschein, Florian Schenk, Holomind, jla, Jossekin Beilharz, Jürg, Oliver Pfeiffer, Patrick Eder, Rajat, Robert Deimel, Stephan Noy, Werner Piel, wOxxOm
 
 
 * [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid) - A configurable Calculator opener.
