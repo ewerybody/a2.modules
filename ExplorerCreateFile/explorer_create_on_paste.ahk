@@ -10,24 +10,24 @@ explorer_create_on_paste() {
     current_path := explorer_get_path()
     img_name := _explorer_create_on_paste_find_name(current_path)
 
-    title := "Clipboard Image File Name"
-    msg := "Please enter a name for the new image file:`n"
-    exts .= "The extension might be .png, .jpg, .gif, .bmp or .tif..."
-    InputBox, img_name, %title%, %msg%%exts%,, 420, 140,,,,, %img_name%
-    if ErrorLevel {
+    title := "ExplorerCreateFile: Image from Clipboard"
+    subtitle := "The extension might be .png, .jpg, .gif, .bmp or .tif..."
+    if !explorer_create_file_dialog(img_name, current_path, ".png", "Image file", title, subtitle)
+    {
         gdip_shutdown(token)
         Return
     }
 
-    img_path := path_join(current_path, img_name)
-    while FileExist(img_path){
-        msg := "This file name already exists! Please pick another name!`n"
-        InputBox, img_name, %title%, %msg%%exts%,, 420, 140,,,,, %img_name%
-        if ErrorLevel {
-            gdip_shutdown(token)
-            Return
-        }
+    ext := path_split_ext(img_name)[2]
+    if ext
         img_path := path_join(current_path, img_name)
+    else
+    {
+        if (ExplorerCreateFile_DefaultImageExt)
+            ext := ExplorerCreateFile_DefaultImageExt
+        else
+            ext := ".png"
+        img_path := path_join(current_path, img_name ext)
     }
 
     a2tip("Creating image from clipboard ...")
