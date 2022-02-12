@@ -1,8 +1,15 @@
+import os
+
 import a2ahk
+import a2util
 import a2ctrl
+from a2ctrl import Icons
 from a2qt import QtWidgets
 from a2element import DrawCtrl, EditCtrl
 from a2widget import a2item_editor, a2text_field, a2combo
+
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+ENCODINGS = a2util.json_read(os.path.join(THIS_DIR, 'encodings.json'))
 
 
 class Draw(DrawCtrl):
@@ -42,10 +49,24 @@ class Draw(DrawCtrl):
             'content', content, content.setText, content.editing_finished, '', 'Default Content'
         )
 
-        type_combo = a2combo.A2Combo(self)
-        type_combo.addItems(a2ahk.ENCODINGS)
-        self.editor.add_data_label_widget(
-            'encoding', type_combo, type_combo.setCurrentIndex, default_value=0, label='Encoding'
+        encoding_combo = a2combo.A2Combo(self)
+        encoding_combo.setEditable(True)
+        encoding_combo.addItems(ENCODINGS)
+        icon_size = self.a2.win.style.get('icon_size_small')
+        encoding_help = QtWidgets.QToolButton(autoRaise=True, icon=Icons.help)
+        encoding_help.clicked.connect(_encoding_docs)
+        combo_lyt = QtWidgets.QHBoxLayout()
+        combo_lyt.addWidget(encoding_combo)
+        combo_lyt.addWidget(encoding_help)
+        combo_lyt.setStretch(0, 1)
+
+        self.editor.add_row('Encoding', combo_lyt)
+        self.editor.connect_data_widget(
+            'encoding',
+            encoding_combo,
+            encoding_combo.setCurrentText,
+            encoding_combo.currentTextChanged,
+            list(ENCODINGS)[0],
         )
 
         ask_check = QtWidgets.QCheckBox('Ask for file name', self)
@@ -57,6 +78,12 @@ class Draw(DrawCtrl):
         self.user_cfg.update(self.editor.data)
         self.set_user_value(self.user_cfg)
         self.change()
+
+
+def _encoding_docs():
+    import a2util
+
+    a2util.surf_to('https://autohotkey.com/docs/commands/FileEncoding.htm')
 
 
 class Edit(EditCtrl):
@@ -75,4 +102,8 @@ class Edit(EditCtrl):
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
     if user_cfg:
+        for typ, data in user_cfg.items():
+            # replace display with AUtohotkey encoding names
+            if data.get('encoding') in ENCODINGS:
+                data['encoding'] = ENCODINGS[data['encoding']]
         db_dict['variables']['explorer_create_file_data'] = user_cfg
