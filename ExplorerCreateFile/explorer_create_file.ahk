@@ -25,41 +25,41 @@ explorer_create_file_popup() {
 
 explorer_create_file_handler(menu_name) {
     data := explorer_create_file_data[menu_name]
-
     file_name := data["file_name"]
+    ext := string_prefix(data["ext"], ".")
+    dir_path := explorer_get_path()
+
     if (data["ask"])
     {
-        msg := "Please enter a name for the new file:"
-        InputBox, file_name, %menu_name% File Name, %msg%,,, 130,,,,, %file_name%
-        if ErrorLevel
+        title := "ExplorerCreateFile: New """ menu_name """ file ..."
+        if !explorer_create_file_dialog(file_name, dir_path, ext, """" menu_name """ file", title)
             Return
+        ; InputBox, file_name, %menu_name% File Name, %msg%,,, 130,,,,, %file_name%
+        ; if ErrorLevel
+        ;     Return
     }
-
     if !file_name
         file_name := menu_name
 
-    if string_startswith(data["ext"], ".")
-        ext := data["ext"]
-    else
-        ext := "." data["ext"]
+    if string_endswith(file_name, ext)
+        file_path := path_join(dir_path, file_name)
+    Else
+        file_path := path_join(dir_path, file_name ext)
+
 
     if !string_endswith(file_name, ext)
         file_name := file_name . ext
 
-    file_path := path_join(explorer_get_path(), file_name)
-
-    static ahk_encodings := ["UTF-8", "UTF-8-RAW", "UTF-16", "UTF-16-RAW"]
-    encoding := ahk_encodings[data["encoding"] + 1]
-
-    if FileExist(file_path) {
-        MsgBox, 48, File Already Exists, There is already a file with that name here!
-    } else {
-        content := data["content"]
-        FileAppend , %content%, %file_path%, %encoding%
-
-        Send, F5
-        sleep 1000
+    encoding := data["encoding"]
+    content := data["content"]
+    try {
+        FileAppend, %content%, %file_path%, %encoding%
+    } catch err {
+        MsgBox err: %err%`nErrorLevel: %ErrorLevel%`nA_LastError: %A_LastError%
     }
+
+    Send, F5
+    sleep 1000
 
     explorer_select(file_name)
 }
@@ -102,7 +102,6 @@ _explorer_create_file_add_menu_icon(name, data) {
             a2log_debug("No icon path:" path, "ExplorerCreateFile")
             Return
         }
-        ; icon_path := path
     }
 
     if (icon_nr != "")

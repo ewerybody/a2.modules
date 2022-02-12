@@ -1,0 +1,7 @@
+{
+    "UTF-8 (Raw)": "UTF-8-RAW",
+    "UTF-8 (with BOM)": "UTF-8",
+    "UTF-16 (Raw)": "UTF-16-RAW",
+    "UTF-16 (with BOM)": "UTF-16",
+    "ANSI Latin 1 (CP1252)": "CP1252"
+}
