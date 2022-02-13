@@ -1,0 +1,24 @@
+{
+    "Autohotkey": {
+        "ext": ".ahk",
+        "file_name": "ahk_script",
+        "content": "#SingleInstance, Force\nSendMode, Input\nSetWorkingDir, %A_ScriptDir%",
+        "encoding": "UTF-8 (with BOM)",
+        "ask": true
+    },
+    "Python": {
+        "ext": ".py",
+        "file_name": "__init__",
+        "content": "def main():\n    pass\n\nif __name__ == '__main__':\n    main()",
+        "ask": true
+    },
+    "Text": {
+        "ext": ".txt",
+        "file_name": "readme",
+        "encoding": "UTF-8 (Raw)",
+        "ask": true
+    },
+    ".any": {
+        "ask": true
+    }
+}

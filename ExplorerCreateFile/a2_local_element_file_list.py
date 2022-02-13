@@ -1,6 +1,5 @@
 import os
 
-import a2ahk
 import a2util
 import a2ctrl
 from a2ctrl import Icons
@@ -22,6 +21,10 @@ class Draw(DrawCtrl):
         self.editor.ui.item_editor_layout.setStretch(0, 1)
         self.editor.ui.item_editor_layout.setStretch(1, 4)
         self.editor.ignore_default_values = False
+        if not self.user_cfg:
+            self.editor.set_data(a2util.json_read(os.path.join(THIS_DIR, 'defaults.json')))
+            self.check()
+
         self.editor.set_data(self.user_cfg)
         self.editor.data_changed.connect(self.delayed_check)
         self.main_layout.addWidget(self.editor)
@@ -52,7 +55,6 @@ class Draw(DrawCtrl):
         encoding_combo = a2combo.A2Combo(self)
         encoding_combo.setEditable(True)
         encoding_combo.addItems(ENCODINGS)
-        icon_size = self.a2.win.style.get('icon_size_small')
         encoding_help = QtWidgets.QToolButton(autoRaise=True, icon=Icons.help)
         encoding_help.clicked.connect(_encoding_docs)
         combo_lyt = QtWidgets.QHBoxLayout()
@@ -97,7 +99,7 @@ class Edit(EditCtrl):
 
     @staticmethod
     def element_icon():
-        return a2ctrl.Icons.inst().check
+        return a2ctrl.Icons.check
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
