@@ -26,7 +26,9 @@ explorer_create_file_popup() {
 explorer_create_file_handler(menu_name) {
     data := explorer_create_file_data[menu_name]
     file_name := data["file_name"]
-    ext := string_prefix(data["ext"], ".")
+    ext := data["ext"]
+    if ext
+        ext := string_prefix(ext, ".")
     dir_path := explorer_get_path()
 
     if (data["ask"])
@@ -34,28 +36,24 @@ explorer_create_file_handler(menu_name) {
         title := "ExplorerCreateFile: New """ menu_name """ file ..."
         if !explorer_create_file_dialog(file_name, dir_path, ext, """" menu_name """ file", title)
             Return
-        ; InputBox, file_name, %menu_name% File Name, %msg%,,, 130,,,,, %file_name%
-        ; if ErrorLevel
-        ;     Return
     }
     if !file_name
         file_name := menu_name
 
-    if string_endswith(file_name, ext)
-        file_path := path_join(dir_path, file_name)
-    Else
-        file_path := path_join(dir_path, file_name ext)
-
-
     if !string_endswith(file_name, ext)
         file_name := file_name . ext
+    file_path := path_join(dir_path, file_name)
 
     encoding := data["encoding"]
     content := data["content"]
     try {
         FileAppend, %content%, %file_path%, %encoding%
     } catch err {
-        MsgBox err: %err%`nErrorLevel: %ErrorLevel%`nA_LastError: %A_LastError%
+        Sleep, 50
+        if !FileExist(file_path) {
+            MsgBox, 16, ExplorerCreateFile: ERROR, Could not create file "%file_name%" with encoding "%encoding%"`nA_LastError: %A_LastError%
+            Return
+        }
     }
 
     Send, F5
