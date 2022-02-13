@@ -30,6 +30,7 @@ explorer_create_file_handler(menu_name) {
     if ext
         ext := string_prefix(ext, ".")
     dir_path := explorer_get_path()
+    file_name := path_get_free_name(dir_path, file_name, ext)
 
     if (data["ask"])
     {

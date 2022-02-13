@@ -7,8 +7,13 @@ explorer_create_on_paste() {
         return
     }
 
+    if (ExplorerCreateFile_DefaultImageExt)
+        default_ext := ExplorerCreateFile_DefaultImageExt
+    else
+        default_ext := ".png"
+
     current_path := explorer_get_path()
-    img_name := _explorer_create_on_paste_find_name(current_path)
+    img_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
 
     title := "ExplorerCreateFile: Image from Clipboard"
     subtitle := "The extension might be .png, .jpg, .gif, .bmp or .tif..."
@@ -22,13 +27,7 @@ explorer_create_on_paste() {
     if ext
         img_path := path_join(current_path, img_name)
     else
-    {
-        if (ExplorerCreateFile_DefaultImageExt)
-            ext := ExplorerCreateFile_DefaultImageExt
-        else
-            ext := ".png"
-        img_path := path_join(current_path, img_name ext)
-    }
+        img_path := path_join(current_path, img_name default_ext)
 
     a2tip("Creating image from clipboard ...")
     gdipbitmap_to_file(bitmap, img_path)
@@ -42,22 +41,4 @@ _is_bitmap(bitmap) {
             Return false
     }
     Return true
-}
-
-_explorer_create_on_paste_find_name(current_path) {
-    base := ExplorerCreateFile_DefaultImageName
-    if (ExplorerCreateFile_DefaultImageExt)
-        ext := ExplorerCreateFile_DefaultImageExt
-    else
-        ext := ".png"
-
-    img_name := base ext
-    img_path := path_join(current_path, img_name)
-    index := 1
-    While, FileExist(img_path) {
-        index++
-        img_name := base index ext
-        img_path := path_join(current_path, img_name)
-    }
-    return img_name
 }
