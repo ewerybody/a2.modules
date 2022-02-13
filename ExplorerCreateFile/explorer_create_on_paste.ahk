@@ -24,15 +24,20 @@ explorer_create_on_paste() {
     }
 
     ext := path_split_ext(img_name)[2]
-    if ext
-        img_path := path_join(current_path, img_name)
-    else
-        img_path := path_join(current_path, img_name default_ext)
+    if !ext
+        img_name := img_name default_ext
+    img_path := path_join(current_path, img_name)
 
     a2tip("Creating image from clipboard ...")
     gdipbitmap_to_file(bitmap, img_path)
     gdip_shutdown(token)
-    explorer_select(img_name)
+
+    Send, F5
+    Sleep, 1000
+    if FileExist(img_path)
+        explorer_select(img_name)
+    else
+        msgbox_error("Could not create image file """ img_name """!", "ExplorerCreateFile: ERROR")
 }
 
 _is_bitmap(bitmap) {
