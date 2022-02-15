@@ -20,5 +20,12 @@
     },
     ".any": {
         "ask": true
+    },
+    "JSON": {
+        "ext": ".json",
+        "file_name": "some_data",
+        "content": "{}",
+        "ask": true,
+        "encoding": "UTF-8 (Raw)"
     }
 }
