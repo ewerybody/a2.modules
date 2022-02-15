@@ -1,6 +1,6 @@
 ﻿[
   {
-    "author": "Eric Werner",
+    "author": "Eric Werner, Oliver Lipkau",
     "date": "2017 3 17",
     "description": "Makes use of translate.googleapis.com to translate short text snippets or whole websites.",
     "display_name": "",
@@ -10,7 +10,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate",
-    "version": "0.3"
+    "version": "0.4"
   },
   {
     "disablable": true,

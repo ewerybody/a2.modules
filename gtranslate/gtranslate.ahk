@@ -6,13 +6,15 @@
 ; https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=de&dt=t&q=File%20not%20visible
 ; other translate api call
 ; http://translate.google.de/translate_a/t?client=x&text=File%20not%20visible&sl=auto&tl=de
+; text to speech
+; https://translate.google.com/translate_tts?ie=UTF-8&q=bonjour&tl=fr&client=tw-ob
+; https://stackoverflow.com/questions/32053442/google-translate-tts-api-blocked
 
 __gtranslation := ""
 __gtranslate_search := ""
 __gtranslate_lngs := ""
 
 gtranslate(from="en", to="de") {
-    icon_path := path_neighbor(A_LineFile, "a2icon24.png")
     global __gtranslate_search, __gtranslate_lngs
     sel := clipboard_get() ; get selected text
 
@@ -51,8 +53,24 @@ gtranslate(from="en", to="de") {
     if (__gtranslation == "")
         MsgBox No tranlation found for "%__gtranslate_search%".`nAre you connected to the internet?
     else {
-        Menu, gtranslate_menu, Add, %__gtranslation%, gtranslate_insert
-        Menu, gtranslate_menu, Icon, %__gtranslation%, %icon_path%,, 0
+        icon_copy := path_join(a2.paths.resources, "copy.ico")
+        icon_paste := path_join(a2.paths.resources, "paste.ico")
+        icon_path := path_neighbor(A_LineFile, "a2icon24.png")
+        icon_audio := path_join(a2.paths.resources, "volume_up.ico")
+
+        max_menu_chars := 64
+        if StringLen(__gtranslation) > max_menu_chars
+            menu_label := """" SubStr(__gtranslation, 1, max_menu_chars) "..."
+        else
+            menu_label := """" __gtranslation """"
+
+        Menu, gtranslate_menu, Add, %menu_label%, gtranslate_insert
+        Menu, gtranslate_menu, Icon, %menu_label%, %icon_paste%,, 0
+        Menu, gtranslate_menu, Add, Copy to Clipboard, gtranslate_copy
+        Menu, gtranslate_menu, Icon, Copy to Clipboard, %icon_copy%,, 0
+        Menu, gtranslate_menu, Add, Play Audio, gtranslate_audio
+        Menu, gtranslate_menu, Icon, Play Audio, %icon_audio%,, 0
+
         Menu, gtranslate_menu, Add, Show in web browser, gtranslate_open_webpage
         Menu, gtranslate_menu, Icon, Show in web browser, %icon_path%,, 0
         Menu, gtranslate_menu, Show
@@ -86,9 +104,9 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     a2log_debug("HTTPRequest request HEADER:" Headers, "gtranslate")
     a2log_debug("HTTPRequest request Options:" Options, "gtranslate")
 
-    tt("gtranslate looking up '" srcTxt "' ...")
+    a2tip("gtranslate: looking up '" SubStr(srcTxt, 1 , 32) "' ...", 2)
     HTTPRequest(ApiURi , response, Headers, Options)
-    tt()
+    a2tip()
 
     a2log_debug("HTTPRequest response HEADER:" Headers, "gtranslate")
     a2log_debug("HTTPRequest response BODY:" response, "gtranslate")
@@ -100,9 +118,15 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
 }
 
 
-gtranslate_insert(ItemName, ItemPos, MenuName) {
+gtranslate_insert() {
     global __gtranslation
     clipboard_paste(__gtranslation)
+}
+
+
+gtranslate_copy() {
+    global __gtranslation
+    Clipboard := __gtranslation
 }
 
 
@@ -153,4 +177,36 @@ _gtranslate_any_lang_handler(sel){
 _gtranslate_any_handler(sel){
     parts := StrSplit(sel, " > ")
     gtranslate(parts[1], parts[2])
+}
+
+; Short version of `GetAudioFromGoogle` from Cyberklabauters input
+; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=63835
+; credits to: teadrinker, garry
+gtranslate_audio() {
+    global __gtranslation, __gtranslate_lngs
+    lng_from_to := StrSplit(__gtranslate_lngs, "|")
+    url := "https://translate.google.com/translate_tts?ie=UTF-8&q=" __gtranslation "&tl=" lng_from_to[2] "&client=tw-ob"
+
+    whr := ComObjCreate("Msxml2.XMLHTTP.6.0")
+    whr.Open("GET", url, false)
+    whr.Send()
+
+    if (whr.Status != 200) {
+        a2tip("Error! Status: " . whr.Status . "`n`n" . whr.responseBody)
+        Return
+    }
+
+    tmp_path := A_Temp . "\__translate_tts.mp3"
+    stream := ComObjCreate("ADODB.Stream")
+    stream.type := 1  ; Binary data
+    stream.Open
+    stream.Write(whr.responseBody)
+    stream.SaveToFile(tmp_path, 2)
+    stream.Close
+    whr :=
+
+    a2tip("gtranslate: Playing back """ lng_from_to[2] """ ...", 10)
+    soundplay, %tmp_path%, Wait
+    filedelete, %tmp_path%
+    a2tip()
 }
