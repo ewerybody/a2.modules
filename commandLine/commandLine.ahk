@@ -6,10 +6,11 @@ commandLine_invoke() {
         Return
 
     ControlGetText, cmd, Edit1, A
+    If (SubStr(cmd, 1, 1) != "<")
+        Return
+
     If (SubStr(cmd, 1, 2) == "<<")
         hidden := 1
-    Else if (!SubStr(cmd, 1, 1))
-        Return
 
     Send,{ESC}
 
