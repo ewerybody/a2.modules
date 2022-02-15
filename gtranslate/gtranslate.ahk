@@ -60,9 +60,9 @@ gtranslate(from="en", to="de") {
 
         max_menu_chars := 64
         if StringLen(__gtranslation) > max_menu_chars
-            menu_label := """" SubStr(__gtranslation, 1, max_menu_chars) "..."
+            menu_label := "Paste """ SubStr(__gtranslation, 1, max_menu_chars) "..."
         else
-            menu_label := """" __gtranslation """"
+            menu_label := "Paste """ __gtranslation """"
 
         Menu, gtranslate_menu, Add, %menu_label%, gtranslate_insert
         Menu, gtranslate_menu, Icon, %menu_label%, %icon_paste%,, 0
