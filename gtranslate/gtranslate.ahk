@@ -64,12 +64,22 @@ gtranslate(from="en", to="de") {
         else
             menu_label := "Paste """ __gtranslation """"
 
+        if (__gtranslation = __gtranslate_search) {
+            if (from == "auto")
+                same_label := "Auto translation resulted in identical output!"
+            else
+                same_label := "Translation resulted in identical output!"
+            Menu, gtranslate_menu, Add, %same_label%, a2tip
+            Menu, gtranslate_menu, Disable, %same_label%
+        }
+
         Menu, gtranslate_menu, Add, %menu_label%, gtranslate_insert
         Menu, gtranslate_menu, Icon, %menu_label%, %icon_paste%,, 0
         Menu, gtranslate_menu, Add, Copy to Clipboard, gtranslate_copy
         Menu, gtranslate_menu, Icon, Copy to Clipboard, %icon_copy%,, 0
-        Menu, gtranslate_menu, Add, Play Audio, gtranslate_audio
-        Menu, gtranslate_menu, Icon, Play Audio, %icon_audio%,, 0
+        audio_label := "Play Audio """ to """"
+        Menu, gtranslate_menu, Add, %audio_label%, gtranslate_audio
+        Menu, gtranslate_menu, Icon, %audio_label%, %icon_audio%,, 0
 
         Menu, gtranslate_menu, Add, Show in web browser, gtranslate_open_webpage
         Menu, gtranslate_menu, Icon, Show in web browser, %icon_path%,, 0
