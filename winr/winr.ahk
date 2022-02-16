@@ -11,12 +11,18 @@ winr() {
     if (selection == "") {
         winr_CallDialog()
     }
+
+    expanded := path_expand_env(selection)
+    if (expanded != selection) {
+        a2tip("WinR: expanded path exists...",0.5)
+        winr_CatchedCallRun(expanded)
+    }
     else if FileExist(selection) {
-        a2tip("path exists...",0.5)
+        a2tip("WinR: path exists...",0.5)
         winr_CatchedCallRun(selection)
     }
     else if (string_is_web_address(selection)) {
-        a2tip("web address...",0.5)
+        a2tip("WinR: web address...",0.5)
         if (!string_startswith(selection, "http"))
             selection := "https://" selection
         Run, %selection%
@@ -27,13 +33,13 @@ winr() {
         for i, ppath in winr_paths {
             ppath = %ppath%\%slashed%
             if FileExist(ppath) {
-                a2tip("Found relative path ...",0.5)
+                a2tip("WinR: Found relative path ...",0.5)
                 winr_CatchedCallRun(ppath)
                 Return
             }
         }
 
-        a2tip("Does not exist!`nI don't know what todo with your selection...", 1)
+        a2tip("WinR: Does not exist!`nI don't know what todo with your selection...", 1)
         winr_CallDialog()
         sleep, 300
         SendInput, %selection%
