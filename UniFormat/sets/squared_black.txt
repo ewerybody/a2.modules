@@ -1,0 +1,30 @@
+# name=🆂🆀🆄🅰🆁🅴🅳 🅱🅻🅰🅲🅺
+# case=1
+# desc=🆂🆀🆄🅰🆁🅴🅳 🅱🅻🅰🅲🅺 upper case letters. Although there is nothing about it <a href=https://unicode-table.com/en/blocks/enclosed-alphanumeric-supplement>the "Enclosed Alphanumeric Supplement"-block page</a> some of these got special meanings <a href=https://unicode-table.com/en/1F170/>like 🅰</a> refering to Blood type A and 🅿 meaning "parking space".
+
+A 🅰
+B 🅱
+C 🅲
+D 🅳
+E 🅴
+F 🅵
+G 🅶
+H 🅷
+I 🅸
+J 🅹
+K 🅺
+L 🅻
+M 🅼
+N 🅽
+O 🅾
+P 🅿
+Q 🆀
+R 🆁
+S 🆂
+T 🆃
+U 🆄
+V 🆅
+W 🆆
+X 🆇
+Y 🆈
+Z 🆉

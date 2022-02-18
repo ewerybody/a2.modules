@@ -1,0 +1,30 @@
+# name=ᚱꂹꋊᛙꏸ
+# case=1
+# desc="ᚱꂹꋊᛙꏸ style english alphabet" from the <a href=https://unicode-table.com/en/sets/fancy-letters>the Fancy-Letters page on unicode-table.com</a>. Mostly from the <a href=https://unicode-table.com/en/blocks/runic>runic</a> and <a href=https://unicode-table.com/en/blocks/yi-syllables>Yi</a> <a href=https://unicode-table.com/en/blocks/yi-radicals>blocks</a>.
+
+A ꋫ
+B ꃃ ꃳ
+C ꏸ ꀯ ꁊ
+D ꁕ
+E ꍟ ᛊ
+F ꄘ ᚩ ꄝ
+G ꁅ ꁍ ꐄ
+H ꑛ ꃄ ꀍ ꁝ
+I ᛙ ꂑ
+J ꀭ ꀮ 𐐈
+K ꀗ
+L ꒒
+M ꁒ ᛖ
+N ꋊ ꊮ ꇀ ᛞ ꁹ ꇁ ꎈ
+O ꆂ ꃪ 𐊔
+P ꉣ
+Q ꁸ
+R ᚱ ꒓
+S ꌚ ꂢ ᛇ ꒔ ꁴ
+T ꓅ ᛠ
+U ꂹ ꐇ ꁁ
+V ꏝ
+W ꅐ
+X ꇓ ꒾
+Y ꐟ
+Z ꁴ

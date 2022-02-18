@@ -1,0 +1,34 @@
+﻿[
+  {
+    "author": "eric",
+    "date": "2021 2 23",
+    "description": "Find and Replace in selected text with sets from the huge unicode repository. (TODO: implement set editing)",
+    "display_name": "UniFormat",
+    "tags": [
+      "text"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.1"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "uniformat_main()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "Main Menu",
+    "multiple": true,
+    "name": "UniFormat_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "file": "uniformat.ahk",
+    "typ": "include"
+  },
+  {
+    "name": "uniformat_lister",
+    "typ": "a2_local_element"
+  }
+]

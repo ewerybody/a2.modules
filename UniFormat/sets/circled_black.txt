@@ -1,0 +1,44 @@
+# name=🅒🅘🅡🅒🅛🅔🅓 🅑🅛🅐🅒🅚
+# case=1
+# desc=🅒🅘🅡🅒🅛🅔🅓 white on black upper case letters and numbers from the <a href=https://unicode-table.com/en/blocks/enclosed-alphanumeric-supplement>Enclosed Alphanumeric Supplement</a> and other blocks.
+#
+# The numbers have multiple sources! For all but 0: Dingbat circled digits | sans-serif
+# For the 0: enclosed-alphanumeric-supplement | enclosed-alphanumerics
+
+A 🅐
+B 🅑
+C 🅒
+D 🅓
+E 🅔
+F 🅕
+G 🅖
+H 🅗
+I 🅘
+J 🅙
+K 🅚
+L 🅛
+M 🅜
+N 🅝
+O 🅞
+P 🅟
+Q 🅠
+R 🅡
+S 🅢
+T 🅣
+U 🅤
+V 🅥
+W 🅦
+X 🅧
+Y 🅨
+Z 🅩
+
+0 🄌 ⓿
+1 ➊ ❶
+2 ➋ ❷
+3 ➌ ❸
+4 ➍ ❹
+5 ➎ ❺
+6 ➏ ❻
+7 ➐ ❼
+8 ➑ ❽
+9 ➒ ❾

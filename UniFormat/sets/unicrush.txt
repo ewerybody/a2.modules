@@ -1,0 +1,321 @@
+# name=UniCr㎲h
+# desc=Shorten strings with Uni㏇de Ԙpla₠me௱s for l🙱t🙰 ㏇㎆㏌atЮ㎱. a2/Autohotkey version of <a href=https://htwins.net/unicrush>Cary KH's Unicrush</a>.
+# shrink=1
+# case=1
+
+(( ⸨
+)) ⸩
+'' "
+,, „
+'" ‴
+"' ‴
+''' ‴
+'''' ⁗
+"" ⁗
+.. ‥
+... …
+!= ≠
+°C ℃
+°F ℉
+<< «
+>> »
++- ±
+-+ ∓
+?? ⁇
+?! ⁈
+!? ⁉
+
+'n ŉ
+
+0/000 ‱
+0/3 ↉
+1/ ⅟
+1/2 ½
+1/3 ⅓
+1/4 ¼
+1/5 ⅕
+1/6 ⅙
+1/7 ⅐
+1/9 ⅑
+1/8 ⅛
+1/10 ⅒
+
+2/3 ⅔
+2/5 ⅖
+3/4 ¾
+3/5 ⅗
+3/8 ⅜
+4/5 ⅘
+5/6 ⅚
+5/8 ⅝
+7/8 ⅞
+
+1, 🄂
+2, 🄃
+3, 🄄
+4, 🄅
+5, 🄆
+6, 🄇
+7, 🄈
+8, 🄉
+9, 🄊
+
+1. ⒈
+2. ⒉
+3. ⒊
+4. ⒋
+5. ⒌
+6. ⒍
+7. ⒎
+8. ⒏
+9. ⒐
+
+10. ⒑
+11. ⒒
+12. ⒓
+13. ⒔
+14. ⒕
+15. ⒖
+16. ⒗
+17. ⒘
+18. ⒙
+19. ⒚
+20. ⒛
+
+3K Ꚅ
+
+(A) 🄐
+'A Ά
+a/c ℀
+a/s ℁
+A/S ⅍
+AE Ӕ
+ae ӕ ᴂ æ
+AO Ꜵ
+ao ꜵ ᴔ
+AA Ꜳ
+aa ꜳ
+am ㏂
+AR 🜇
+AU ㍳ Ꜷ
+au ꜷ
+AV Ꜹ
+av ꜹ
+AW ꟿ
+AY Ꜽ
+ay ꜽ
+
+bar ㍴
+bb 𝄫
+bl Ы
+
+cal ㎈
+cc ㏄
+cd ㏅
+CD ↀ
+cm ㎝
+Co ㏇
+c/o ℅
+c/u ℆
+CE ₠
+
+d' ď
+da ㍲
+dB ㏈
+DJ 🆐
+DEL ␡
+dl ㎗
+dm ㍷
+DZ Ǳ
+Dz ǲ
+dz ǳ
+db ȸ
+du Ԃ
+Dp ₯
+
+er 🙰
+et 🙱
+'E Έ
+
+FAX ℻
+ff ﬀ
+fi ﬁ
+fl ﬂ
+ffi ﬃ
+ffl ﬄ
+fm ㎙
+ft ﬅ
+fn ʩ
+fff 🝝
+
+gal ㏿
+GB ㎇
+GPA ㎬
+GHz ㎓
+Gy ㏉
+
+'H Ή
+ha ㏊
+Hb Њ
+hu ƕ
+hPa ㍱
+Hz ㎐
+
+'I Ί
+II Ⅱ
+III Ⅲ
+ii ⅱ
+iii ⅲ
+ij ĳ
+IJ Ĳ
+IA Ꙗ
+IE Ѥ
+in ㏌
+IO Ю
+IU ㍺
+IX Ⅸ
+IV Ⅳ
+iv ⅳ
+ix ⅸ
+
+JH Ԩ
+JX Ԕ
+Jj Ԓ
+jh Ԡ
+
+kcal ㎉
+kA ㎄
+KK ㏍
+kl ㎘
+KB ㎅
+kg ㎏
+kHz ㎑
+km ㎞
+kPa ㎪
+kV ㎸
+
+l' ľ
+ll Ⅱ
+LJ Ǉ
+Lj ǈ
+lj ǉ
+lm ㏐
+ln ㏑
+log ㏒
+ls ʪ
+lz ʫ
+lx ㏓
+
+mA ㎃
+mb ㏔
+
+MB ㎆ 🝫
+Mj Ɱ
+mg ㎎
+mil ㏕
+mol ㏖
+MHz ㎒
+Ml ㎖
+mm ㎜
+mPa ㎫
+ms ㎳
+mV ㎷
+MV ㎹
+mW ㎽
+MW ㎿
+
+nA ㎁
+nF ㎋
+No №
+NJ Ǌ
+Nj ǋ
+nj ǌ
+nm ㎚
+ns ㎱
+nT ௱
+nV ㎵
+nW ㎻
+
+'O Ό
+oc ⳪
+oe ɶ
+OO Ꚙ
+oo ꚙ
+OI Ꙕ
+oi ꙕ
+OE Œ
+oe ɶ
+Oy Ѹ
+oy ѹ
+oe ꟹ
+ov ㍵
+
+qp ȹ
+QE 🜀
+
+Pts ₧
+pA ㎀
+Pa ㎩
+pc ㍶
+pH ㏗
+pm ㏘
+PPM ㏙
+PR ㏚
+pF ㎊
+ps ㎰
+pV ㎴
+PK Ԗ
+
+RE Ԙ
+Rs ₨
+Rx ℞
+rad ㎭
+
+st ﬆ
+sr ㏛
+Sv ㏜
+SM ℠
+sss 🝜
+
+t, ƫ
+t' ť
+tc ʨ
+th ᵺ
+tf ʧ
+TEL ℡
+THz ㎔
+TM ™
+ts ʦ
+Tz Ꜩ
+tz ꜩ
+(T) 🄣
+
+ul ㎕
+ue ᵫ ᵫ
+un տ
+uo ꭣ
+us ㎲
+uV ㎶
+uW ㎼
+
+VB 🝬
+vii ⅶ
+vi ⅵ
+vii ⅶ
+viii ⅷ
+VY Ꝡ
+vy ꝡ
+VI Ⅵ
+VII Ⅶ
+VIII Ⅷ
+
+Wb ㏝
+
+xi ⅺ
+xii ⅻ
+XI Ⅺ
+XII Ⅻ
+
+'Y Ύ
+
+z, ʐ
