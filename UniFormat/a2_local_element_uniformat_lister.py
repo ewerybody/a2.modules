@@ -19,7 +19,7 @@ _DEFAULT_HOTKEY = {
     'keyChange': True,
     'multiple': True,
     'scope': [],
-    'scopeChange': False,
+    'scopeChange': True,
     'scopeMode': 0,
 }
 MSG_ALT = (
@@ -211,7 +211,7 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     if user_cfg.get(WIP_CHECK, False):
         db_dict['variables']['uniformat_show_wip'] = True
 
-    for data in user_cfg.get('sets', {}).values():
+    for name, data in user_cfg.get('sets', {}).items():
         hotkey = data.get(a2hotkey.NAME)
         if hotkey is not None:
             if not hotkey.get('enabled', False):
@@ -220,7 +220,7 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
             if not key or not key[0]:
                 continue
 
-            func = f'uniformat_replace("{data["name"]}")'
+            func = f'uniformat_replace("{name}")'
             scope = hotkey.get(a2hotkey.Vars.scope, [])
             scope_mode = hotkey.get(a2hotkey.Vars.scope_mode, 0)
 
