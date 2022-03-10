@@ -1,42 +1,34 @@
+global _uniformat_names := {}
+
 uniformat_main() {
-    global _uniformat_selection, _uniformat_names
+    global _uniformat_selection
     _uniformat_selection := clipboard_get()
     if !_uniformat_selection {
         a2tip("UniFormat: Nothing selected!")
         return
     }
 
-    _uniformat_names := {}
-    menu_names := {}
-    sets_pattern := path_join(path_neighbor(A_LineFile, "sets"), "*.txt")
-    FileEncoding, UTF-8
-    Loop, Files, % sets_pattern
-    {
-        if (string_startswith(A_LoopFileName, "_ ") and !uniformat_show_wip)
-            Continue
-        line := FileReadLine(A_LoopFileFullPath, 1)
-        if string_startswith(line, "# name=")
-            name := SubStr(line, 8)
-        else
-            name := path_split_ext(A_LoopFileName)[1]
-        _uniformat_names[name] := A_LoopFileName
-        menu_names[A_LoopFileName] := name
-    }
-
-    ; Display the menu sorted by filename
-    for file_name, name in menu_names
-        Menu, UniFormatMenu, Add, %name%, uniformat_replace
+    ; Display the menu sorted by filename,
+    menu_list := {}
+    for name, file_name in _uniformat_get_set_names()
+        menu_list[file_name] := name
+    ; menu_list is automatically sorted now
+    for i, name in menu_list
+        Menu, UniFormatMenu, Add, %name%, _uniformat_handler
 
     Menu, UniFormatMenu, Add
-    Menu, UniFormatMenu, Add, Cancel, uniformat_replace
+    Menu, UniFormatMenu, Add, Cancel, _uniformat_handler
     Menu, UniFormatMenu, Show
     Menu, UniFormatMenu, DeleteAll
 }
 
+_uniformat_handler(menu_name) {
+    uniformat_replace(_uniformat_get_set_names()[menu_name])
+}
+
 uniformat_replace(set_name) {
-    ; static all_letters
-    global _uniformat_selection, _uniformat_names
-    data := uniformat_get_letters(_uniformat_names[set_name])
+    global _uniformat_selection
+    data := uniformat_get_letters(set_name)
     if (set_name == "Cancel" and !data)
         Return
 
@@ -74,7 +66,6 @@ uniformat_replace(set_name) {
     }
 }
 
-
 uniformat_get_letters(set_name) {
     ; Get data from a sets txt by spliting by spaces and
     ; getting 1st as key and 2nd as value.
@@ -109,4 +100,26 @@ uniformat_get_letters(set_name) {
     }
     data["letters"] := letters
     Return data
+}
+
+_uniformat_get_set_names() {
+    static _uniformat_names
+    if (!_uniformat_names) {
+        _uniformat_names := {}
+        sets_pattern := path_join(path_neighbor(A_LineFile, "sets"), "*.txt")
+        FileEncoding, UTF-8
+        Loop, Files, % sets_pattern
+        {
+            if (string_startswith(A_LoopFileName, "_ ") and !uniformat_show_wip)
+                Continue
+            line := FileReadLine(A_LoopFileFullPath, 1)
+            if string_startswith(line, "# name=")
+                name := SubStr(line, 8)
+            else
+                name := path_split_ext(A_LoopFileName)[1]
+            _uniformat_names[name] := A_LoopFileName
+        }
+    }
+
+    Return _uniformat_names
 }
