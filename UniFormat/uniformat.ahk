@@ -36,6 +36,7 @@ uniformat_replace(set_name) {
         new_string := _uniformat_selection
     else
         new_string := clipboard_get()
+    sel_length_before := StrLen(_uniformat_selection)
     _uniformat_selection :=
 
     current_case := A_StringCaseSense
@@ -61,8 +62,8 @@ uniformat_replace(set_name) {
     else {
         msg := "UniFormat: Found " count " items to replace."
         if data.shrink
-            msg .= "`nCharacters before/now:" StrLen(_uniformat_selection) "/" StrLen(new_string)
-        a2tip(msg, 3)
+            msg .= "`nCharacters before/now:" sel_length_before "/" StrLen(new_string)
+        a2tip(msg, 2)
     }
 }
 
