@@ -202,25 +202,18 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
     In future this needs to be some sort of make_hotkey-function...
     Not stuffing data into a dict like this :/.
     """
-    for translation_name, translation_cfg in user_cfg.items():
-        if not translation_cfg.get('enabled', False):
+    for translation_name, hotkey in user_cfg.items():
+        if not hotkey.get('enabled', False):
             continue
-
-        key = a2ctrl.get_cfg_value(cfg, translation_cfg, 'key')
+        key = a2ctrl.get_cfg_value(cfg, hotkey, 'key')
         if not key or not key[0]:
             continue
-        scope = a2ctrl.get_cfg_value(cfg, translation_cfg, a2hotkey.Vars.scope, list)
-        scope_mode = a2ctrl.get_cfg_value(cfg, translation_cfg, a2hotkey.Vars.scope_mode, int)
+
         try:
             from_lang, to_lang = translation_name.split(gtranslate_langs.SEPARATOR)
         except ValueError:
             continue
-        func = f'gtranslate("{from_lang}", "{to_lang}")'
 
-        db_dict.setdefault('hotkeys', {})
-        db_dict['hotkeys'].setdefault(scope_mode, [])
-        # save a global if global scope set or all-but AND scope is empty
-        if scope_mode == 0 or scope_mode == 2 and scope == '':
-            db_dict['hotkeys'][0].append([key, func])
-        else:
-            db_dict['hotkeys'][scope_mode].append([scope, key, func])
+        hk_cfg = deepcopy(_DEFAULT_HOTKEY)
+        hk_cfg[a2element.hotkey.Vars.function_code] = f'gtranslate("{from_lang}", "{to_lang}")'
+        a2element.hotkey.get_settings(module_key, hk_cfg, db_dict, hotkey)

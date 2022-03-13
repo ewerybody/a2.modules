@@ -97,10 +97,11 @@ class UniFormatLister(a2item_editor.A2ItemEditor):
         self.enlist_widget('desc', self.desc, self.desc.setText, '')
         self.add_row(self.desc)
 
-        self.hotkey = a2element.hotkey.Draw(self, deepcopy(_DEFAULT_HOTKEY))
-        self.hotkey.changed.connect(self._changed)
-
-        self.add_row(self.hotkey)
+        hotkey_cfg_copy = deepcopy(_DEFAULT_HOTKEY)
+        self.hotkey = a2element.hotkey.Draw(self, hotkey_cfg_copy)
+        self.add_data_widget(
+            'hotkey', self.hotkey, self.hotkey.set_config, self.hotkey.changed, hotkey_cfg_copy
+        )
 
         self.table_lable = QtWidgets.QLabel()
         self.table_lable.setWordWrap(True)
@@ -121,18 +122,9 @@ class UniFormatLister(a2item_editor.A2ItemEditor):
                 self.data[self.selected_name]['data'] = table_data
                 self.data_changed.emit()
 
-    def _changed(self):
-        self.data[self.selected_name][a2hotkey.NAME] = self.hotkey.get_user_dict()
-        self.data_changed.emit()
-
     def _set_hotkey_label(self, name):
         self.hotkey.label.setText(f'Format with "<b>{name}</b>" directly')
-
         this_data = self.data.get(name, {})
-        this_hotkey = deepcopy(_DEFAULT_HOTKEY)
-        this_hotkey.update(this_data.get(a2hotkey.NAME, {}))
-        self.hotkey.set_config(this_hotkey)
-
         letters = this_data.get('letters', {})
         label = '<b>%i</b> keys. ' % len(letters)
         if any(' ' in v for v in letters.values()):
@@ -189,21 +181,9 @@ def get_settings(module_key, cfg, db_dict, user_cfg):
 
     for name, data in user_cfg.get('sets', {}).items():
         hotkey = data.get(a2hotkey.NAME)
-        if hotkey is not None:
-            if not hotkey.get('enabled', False):
-                continue
-            key = hotkey.get('key')
-            if not key or not key[0]:
-                continue
+        if hotkey is None:
+            continue
 
-            func = f'uniformat_replace("{name}")'
-            scope = hotkey.get(a2hotkey.Vars.scope, [])
-            scope_mode = hotkey.get(a2hotkey.Vars.scope_mode, 0)
-
-            db_dict.setdefault('hotkeys', {})
-            db_dict['hotkeys'].setdefault(scope_mode, [])
-            # save a global if global scope set or all-but AND scope is empty
-            if scope_mode == 0 or scope_mode == 2 and scope == '':
-                db_dict['hotkeys'][0].append([key, func])
-            else:
-                db_dict['hotkeys'][scope_mode].append([scope, key, func])
+        hk_cfg = deepcopy(_DEFAULT_HOTKEY)
+        hk_cfg[a2element.hotkey.Vars.function_code] = f'uniformat_replace("{name}")'
+        a2element.hotkey.get_settings(module_key, hk_cfg, db_dict, hotkey)
