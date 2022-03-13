@@ -55,8 +55,6 @@ uniformat_replace(set_name) {
     if data.reverse
         new_string := string_reverse(new_string)
 
-    clipboard_paste(new_string)
-
     if !count
         a2tip("UniFormat: Nothing replaced")
     else {
@@ -65,6 +63,8 @@ uniformat_replace(set_name) {
             msg .= "`nCharacters before/now:" sel_length_before "/" StrLen(new_string)
         a2tip(msg, 2)
     }
+
+    clipboard_paste(new_string)
 }
 
 uniformat_get_letters(set_name) {
