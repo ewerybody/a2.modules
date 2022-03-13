@@ -58,10 +58,12 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         dialog.show()
 
     def _add(self):
-        key = self.sender().output
-        self.add_named_item(key)
-        if key not in self.data:
-            self._changed()
+        dialog = self.sender()
+        if isinstance(dialog, NewDialog):
+            key = dialog.output
+            self.add_named_item(key)
+            if key not in self.data:
+                self._changed()
 
     def _update_hotkey(self, name):
         try:
@@ -80,9 +82,6 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
     def _changed(self):
         self.data[self.selected_name] = self.hotkey.get_user_dict()
         self.data_changed.emit()
-
-    def set_list_width(self, value):
-        self.ui.list_layout_widget.setMaximumWidth(value)
 
 
 class NewDialog(a2input_dialog.A2ConfirmDialog):
@@ -195,7 +194,7 @@ class Edit(EditCtrl):
 
     @staticmethod
     def element_icon():
-        return a2ctrl.Icons.inst().check
+        return a2ctrl.Icons.check
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):

@@ -5,9 +5,7 @@ import a2ctrl
 import a2path
 import a2element.hotkey
 from a2element import DrawCtrl, EditCtrl
-from a2widget import a2hotkey
-from a2widget.a2item_editor import A2ItemEditor
-from a2widget.key_value_table import KeyValueTable
+from a2widget import a2hotkey, a2item_editor, key_value_table
 from a2qt import QtWidgets
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -36,6 +34,7 @@ class Draw(DrawCtrl):
 
         self.editor = UniFormatLister(self)
         self.editor.data_changed.connect(self.delayed_check)
+        self.editor.set_list_width(self.main.style.scale(170))
         self.main_layout.addWidget(self.editor)
         show_wip = self.user_cfg.get(WIP_CHECK, False)
         self.load_sets(show_wip)
@@ -70,6 +69,8 @@ class Draw(DrawCtrl):
         self.editor.set_data(data)
 
     def check(self):
+        # Gather ONLY hotkeys from editor data, no need to store anything else.
+        # The sets stuff is just for display so far.
         user_sets = self.user_cfg.get('sets', {})
         for name, set_data in self.editor.data.items():
             if a2hotkey.NAME not in set_data:
@@ -78,6 +79,7 @@ class Draw(DrawCtrl):
                 continue
             user_sets.setdefault(name, {})[a2hotkey.NAME] = set_data[a2hotkey.NAME]
         self.user_cfg['sets'] = user_sets
+
         if self.wip_check.isChecked():
             self.user_cfg[WIP_CHECK] = True
         elif WIP_CHECK in self.user_cfg:
@@ -86,7 +88,7 @@ class Draw(DrawCtrl):
         self.change()
 
 
-class UniFormatLister(A2ItemEditor):
+class UniFormatLister(a2item_editor.A2ItemEditor):
     def __init__(self, parent):
         self.draw_ctrl = parent
         super().__init__(parent)
@@ -104,7 +106,7 @@ class UniFormatLister(A2ItemEditor):
         self.table_lable.setWordWrap(True)
         self.add_row(self.table_lable)
 
-        self.key_value_table = KeyValueTable(self)
+        self.key_value_table = key_value_table.KeyValueTable(self)
         self.key_value_table.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.selected_name_changed.connect(self._set_hotkey_label)
         self.key_value_table.changed.connect(self._update_data)
@@ -182,32 +184,6 @@ def _get_sets_data(path):
 
 
 def get_settings(module_key, cfg, db_dict, user_cfg):
-    """
-    Called by the module on "change" to get an elements data thats
-    eventually written into the runtime includes.
-
-    Passed into is all you might need:
-    :param str module_key: "module_source_name|module_name" combo used to identify module in db
-    :param dict cfg: Standard element configuration dictionary.
-    :param dict db_dict: Dictionary that's used to write the include data with "hotkeys", "variables" and "includes" keys
-    :param dict user_cfg: This elements user edits saved in the db
-
-    To make changes to the:
-    * "variables" - a simple key, value dictionary in db_dict
-
-    Get the current value via get_cfg_value() given the default cfg and user_cfg.
-    If value name is found it takes the value from there, otherwise from cfg or given default.
-
-        value = a2ctrl.get_cfg_value(cfg, user_cfg, typ=bool, default=False)
-
-    write the key and value to the "variables" dict:
-
-        db_dict['variables'][cfg['name']] = value
-
-    * "hotkeys" - a dictionary with scope identifiers
-
-    * "includes" - a simple list with ahk script paths
-    """
     if user_cfg.get(WIP_CHECK, False):
         db_dict['variables']['uniformat_show_wip'] = True
 

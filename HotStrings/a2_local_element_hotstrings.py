@@ -185,6 +185,7 @@ class Draw(DrawCtrl):
         self.editor = HotStringsEditor(self.current_group.get(Args.hotstrings, {}), self)
         self.editor.list_menu_called.connect(self.build_list_context_menu)
         self.editor.data_changed.connect(self.delayed_check)
+        self.editor.set_list_width(self.main.style.scale(120))
         self.main_layout.addWidget(self.editor)
 
         widget = QtWidgets.QWidget(self)
