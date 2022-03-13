@@ -43,6 +43,9 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
         )
         self.set_data(cfg)
 
+        # Contrary to other implementations hotkey data is THE data here.
+        # This way we cannot add the hotkey widget with `add_data_widget`
+        # because there is no subkey under our user data.
         self.hotkey = a2element.hotkey.Draw(self, deepcopy(_DEFAULT_HOTKEY))
         self.hotkey.changed.connect(self._changed)
         self.add_row(self.hotkey)
