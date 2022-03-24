@@ -142,7 +142,7 @@ class NewDialog(a2input_dialog.A2ConfirmDialog):
         key = self.get_key()
         if self.check(key):
             self._output = key
-            self.okayed.emit(key)
+            self.okayed.emit()
             self.accept()
 
     def get_key(self, key=None):
