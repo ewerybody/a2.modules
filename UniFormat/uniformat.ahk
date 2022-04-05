@@ -43,12 +43,18 @@ uniformat_replace(set_name) {
     count := 0
     if !data.case
         StringCaseSense, On
-    for replacement, chars in data.letters {
+
+    Loop, % data.num_letters
+    {
+        chars := data.letters[(A_Index * 2) - 1]
+        replacement := data.letters[A_Index * 2]
         if InStr(new_string, chars, !data.case) {
             new_string := StrReplace(new_string, chars, replacement)
             count++
         }
+
     }
+
     if !data.case
         StringCaseSense, %current_case%
 
@@ -71,13 +77,16 @@ uniformat_get_letters(set_name) {
     ; Get data from a sets txt by spliting by spaces and
     ; getting 1st as key and 2nd as value.
     data := {}
-    letters := {}
+    ; `letters` is now a LIST instead of object! lower and upper-case keys would
+    ; collide otherwise and if we flip chars and replacements we could NOT have
+    ; multiple things being replaced with the same text. Pcheew.
+    data.letters := []
+    data.num_letters := 0
     header_done := False
 
     letters_file := path_neighbor(A_LineFile, "sets\" string_suffix(set_name, ".txt"))
     args := ["case", "reverse", "shrink"]
     trim_chars := ["#", " "]
-    tst := ""
 
     FileEncoding, UTF-8
     Loop, Read, %letters_file%
@@ -86,6 +95,7 @@ uniformat_get_letters(set_name) {
         if !line
             Continue
 
+        ;Gather settings and put them on the data object
         if (!header_done and string_startswith(line, "#")) {
             line := string_trimLeft(line, trim_chars)
             parts := StrSplit(line, "=",,2)
@@ -96,10 +106,11 @@ uniformat_get_letters(set_name) {
         header_done := 1
 
         chars := StrSplit(line, " ")
-        tst .= chars[2]
-        letters[chars[2]] := chars[1]
+        data.letters.Push(chars[1])
+        data.letters.Push(chars[2])
+        data.num_letters++
     }
-    data["letters"] := letters
+
     Return data
 }
 
