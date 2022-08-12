@@ -29,7 +29,7 @@ ExplorerHotkeys_ToggleHidden() {
         tt("Hidden Items: OFF", 1)
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
-    Sleep, 100 ; Whow this did only work every second time without this delaay
+    Sleep, 100 ; Whow this did only work every second time without this delay
 
     ExplorerHotkeys_Refresh()
 }
@@ -47,7 +47,7 @@ ExplorerHotkeys_ToggleExtensions() {
         tt("Extensions: OFF", 1)
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
-    Sleep, 100 ; Whow this did only work every second time without this delaay
+    Sleep, 100 ; Whow this did only work every second time without this delay
 
     ExplorerHotkeys_Refresh()
 }

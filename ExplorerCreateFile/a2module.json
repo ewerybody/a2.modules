@@ -11,7 +11,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#explorercreatefile",
-    "version": "0.5"
+    "version": "0.6"
   },
   {
     "children": [
@@ -77,6 +77,14 @@
         "password_mode": false,
         "typ": "string",
         "value": "Clipboard Image"
+      },
+      {
+        "label": "Default File Name",
+        "label_over_field": false,
+        "name": "ExplorerCreateFile_DefaultFileName",
+        "password_mode": false,
+        "typ": "string",
+        "value": "Clipboard File"
       },
       {
         "items": [
