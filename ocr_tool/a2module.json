@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/ocr_tool#ocr-tool",
-    "version": "0.1.1"
+    "version": "0.1.2"
   },
   {
     "disablable": true,
@@ -40,5 +40,11 @@
     "name": "ocr_tool_Language",
     "typ": "combo",
     "user_edit": false
+  },
+  {
+    "label": "Use backup method (call OCR reader in subprocess).",
+    "name": "ocr_tool_use_backup",
+    "typ": "check",
+    "value": false
   }
 ]

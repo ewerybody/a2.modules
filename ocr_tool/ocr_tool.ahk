@@ -3,7 +3,6 @@
 ; created: 2021 1 31
 
 ocr_tool() {
-    global ocr_tool_Language
     lang_list := teadrinkerocr_get_available_languages()
     tt("OCR Tool: Draw a rectangle to read from!`nLanguage: " ocr_tool_Language "`navailable: " string_join(lang_list, ", "), 2)
     work_area := screen_get_work_area()
@@ -29,19 +28,24 @@ _ocr_tool_end(data) {
 _ocr_tool_read(data) {
     ; data.gdip_token := gdip_startup()
     ; data-object was amended with .x .y .w. .h from dragtangle
-    global ocr_tool_Language
-    text := teadrinkerocr(data, ocr_tool_Language)
-    ; text := _orc_tool_call(data, ocr_tool_Language)
+    if ocr_tool_use_backup {
+        text := _orc_tool_call(data, ocr_tool_Language)
+        source := "backup"
+    } else {
+        text := teadrinkerocr(data, ocr_tool_Language)
+        source := "lib"
+    }
+
     if (text) {
         Clipboard := text
-        tt("OCR Tool: put " StringLen(text) " characters to Clipboard`n" SubStr(text, 1, 100), 2)
+        a2tip("OCR Tool (" source "): put " StringLen(text) " characters to Clipboard`n" SubStr(text, 1, 100))
     } else
-        tt("OCR Tool: Nothing recognized! :/", 2)
+        a2tip("OCR Tool (" source "): Nothing recognized! :/")
 }
 
 _ocr_tool_start(data) {
     ; Just turn off the tooltip to not read yourself.
-    tt()
+    a2tip()
 }
 
 _orc_tool_call(rect, lang) {
@@ -51,7 +55,6 @@ _orc_tool_call(rect, lang) {
     cmd .= " " rect.x " " rect.y " " rect.w " " rect.h " " lang
     exec := shell.Exec(cmd)
     sleep, 200
-
     stderr := exec.StdErr.ReadAll()
     if stderr
         MsgBox, 16, ERROR, %Options%
