@@ -20,6 +20,7 @@ Mostly but not exclusively this is about re-implementing the extensions from the
 * [**tastatur**](https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur) - A module to support german users on english keyboards.
 * [**TestAHK**](https://github.com/ewerybody/a2.modules/tree/master/TestAHK#testahk) - Tiny little Autohotkey snippet to test other Autohotkey snippets.
 * [texTools](https://github.com/ewerybody/a2.modules/tree/master/texTools#texTools) - Text manipulation tool snippets. Ideas welcome!
+* [UniFormat](https://github.com/ewerybody/a2.modules/tree/master/UniFormat#uniformat) - Find and Replace in selected text with sets from the huge unicode repository.
 * [VolumeControl](https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#VolumeControl) - Hotkeys for Sound Volume control.
 * [webTools](https://github.com/ewerybody/a2.modules/tree/master/webTools#webTools) - Snippets to work with your selection for things on the internet...
 * [WindowControl](https://github.com/ewerybody/a2.modules/tree/master/WindowControl#WindowControl) - Hotkeys for general window management.
