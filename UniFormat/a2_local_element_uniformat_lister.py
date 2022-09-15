@@ -25,7 +25,6 @@ MSG_ALT = (
     'Only the <b>first</b> is used!'
 )
 
-
 class Draw(DrawCtrl):
     def __init__(self, *args):
         super(Draw, self).__init__(*args)
@@ -90,7 +89,6 @@ class Draw(DrawCtrl):
 
 class UniFormatLister(a2item_editor.A2ItemEditor):
     def __init__(self, parent):
-        self.draw_ctrl = parent
         super().__init__(parent)
 
         self.desc = QtWidgets.QLabel(wordWrap=True, openExternalLinks=True)
@@ -129,6 +127,7 @@ class UniFormatLister(a2item_editor.A2ItemEditor):
         label = '<b>%i</b> keys. ' % len(letters)
         if any(' ' in v for v in letters.values()):
             label += MSG_ALT
+
         self.table_lable.setText(label)
 
 

@@ -7,7 +7,6 @@ uniformat_main() {
         a2tip("UniFormat: Nothing selected!")
         return
     }
-
     ; Display the menu sorted by filename,
     menu_list := {}
     for name, file_name in _uniformat_get_set_names()
@@ -36,24 +35,46 @@ uniformat_replace(set_name) {
         new_string := _uniformat_selection
     else
         new_string := clipboard_get()
+
     sel_length_before := StrLen(_uniformat_selection)
     _uniformat_selection :=
+    count := 0
 
     current_case := A_StringCaseSense
-    count := 0
     if !data.case
         StringCaseSense, On
 
+    ; To prevent double replacements we look up the replacing chars to see
+    ; if they appear in the trigger ones to replace these by position later.
+    replace_by_pos := []
+    Loop, % data.num_letters
+        if (string_is_in_array(data.replacements[A_Index], data.letters, A_Index))
+            replace_by_pos.push(data.letters[A_Index])
+
+    ; Perform StrReplace for all matching characters
+    placeholders := {}
     Loop, % data.num_letters
     {
-        chars := data.letters[(A_Index * 2) - 1]
-        replacement := data.letters[A_Index * 2]
-        if InStr(new_string, chars, !data.case) {
-            new_string := StrReplace(new_string, chars, replacement)
+        if InStr(new_string, data.letters[A_Index], !data.case) {
             count++
+            if (string_is_in_array(data.letters[A_Index], replace_by_pos)) {
+                Loop, 42
+                {
+                    placeholder := "<$$" string_random(10) "%%>"
+                    if (!InStr(new_string, placeholder))
+                        Break
+                }
+                placeholders[placeholder] := data.replacements[A_Index]
+                new_string := StrReplace(new_string, data.letters[A_Index], placeholder)
+            }
+            else
+                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index])
         }
-
     }
+
+    ; Replace again any placeholders we assigned
+    for placeholder, replacement in placeholders
+        new_string := StrReplace(new_string, placeholder, replacement)
 
     if !data.case
         StringCaseSense, %current_case%
@@ -81,11 +102,12 @@ uniformat_get_letters(set_name) {
     ; collide otherwise and if we flip chars and replacements we could NOT have
     ; multiple things being replaced with the same text. Pcheew.
     data.letters := []
+    data.replacements := []
     data.num_letters := 0
     header_done := False
 
     letters_file := path_neighbor(A_LineFile, "sets\" string_suffix(set_name, ".txt"))
-    args := ["case", "reverse", "shrink"]
+    args := ["case", "reverse", "shrink", "onebyone"]
     trim_chars := ["#", " "]
 
     FileEncoding, UTF-8
@@ -107,7 +129,7 @@ uniformat_get_letters(set_name) {
 
         chars := StrSplit(line, " ")
         data.letters.Push(chars[1])
-        data.letters.Push(chars[2])
+        data.replacements.Push(chars[2])
         data.num_letters++
     }
 
