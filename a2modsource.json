@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "* UniFormat: repaired direct hotkey replacing\n* UniFormat: scope change ON on direct replace hotkeys\n  and fixed parsing the hotkey settings\n* UniFormat: fixed before/after msg in shrink case\n* UniFormat: tweaked order of tooltip and pasting for a little nicer ux\n* gtranslate & UniFormat: use `hotkey.get_settings` for way simpler registering of hotkeys from item editor\n* Created README.md for UniFormat\n* gtranslate: fixed Creating New translation presets\n* UniFormat: refactored letter parsing.\n  Now we can have same replacements from different keys and lower/upper case still works.",
+  "news": "* ExplorerCreateFile 0.6: create base64 PNG & JPG!\n* UniFormat 0.5: Fixed self triggering/replacing\n  The \"flipped\" set for instance has replacements that also appear in keys!\n  Which used to invalidate the first replacement..\n* orc_tool 0.1.2: added option for backup method",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules#a2modules",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "zip_size": 88441
 }
