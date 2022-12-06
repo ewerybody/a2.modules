@@ -79,14 +79,6 @@
         "value": "Clipboard Image"
       },
       {
-        "label": "Default File Name",
-        "label_over_field": false,
-        "name": "ExplorerCreateFile_DefaultFileName",
-        "password_mode": false,
-        "typ": "string",
-        "value": "Clipboard File"
-      },
-      {
         "items": [
           ".png",
           ".jpg",
