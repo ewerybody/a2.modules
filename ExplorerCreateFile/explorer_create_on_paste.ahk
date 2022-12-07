@@ -18,7 +18,6 @@ explorer_create_on_paste() {
         }
     }
 
-    MsgBox, trying bitmap ...
     token := gdip_startup()
     bitmap := gdipbitmap_from_clipboard()
     if _is_bitmap(bitmap) {
