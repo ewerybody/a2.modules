@@ -117,8 +117,16 @@ _explorer_create_from_text(current_path) {
 
 
 _explorer_create_finish(file_name) {
-    if explorer_try_select(file_name)
-        Return
+    Loop, 10
+    {
+        if explorer_select(basename)
+            Return
+        Sleep, 400
+    }
+
+    ; TODO: Use the lib func in future
+    ; if explorer_try_select(file_name)
+    ;     Return
 
     msgbox_error("Could not create file """ file_name """!", "ExplorerCreateFile: ERROR")
 }
