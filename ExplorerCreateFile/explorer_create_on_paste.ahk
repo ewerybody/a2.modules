@@ -27,16 +27,8 @@ explorer_create_on_paste() {
 
     gdip_shutdown(token)
 
-    ; The Clipboard would already appear empty with a bitmap in it!
-    if !Clipboard
     {
-        Send, %A_ThisHotkey%
-        Return
-    }
-
-    ; Disabling Clipboard text to file for now since it's way to easy to mess up
-    ; Renaming and writing into Address bar is hard to detext.
-    ; _explorer_create_from_text(currcurrent_path)
+    Send, %A_ThisHotkey%
 }
 
 
@@ -96,6 +88,9 @@ _explorer_create_from_clip_bitmap(current_path, bitmap) {
 
 
 _explorer_create_from_text(current_path) {
+    Return
+    ; Disabling Clipboard text to file for now since it's way to easy to mess up
+    ; Renaming and writing into Address bar is hard to detect.
     default_ext := ".txt"
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultFileName, default_ext)
     title := "ExplorerCreateFile: File from Clipboard contents (" StrLen(ClipBoard) " bytes)"
