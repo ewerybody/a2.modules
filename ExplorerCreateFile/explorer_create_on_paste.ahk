@@ -27,7 +27,6 @@ explorer_create_on_paste() {
 
     gdip_shutdown(token)
 
-    {
     Send, %A_ThisHotkey%
 }
 
