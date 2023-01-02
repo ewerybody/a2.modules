@@ -4,7 +4,7 @@
 
 ocr_tool() {
     lang_list := teadrinkerocr_get_available_languages()
-    tt("OCR Tool: Draw a rectangle to read from!`nLanguage: " ocr_tool_Language "`navailable: " string_join(lang_list, ", "), 2)
+    a2tip("OCR Tool: Draw a rectangle to read from!`nLanguage: " ocr_tool_Language "`navailable: " string_join(lang_list, ", "), 2)
     work_area := screen_get_work_area()
     dimmer := dimmer_create(work_area)
     data := {area: work_area, dimmer: dimmer}
