@@ -1,0 +1,62 @@
+﻿[
+  {
+    "author": "eric",
+    "date": "2022 2 2",
+    "description": "Easier file diffing in the Windows Explorer.\nSelect 2 files, Ctrl+D: tell if files are identical already without opening your diff tool.\nOr select one file or folder here and wait to select another there...",
+    "display_name": "",
+    "tags": [
+      "file",
+      "code",
+      "wip"
+    ],
+    "typ": "nfo",
+    "url": "",
+    "version": "0.3"
+  },
+  {
+    "disablable": false,
+    "enabled": true,
+    "functionCode": "ExplorerDiff()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+D"
+    ],
+    "keyChange": true,
+    "label": "Diff selected files",
+    "multiple": true,
+    "name": "ExplorerDiff_Hotkey",
+    "scope": [
+      "ahk_class CabinetWClass",
+      "ahk_class #32770"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "file": "ExplorerDiff.ahk",
+    "typ": "include"
+  },
+  {
+    "browse_type": 1,
+    "file_types": "Executable (*.exe)",
+    "label": "Diff application path",
+    "name": "ExplorerDiff_Path",
+    "save_mode": false,
+    "typ": "path",
+    "value": ".",
+    "writable": false
+  },
+  {
+    "decimals": 1,
+    "label": "Always use diff app if files larger than:",
+    "max": 100.0,
+    "min": 0.1,
+    "name": "ExplorerDiff_MaxSize",
+    "slider": false,
+    "step_len": 0.1,
+    "suffix": "MB",
+    "typ": "number",
+    "value": 1.0
+  }
+]
