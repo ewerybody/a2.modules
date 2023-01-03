@@ -7,13 +7,15 @@ global _ExplorerDiff_WaitForPath
 ExplorerDiff() {
     paths := explorer_get_selected()
 
-    if !FileExist(ExplorerDiff_Path) {
-        if (ExplorerDiff_Path == "")
-            msgbox_error("No Diff app set! Please open the dialog and set one!"
-                , "ExplorerDiff: No Diff app")
-        else
-            msgbox_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
-                , "ExplorerDiff: Diff app path invalid")
+    if (ExplorerDiff_Path == "" OR ExplorerDiff_Path == ".") {
+        msgbox_error("No Diff app set! Please open the dialog and set one!"
+            , "ExplorerDiff: No Diff app")
+        Return
+    }
+
+    if (!FileExist(ExplorerDiff_Path)) {
+        msgbox_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
+            , "ExplorerDiff: Diff app path invalid")
         Return
     }
 
