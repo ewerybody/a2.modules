@@ -6,10 +6,11 @@ Mostly but not exclusively this is about re-implementing the extensions from the
 
 
 * [**CalculAid**](https://github.com/ewerybody/a2.modules/tree/master/CalculAid#calculaid) - A configurable Calculator opener.
-* [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize) - Fuzzy window manipulation via 9 nice big zones 
+* [**ComfortResize**](https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#ComfortResize) - Fuzzy window manipulation via 9 nice big zones.
 * [CommandLine](https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine) - Connects Explorer and CommandLine and adds simple closing functionality.
 * [**DetailsPopup**](https://github.com/ewerybody/a2.modules/tree/master/DetailsPopup#detailspopup) - A Key/Value store UI for things to paste into fields.
 * [**ExplorerCreateFile**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerCreateFile#ExplorerCreateFile) - Create different files directly in the current Explorer directory.
+* [**ExplorerDiff**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerDiff#ExplorerDiff) - Easy diffing in the Windows Explorer.
 * [**ExplorerHotkeys**](https://github.com/ewerybody/a2.modules/tree/master/ExplorerHotkeys#ExplorerHotkeys) - Some extra shortcuts for your Windows Filebrowser.
 * [**getWinfo**](https://github.com/ewerybody/a2.modules/tree/master/getWinfo#getwinfo) - A quick window information getter.
 * [**gtranslate**](https://github.com/ewerybody/a2.modules/tree/master/gtranslate#gtranslate) - To translate short text snippets or whole websites.
