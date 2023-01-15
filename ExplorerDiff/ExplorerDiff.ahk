@@ -1,7 +1,7 @@
 ; ExplorerDiff - ExplorerDiff.ahk
-; author: teric
+; Context aware file comparing from a single Explorer Hotkey.
+; author: eric
 ; created: 2022 2 2
-global _ExplorerDiff_WaitForPath
 
 
 ExplorerDiff() {
@@ -23,11 +23,12 @@ ExplorerDiff() {
         _ExplorerDiff(paths)
         Return
     }
-
     if (!paths.Length())
         paths.Push(explorer_get_path())
 
+    a2log_debug("paths.Length(): " paths.Length(), "ExplorerDiff")
     if (paths.Length() == 1) {
+        global _ExplorerDiff_WaitForPath
         if (_ExplorerDiff_WaitForPath == paths[1])
             Return
 
