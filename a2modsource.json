@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "ExplorerCreateFile 0.6.2: fixing text paste\n  Sending `A_Thishotkey` unconditionally\n",
+  "news": "* new Module: **ExplorerDiff**! For making Ctrl-D a diff hotkey in the Explorer.\n  Finally Moved here from a2.modlab. ",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules#a2modules",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "zip_size": 88441
 }
