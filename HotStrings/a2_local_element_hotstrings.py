@@ -64,7 +64,7 @@ class HotStringsEditor(a2item_editor.A2ItemEditor):
 
     def __init__(self, user_cfg, parent):
         self.data = user_cfg
-        super(HotStringsEditor, self).__init__(parent)
+        super().__init__(parent)
 
         self.ui.text = a2text_field.A2TextField(self)
         self.add_data_widget(
@@ -148,7 +148,7 @@ class Draw(DrawCtrl):
     """
 
     def __init__(self, *args):
-        super(Draw, self).__init__(*args)
+        super().__init__(*args)
         self._hs_code_b4 = None
 
         if hotstrings_io.scopes_to_groups(self.user_cfg):

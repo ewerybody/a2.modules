@@ -35,6 +35,7 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
     current_groups = current_cfg.get(Args.groups, {})
     current_names = list(current_groups)
 
+    new_group_name, num_hotstrings, num_groups = None, 0, 0
     for name, group in hs_input.get(Args.groups, {}).items():
         if not Args.hotstrings in group:
             continue
@@ -45,6 +46,18 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
         group[Args.enabled] = False
         current_groups[name] = group
         current_names.append(name)
+        if new_group_name is None:
+            new_group_name = name
+
+    if not new_group_name:
+        return
+
+    # # the only widget here should be the hotstrings item editor:
+    # hotstring_widget = a2.win.module_view.controls[1]
+    # hotstring_widget.current_group = current_cfg[Args.groups][new_group_name]
+    # hotstring_widget.fill_group_combo()
+    # hotstring_widget.select_group(new_group_name)
+    current_cfg[Args.last_group] = new_group_name
 
     mod.set_user_cfg({Args.hotstrings: current_cfg})
     a2.win.load_runtime_and_ui()
