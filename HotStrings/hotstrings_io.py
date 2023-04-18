@@ -1,7 +1,10 @@
 """Autohotkey Hotstrings stuff."""
 import enum
-import codecs
 import a2util
+import a2core
+
+
+log = a2core.get_logger(__name__)
 
 
 # for the on/off options
@@ -176,24 +179,35 @@ class HotstringsParser:
         self.parse_lines(path)
 
     def parse_lines(self, path):
-        with codecs.open(path, encoding='utf-8-sig') as fobj:
-            for line in fobj:
-                # cut away comments and strip of whitespace
-                stripped = line.split(';', 1)[0].strip()
-                if not stripped:
-                    continue
+        for encoding in ('utf-8-sig', 'utf-8', None):
+            try:
+                with open(path, encoding=encoding) as file_obj:
+                    log.info(
+                        'Opened file for hotstrings parsing with encoding "%s"\n  %s', encoding, path
+                    )
 
-                if stripped.startswith('#'):
-                    self.handle_scope(stripped)
-                elif stripped.startswith(':'):
-                    self.handle_hotstring(stripped)
-                elif self.gather_lines:
-                    if stripped.lower().startswith('return'):
-                        self.this_hs['mode'] = 1
-                        self.work_buffer()
-                        continue
-                    # collect the unstripped line
-                    self.hs_buffer.append(line.rstrip())
+                    for line in file_obj:
+                        # cut away comments and strip of whitespace
+                        stripped = line.split(';', 1)[0].strip()
+                        if not stripped:
+                            continue
+
+                        if stripped.startswith('#'):
+                            self.handle_scope(stripped)
+                        elif stripped.startswith(':'):
+                            self.handle_hotstring(stripped)
+                        elif self.gather_lines:
+                            if stripped.lower().startswith('return'):
+                                self.this_hs['mode'] = 1
+                                self.work_buffer()
+                                continue
+                            # collect the unstripped line
+                            self.hs_buffer.append(line.rstrip())
+                break
+            except UnicodeDecodeError:
+                continue
+        else:
+            raise RuntimeError('Could not read file for hotstrings parsing!\n  %s' % path)
 
     def handle_scope(self, line):
         self.work_buffer()
