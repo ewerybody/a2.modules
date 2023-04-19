@@ -3,9 +3,9 @@
   "maintainer": "ewerybody",
   "maintainer_at": "gmail.com",
   "name": "a2.modules",
-  "news": "### a2.modules quick fix\n* Hotstrings 0.3.1: Fixed import script",
+  "news": "* HotStrings: 0.3.2\n  - made imported hotstring group selected\n  - try handling encoding when parsing files\n  - Parser to only log when successfully parsed\n  - import now with feedback dialogs #73",
   "update_url": "https://github.com/ewerybody/a2.modules",
   "url": "https://github.com/ewerybody/a2.modules#a2modules",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "zip_size": 88441
 }
