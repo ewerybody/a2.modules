@@ -182,10 +182,6 @@ class HotstringsParser:
         for encoding in ('utf-8-sig', 'utf-8', None):
             try:
                 with open(path, encoding=encoding) as file_obj:
-                    log.info(
-                        'Opened file for hotstrings parsing with encoding "%s"\n  %s', encoding, path
-                    )
-
                     for line in file_obj:
                         # cut away comments and strip of whitespace
                         stripped = line.split(';', 1)[0].strip()
@@ -203,6 +199,10 @@ class HotstringsParser:
                                 continue
                             # collect the unstripped line
                             self.hs_buffer.append(line.rstrip())
+
+                    log.info(
+                        'Read file for hotstrings parsing with encoding "%s"\n  %s', encoding, path
+                    )
                 break
             except UnicodeDecodeError:
                 continue
