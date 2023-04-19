@@ -4,11 +4,17 @@ import a2mod
 from a2qt import QtWidgets
 
 log = a2core.get_logger(__name__)
+SUCCESS_MSG = (
+    'Importing {file_name} there were {num_hotstrings} Hotstrings '
+    'in {num_groups} groups:\n {groups}\n'
+    'The first imported group is seleced now but these are not yet enabled!'
+    'Review the import first and then enable a group through the menu.'
+)
 
 
 def main(a2: a2core.A2Obj, mod: a2mod.Mod):
     file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
-        None, 'Import Hotstrings Data', a2.paths.a2,
+        a2.win, 'Import Hotstrings Data', a2.paths.a2,
         'Autohotkey (*.ahk);;JSON (*.json);;Guess Type (*.*)'
     )
     if not file_path:
@@ -38,7 +44,7 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
                     'Unable to guess type from file!\n'
                     f'  parse error: {parse_error}'
                     f'  JSON error: {json_error}'
-                )
+                ) from json_error
 
     hotstrings_io.scopes_to_groups(hs_input)
 
@@ -46,7 +52,7 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
     current_groups = current_cfg.get(Args.groups, {})
     current_names = list(current_groups)
 
-    new_group_names, num_hotstrings, num_groups = None, 0, 0
+    new_group_names, num_hotstrings = [], 0
     for name, group in hs_input.get(Args.groups, {}).items():
         if not Args.hotstrings in group:
             continue
@@ -58,12 +64,25 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
         current_groups[name] = group
         current_names.append(name)
         new_group_names.append(name)
+        num_hotstrings += len(group.get(Args.hotstrings, ()))
 
-    if not new_group_name:
+    if not new_group_names:
+        QtWidgets.QMessageBox.critical(
+            a2.win, 'Nothing imported!', f'There was nothing imported from {base}'
+        )
         return
 
-    current_cfg[Args.last_group] = new_group_name
+    current_cfg[Args.last_group] = new_group_names[0]
 
     mod.set_user_cfg({Args.hotstrings: current_cfg})
     a2.win.load_runtime_and_ui()
     a2.win.check_element(Args.hotstrings)
+
+    QtWidgets.QMessageBox.information(
+        a2.win, f'{num_hotstrings} Hotstrings Imported!',
+        SUCCESS_MSG.format(
+            file_name=base, num_hotstrings=num_hotstrings,
+            num_groups=len(new_group_names),
+            groups='\n '.join(new_group_names)
+        )
+    )
