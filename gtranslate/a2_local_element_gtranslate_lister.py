@@ -57,7 +57,7 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
 
     def add_item(self):
         dialog = NewDialog(self, self.data.keys())
-        dialog.okayed.connect(self._add)
+        dialog.accepted.connect(self._add)
         dialog.show()
 
     def _add(self):
@@ -89,9 +89,6 @@ class GTranslateLister(a2item_editor.A2ItemEditor):
 
 class NewDialog(a2input_dialog.A2ConfirmDialog):
     """Dialog to select the languages to translate between."""
-
-    okayed = QtCore.Signal(str)
-    field_changed = QtCore.Signal(str)
 
     def __init__(self, parent, present_keys):
         super(NewDialog, self).__init__(
