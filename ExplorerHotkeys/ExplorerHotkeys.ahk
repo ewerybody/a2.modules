@@ -17,16 +17,16 @@ ExplorerHotkeys_CallExplorer() {
 }
 
 ExplorerHotkeys_ToggleHidden() {
-    EH_REG_KEY := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    EH_REG_KEY := "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     value_name := "Hidden"
     RegRead, value, %EH_REG_KEY%, %value_name%
 
     If (value == 2) {
         new_value := 1
-        tt("Hidden Items: ON", 1)
+        a2tip("Hidden Items: ON")
     } Else {
         new_value := 2
-        tt("Hidden Items: OFF", 1)
+        a2tip("Hidden Items: OFF")
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
     Sleep, 100 ; Whow this did only work every second time without this delay
@@ -35,16 +35,16 @@ ExplorerHotkeys_ToggleHidden() {
 }
 
 ExplorerHotkeys_ToggleExtensions() {
-    EH_REG_KEY := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    EH_REG_KEY := "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     value_name := "HideFileExt"
     RegRead, value, %EH_REG_KEY%, %value_name%
 
     If (value == 1) {
         new_value := 0
-        tt("Extensions: ON", 1)
+        a2tip("Extensions: ON")
     } Else {
         new_value := 1
-        tt("Extensions: OFF", 1)
+        a2tip("Extensions: OFF")
     }
     RegWrite, REG_DWORD, %EH_REG_KEY%, %value_name%, %new_value%
     Sleep, 100 ; Whow this did only work every second time without this delay
@@ -117,4 +117,20 @@ ExplorerHotkeys_ReloadAll() {
 
     pids := processes_list_ids("explorer.exe")
     a2tip(pids.Length() " procs after: " string_join(pids))
+}
+
+
+ExplorerHotkeys_ShowHideSeleced() {
+    items := explorer_get_selected()
+    if (!items.Length()) {
+        a2tip("Nothing Selected!", 1)
+        Return
+    }
+
+    for i, path in items
+    {
+        FileSetAttrib, ^H, %path%
+    }
+
+    a2tip("Toggled Visibility of " items.Length() " items.")
 }

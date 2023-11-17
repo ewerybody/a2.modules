@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
-    "version": "0.3"
+    "version": "0.4"
   },
   {
     "disablable": true,
@@ -46,7 +46,7 @@
       "Ctrl+H"
     ],
     "keyChange": true,
-    "label": "Toggle Hidden Items",
+    "label": "Toggle View Hidden Items",
     "multiple": true,
     "name": "ExplorerHotkeys_ToggleHiddenHotkey",
     "scope": [
@@ -69,9 +69,28 @@
       "Ctrl+E"
     ],
     "keyChange": true,
-    "label": "Toggle File Extensions",
+    "label": "Toggle View File Extensions",
     "multiple": true,
     "name": "ExplorerHotkeys_ToggleExtensionsHotkey",
+    "scope": [
+      "ahk_class CabinetWClass"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_ShowHideSeleced()",
+    "functionMode": 0,
+    "key": [
+      "Alt+H"
+    ],
+    "keyChange": true,
+    "label": "Toggle Show/Hide Selected",
+    "multiple": true,
+    "name": "ExplorerHotkeys_ToggleSelectedVisibility",
     "scope": [
       "ahk_class CabinetWClass"
     ],
