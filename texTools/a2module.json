@@ -10,7 +10,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/texTools#textools",
-    "version": "0.3"
+    "version": "0.4"
   },
   {
     "file": "wordCount.ahk",
@@ -53,7 +53,7 @@
       "Alt+Shift+Up"
     ],
     "keyChange": true,
-    "label": "Make selected text UPPER case",
+    "label": "MAKE SELECTED TEXT UPPER CASE",
     "multiple": true,
     "name": "texTools_Upper_Hotkey",
     "scopeChange": true,
@@ -72,9 +72,21 @@
       "Alt+Shift+Down"
     ],
     "keyChange": true,
-    "label": "Make selected text lower case",
+    "label": "make selected text lower case",
     "multiple": true,
     "name": "texTools_lower_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": false,
+    "functionCode": "texTools_random_case()",
+    "functionMode": 0,
+    "keyChange": true,
+    "label": "mAkE sELECtED teXt RaNdoM CaSE",
+    "multiple": true,
+    "name": "texTools_random_Hotkey",
     "scopeChange": true,
     "typ": "hotkey"
   }
