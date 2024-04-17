@@ -25,13 +25,13 @@ winr() {
         a2tip("WinR: web address...",0.5)
         if (!string_startswith(selection, "http"))
             selection := "https://" selection
-        Run, %selection%
+        Run(selection)
     }
     else {
         ; loop set up project paths, if combination with selection fits: run it
         slashed := StrReplace(selection, "/", "\")
         for i, ppath in winr_paths {
-            ppath = %ppath%\%slashed%
+            ppath := path_join(ppath, slashed)
             if FileExist(ppath) {
                 a2tip("WinR: Found relative path ...",0.5)
                 winr_CatchedCallRun(ppath)
@@ -41,20 +41,20 @@ winr() {
 
         a2tip("WinR: Does not exist!`nI don't know what todo with your selection...", 1)
         winr_CallDialog()
-        sleep, 300
-        SendInput, %selection%
+        sleep 300
+        SendInput(selection)
     }
 }
 
 winr_CallDialog() {
-    runWindow = Run ahk_class #32770
-    Send #r
-    WinWaitActive, %runWindow%
+    runWindow := "Run ahk_class #32770"
+    Send "#r"
+    WinWaitActive(runWindow)
     global winr_move_to_cursor
     if (winr_move_to_cursor) {
-        CoordMode, Mouse, Screen
-        MouseGetPos, clq_mousex, clq_mousey
-        WinMove, %runWindow%, ,(clq_mousex - 30), (clq_mousey - 10)
+        CoordMode "Mouse", "Screen"
+        MouseGetPos &clq_mousex, &clq_mousey
+        WinMove (clq_mousex - 30), (clq_mousey - 10),,, runWindow
     }
 }
 
@@ -64,8 +64,10 @@ winr_CatchedCallRun(path) {
     if winr_explore_check
         explorer_show(path)
     else {
-        Run, %path%,, UseErrorLevel
-        if ErrorLevel {
+        try
+            Run path
+        catch
+        {
             explorer_show(path)
             a2tip_add("but I cound not 'Run' it!`nExploring to ...:", 1.5)
         }
