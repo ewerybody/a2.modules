@@ -14,13 +14,21 @@ explorer_create_file_popup() {
         Return
     }
 
+    ExplorerCreateFileMenu := Menu()
+    ; MyMenu.Add("Item 1", MenuHandler)
+    ; MyMenu.Add("Item 2", MenuHandler)
+    ; MyMenu.Add()  ; Add a separator line.
+
     for name, data in explorer_create_file_data
     {
-        Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
+        ; Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
+        ExplorerCreateFileMenu.Add(name, explorer_create_file_handler)
         _explorer_create_file_add_menu_icon(name, data)
     }
-    Menu, ExplorerCreateFileMenu, Show
-    Menu, ExplorerCreateFileMenu, DeleteAll
+    ExplorerCreateFileMenu.Show()
+    ExplorerCreateFileMenu.Delete()
+    ; Menu, ExplorerCreateFileMenu, Show
+    ; Menu, ExplorerCreateFileMenu, DeleteAll
 }
 
 explorer_create_file_handler(menu_name) {
@@ -48,9 +56,9 @@ explorer_create_file_handler(menu_name) {
     encoding := data["encoding"]
     content := data["content"]
     try {
-        FileAppend, %content%, %file_path%, %encoding%
+        FileAppend(content, file_path, encoding)
     } catch err {
-        Sleep, 50
+        Sleep 50
         if !FileExist(file_path) {
             msgbox_error("Could not create file """ file_name """ with encoding """ encoding """"
             , "ExplorerCreateFile: ERROR")
@@ -59,7 +67,7 @@ explorer_create_file_handler(menu_name) {
         }
     }
 
-    Send, F5
+    Send "F5"
     sleep 1000
 
     explorer_select(file_name)
@@ -83,13 +91,14 @@ _explorer_create_file_get_icon_path(name, data) {
         return icon_path
 }
 
-_explorer_create_file_add_menu_icon(name, data) {
+_explorer_create_file_add_menu_icon(name, data, ExplorerCreateFileMenu) {
     icon_path := _explorer_create_file_get_icon_path(name, data)
     if !icon_path
         Return
 
     icon_nr := ""
-    if ("," in icon_path) {
+
+    if InStr(icon_path, ",") {
         parts := StrSplit(icon_path, ",")
         icon_path := parts[1]
         icon_nr := parts[2]
@@ -105,8 +114,11 @@ _explorer_create_file_add_menu_icon(name, data) {
         }
     }
 
-    if (icon_nr != "")
-        Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
-    else
-        Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
+    if (icon_nr != "") {
+        ExplorerCreateFileMenu.SetIcon(name, icon_path, icon_nr)
+        ; Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
+    } else {
+        ExplorerCreateFileMenu.SetIcon(name, icon_path)
+        ; Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
+    }
 }
