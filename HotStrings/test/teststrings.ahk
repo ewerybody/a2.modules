@@ -1,12 +1,13 @@
 ﻿ ; Some initial comment ...
-#IfWinActive,
+#HotIf
 :*:aucgh::auch ; a comment!
 :*:machne::machen
 :*b0o:irg.::endwie
 ; 1-line code blocks
 :*:.lrg::
-    msgbox 👋!
-return
+{
+    msgbox "👋!"
+}
 ::xxx::s👍👍{!} ;needs to be un-escaped
 :*:shcon::schon
 ::arent::aren't
@@ -15,24 +16,25 @@ return
 :r:.raw::Raw Rest{!}
 ; multi line code blocks
 ::#code::
-    MsgBox CodeTest!
-    MsgBox works!
-return
-:*x:#code2::MsgBox CodeTest2 works2! ; inline code hotstring
+{
+    MsgBox "CodeTest!"
+    MsgBox "works!"
+}
+:*x:#code2::MsgBox "CodeTest2 works2!" ; inline code hotstring
 :*::ck::✔
 ::gruse::grüße
 :*:::dd::ColonDouble`: ; `: also needs un-escaping
-#IfWinActive, ahk_class Notepad++ ; will be ignored
-#IfWinActive ahk_class Chrome_WidgetWin_1
+#HotIf WinActive("ahk_class Notepad++") ; will be ignored
+#HotIf WinActive("ahk_class Chrome_WidgetWin_1")
 ; test same hotkeys in different scopes
 :C:AHK::Autohotkey
 :*C:aA::ac'tivAid
-#IfWinActive ahk_class MozillaWindowClass
+#HotIf WinActive("ahk_class MozillaWindowClass")
 :Ct:aA::ACTIVEAID!!
-#IfWinNotActive, ahk_class Notepad++
+#HotIf !WinActive("ahk_class Notepad++")
 :*::flip::(╯°□°)╯︵ ┻━┻
-#IfWinActive, ahk_class SWT_Window0 
+#HotIf WinActive("ahk_class SWT_Window0")
 :C:AHK::Autohotkey in Eclipse{!}{!}
 
-#IfWinNotActive, ; empty WinNotActive defaults to global
+#HotIf ; empty WinNotActive defaults to global
 ::.sx::SomeHotstring

@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         key += '\nahk_class SWT_Window0'
         hs_dict[hotstrings_io.KEY_EXCL][key] = hs
 
-        hs_code = hotstrings_io.dict_to_ahkcode(hs_dict)
+        hs_code = hotstrings_io.dict_to_ahk_code(hs_dict)
         print('hs_code:\n%s' % hs_code)
 
 
