@@ -1,10 +1,10 @@
 ftpExplorerCopy() {
-	WinGet, this_id, ID, A
+	this_id := WinGetID("A")
 	;legacy: Win 7: ;ControlGetText, path, ToolbarWindow322, ahk_id %this_id%
     ;Win 8 ;ControlGetText, path, ToolbarWindow323, ahk_id %this_id%
 
     selection := explorer_get_selected(this_id)
-    if !(selection.Length()) {
+    if !(selection.Length) {
         a2tip("Nothing selected!")
         Return
     }

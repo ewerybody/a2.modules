@@ -2,7 +2,7 @@ explorer_create_on_paste() {
     ; Ensure default Explorer behaviour with files in clipboard.
     if WinClip.GetFiles()
     {
-        Send, %A_ThisHotkey%
+        Send(A_ThisHotkey)
         return
     }
 
@@ -27,7 +27,7 @@ explorer_create_on_paste() {
 
     gdip_shutdown(token)
 
-    Send, %A_ThisHotkey%
+    Send(A_ThisHotkey)
 }
 
 
@@ -100,7 +100,7 @@ _explorer_create_from_text(current_path) {
     ext := path_split_ext(file_name)[2]
     if !ext
         file_name := file_name default_ext
-    file_path := _append_default_ext(current_path, file_name, default_ext)
+    file_path := _append_default_ext(current_path, &file_name, default_ext)
 
     File := FileOpen(file_path, "w")
     File.Write(Clipboard)
@@ -110,11 +110,11 @@ _explorer_create_from_text(current_path) {
 
 
 _explorer_create_finish(file_name) {
-    Loop, 10
+    Loop 10
     {
         if explorer_select(basename)
             Return
-        Sleep, 400
+        Sleep 400
     }
 
     ; TODO: Use the lib func in future
@@ -133,7 +133,7 @@ _is_bitmap(bitmap) {
     Return true
 }
 
-_append_default_ext(current_path, ByRef file_name, default_ext) {
+_append_default_ext(current_path, &file_name, default_ext) {
     ext := path_split_ext(file_name)[2]
     if !ext
         file_name := file_name default_ext
