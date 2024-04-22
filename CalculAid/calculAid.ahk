@@ -14,22 +14,21 @@ calculAid_open() {
     ; RegExMatch(sel, "[0-9.,+-]+", numbers)
     ; RegExMatch(sel, "[0-9.,+/*=-]+", number_ops)
 
-    WinGet, current_id, ID, A
+    current_id := WinGetID("A")
     found_ids := calculAid_get_current()
     calc_is_active := string_is_in_array(current_id, found_ids)
 
-    if (calculAid_ReuseOpenOne and found_ids.MaxIndex() and !calc_is_active)
+    if (calculAid_ReuseOpenOne and found_ids.Length and !calc_is_active)
     {
         a2tip("CalculAid: found one activating ...")
-        this := found_ids[1]
-        WinActivate, ahk_id %this%
+        WinActivate("ahk_id " . found_ids[1])
         Return
     }
 
     ; This calls to open a Calculator, but the PID is useless.
     ; Windows will now use ApplicationFrameHost.exe to host a Calculator
     a2tip("CalculAid: Calling new ...")
-    Run, calc.exe,, UseErrorLevel, calcPID
+    Run "calc.exe",, UseErrorLevel, calcPID
 
     ; We'll have to wait a moment for it to be available
     new_id := calculAid_wait_for_new(found_ids)
@@ -37,13 +36,13 @@ calculAid_open() {
     ; MsgBox, calc_is_active: %calc_is_active%`nCalculAid_ReuseOpenOne:%CalculAid_ReuseOpenOne%`nnew_id:%new_id%`n`n%txt%
 
 	If calculAid_openAtCursor {
-		CoordMode, Mouse, Screen
-		MouseGetPos, mx, my
-        WinMove, ahk_id %new_id%,, (mx - 30), (my - 10)
+		CoordMode "Mouse", "Screen"
+		MouseGetPos &mx, &my
+        WinMove(mx - 30, my - 10,,, "ahk_id " . new_id)
 	}
 
 	If calculAid_AlwaysOnTop
-        WinSet, AlwaysOnTop, On, ahk_id %new_id%
+        WinSetAlwaysOnTop(1, "ahk_id " . new_id)
 }
 
 
@@ -52,20 +51,14 @@ calculAid_get_current() {
     names := {09: "Calculator", 07: "Rechner"}
     this_name := names[this_lng]
 
-    calc_ids := []
-    WinGet, found_ids, List, %this_name% ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe
-    Loop, %found_ids% {
-        this := found_ids%A_Index%
-        calc_ids.Push(this)
-    }
-    Return calc_ids
+    return WinGetList(this_name . " ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe")
 }
 
 
 calculAid_wait_for_new(found_ids) {
     t0 := A_TickCount
     tries := 0
-    Loop,
+    Loop
     {
         for _, id in calculAid_get_current() {
             if string_is_in_array(id, found_ids)
@@ -74,7 +67,7 @@ calculAid_wait_for_new(found_ids) {
         }
         tries++
         t1 := A_TickCount - t0
-        Sleep, 20
+        Sleep 20
         if (t1 > 1000)
             Break
     }

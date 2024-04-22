@@ -2,20 +2,20 @@ details_popup_menu() {
     global _details_handled_entries
     _details_handled_entries := []
 
+    DetailsMenu := Menu()
     count := 0
     for name, _data in details_popup_data {
-        Menu, DetailsMenu, Add, %name%, details_popup_handler
+        DetailsMenu.Add(name, details_popup_handler)
         count++
     }
     if (count == 0) {
-        MsgBox, There is nothing to popup! Apparently there was no data added yet?
+        MsgBox_info("There is nothing to popup! Apparently there was no data added yet?")
         Return
     }
 
-    Menu, DetailsMenu, Add
-    Menu, DetailsMenu, Add, Cancel, details_popup_handler
-    Menu, DetailsMenu, Show
-    Menu, DetailsMenu, DeleteAll
+    DetailsMenu.Add()
+    DetailsMenu.Add("Cancel", details_popup_handler)
+    DetailsMenu.Show()
 }
 
 details_popup_handler(menu_name) {
@@ -38,16 +38,16 @@ details_popup_handler(menu_name) {
         Return
     }
 
+    DetailsSubMenu := Menu()
     for name, _data in these_entries {
         if (!string_is_in_array(name, _details_handled_entries))
-            Menu, DetailsSubMenu, Add, %name%, details_entry_handler
+            DetailsSubMenu.Add(name, details_entry_handler)
     }
 
-    if (!_details_handled_entries.Length())
-        Menu, DetailsSubMenu, Add
-    Menu, DetailsSubMenu, Add, Cancel, details_entry_handler
-    Menu, DetailsSubMenu, Show
-    Menu, DetailsSubMenu, DeleteAll
+    if (!_details_handled_entries.Length)
+        DetailsSubMenu.Add()
+    DetailsSubMenu.Add("Cancel", details_entry_handler)
+    DetailsSubMenu.Show()
 }
 
 details_entry_handler(entry_name) {
@@ -61,27 +61,27 @@ details_entry_handler(entry_name) {
     value := these_entries["" entry_name ""]
     cmd_path := path_neighbor(A_LineFile, "details_paste_entry.ahk")
 
-    cmd = "%A_AhkPath%" "%cmd_path%" "%value%"
+    cmd := '"' . A_AhkPath . '" "' . cmd_path . '" "' . value . '"'
     shell := ComObjCreate("WScript.Shell")
     exec := shell.Exec(cmd)
 
     errors := exec.StdErr.ReadAll()
-    if (errors)
-        MsgBox %errors%
-    else {
-        result := exec.StdOut.ReadAll()
-        if (result == 0) {
-            global _details_handled_entries
-            _details_handled_entries.push(entry_name)
-            Menu, DetailsSubMenu, Delete, %entry_name%
-            details_popup_handler(_details_popup_menu_name)
-        } else
-        _details_cleanup()
+    if (errors) {
+        MsgBox_error(errors)
+        Return
     }
+
+    result := exec.StdOut.ReadAll()
+    if (result == 0) {
+        global _details_handled_entries
+        _details_handled_entries.push(entry_name)
+        details_popup_handler(_details_popup_menu_name)
+    } else
+        _details_cleanup()
 }
 
 _details_cleanup() {
     global _details_popup_menu_name, _details_handled_entries
-    _details_popup_menu_name :=
-    _details_handled_entries :=
+    _details_popup_menu_name := ""
+    _details_handled_entries := ""
 }

@@ -6,10 +6,10 @@ open_from_explorer() {
     ; this is in the ComSpec built-in variable!
     path := explorer_get_path()
 
-    cmd_exe := ComSpec
-    Run, %cmd_exe% /k, %path%,, pid
+    cmd_exe := A_ComSpec
+    Run cmd_exe . " /k", path,, &pid
 
-    Sleep, 100
+    Sleep 100
     win_id := WinExist("ahk_pid " pid)
     a2tip("commandLine from Explorer: (pid: " pid " hwnd: " win_id ")`n" path)
 
