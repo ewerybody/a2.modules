@@ -1,20 +1,20 @@
 ﻿tastatur_umlaut() {
     ; trying to avoid modifier key to trigger while listening to Input
     Hotkey, # UP, charAid_umlaut_dummy
-    tt("umlaut...")
+    a2tip("umlaut...")
     Input, thiskey, L1, {LControl}{RControl}{LAlt}{RAlt}{LWin}{RWin}{AppsKey}{F1}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}{Left}{Right}{Up}{Down}{Home}{End}{PgUp}{PgDn}{Del}{Ins}{BS}{Capslock}{Numlock}{PrintScreen}{Pause}
     Hotkey, # UP, Off
-    
+
     letters := ["o", "O", "a", "A", "u", "U", "e", "E", "s", "S"]
     umlauts := ["ö", "Ö", "ä", "Ä", "ü", "Ü", "ë", "Ë", "ß", "ẞ"]
     idx := string_is_in_array(thiskey, letters)
     if (idx != 0) {
         umlaut := umlauts[idx]
-        Send, %umlaut%
-        tt("Sending " umlaut, 0.5)
+        Send(umlaut)
+        a2tip("Sending " umlaut, 0.5)
     }
     else
-        tt("...", 0.6)
+        a2tip("...", 0.6)
 }
 
 charAid_umlaut_dummy:
