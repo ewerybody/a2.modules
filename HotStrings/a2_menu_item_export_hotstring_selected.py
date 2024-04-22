@@ -30,7 +30,7 @@ def main(a2, mod):
     file_type = '*' + os.path.splitext(file_path)[1].lower()
     if file_type == AHK:
         hs_scopes = hotstrings_io.groups_to_scopes(groups)
-        code = hotstrings_io.dict_to_ahkcode(hs_scopes)
+        code = hotstrings_io.dict_to_ahk_code(hs_scopes)
         a2util.write_utf8(file_path, code)
     elif file_type == JSON:
         a2util.json_write(file_path, groups)

@@ -22,7 +22,7 @@ def main(a2, mod):
     groups = mod.get_user_cfg().get(Args.hotstrings, {}).get(Args.groups, {})
     if file_type == AHK:
         hs_scopes = hotstrings_io.groups_to_scopes(groups)
-        code = hotstrings_io.dict_to_ahkcode(hs_scopes)
+        code = hotstrings_io.dict_to_ahk_code(hs_scopes)
         a2util.write_utf8(file_path, code)
     elif file_type == JSON:
         a2util.json_write(file_path, groups)

@@ -226,7 +226,7 @@ class Draw(DrawCtrl):
         self.set_user_value(self.user_cfg)
 
         hs_dict = hotstrings_io.groups_to_scopes(self.groups)
-        hotstrings_code = hotstrings_io.dict_to_ahkcode(hs_dict)
+        hotstrings_code = hotstrings_io.dict_to_ahk_code(hs_dict)
         code_hash = hashlib.sha1(hotstrings_code.encode('utf8')).hexdigest()
         if code_hash == self._hs_code_b4:
             return
