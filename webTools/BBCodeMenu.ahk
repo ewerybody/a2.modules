@@ -3,17 +3,16 @@
 ; nix markiert: kommt der cursor dann in die >< ansonsten kommt das markierte dazwischen
 ; ist ein link markiert wird der auch ins href geschrieben und der cursor zw. >< positioniert
 
-BBCodeMenu(){
+BBCodeMenu() {
     ; add menu entries on demand...
-	Menu, BBCodeMenu, Add, IMG, BBCodeMenuHandler
-	Menu, BBCodeMenu, Add, URL, BBCodeURLHandler
-	Menu, BBCodeMenu, Add, QUOTE, BBCodeMenuHandler
-    Menu, BBCodeMenu, Add, B, BBCodeMenuHandler
-	Menu, BBCodeMenu, Add, <kbd>, BBCodeKBDHandler
-	Menu, BBCodeMenu, Show
-	Menu, BBCodeMenu, DeleteAll
+    BBCode_Menu := Menu()
+	BBCode_Menu.Add("IMG", BBCodeMenuHandler)
+	BBCode_Menu.Add("URL", BBCodeURLHandler)
+	BBCode_Menu.Add("QUOTE", BBCodeMenuHandler)
+    BBCode_Menu.Add("B", BBCodeMenuHandler)
+	BBCode_Menu.Add("<kbd>", BBCodeKBDHandler)
+	BBCode_Menu.Show()
 }
-
 
 BBCodeMenuHandler() {
 	sel := clipboard_get()
@@ -26,36 +25,36 @@ BBCodeURLHandler() {
 	sel := clipboard_get()
 	If (string_is_web_address(sel))
 	{
-		tt("selection is URL",1)
+		a2tip("selection is URL",1)
 		clipboard_paste( "[URL=" sel "][/URL]" )
-		SendInput, {Left 6}
+		SendInput "{Left 6}"
 	}
 	; if clipboard already contains a URL put that in the [URL= and the selection between ][/URL]
 	Else If (string_is_web_address(Clipboard))
 	{
-		tt("Clipboard is URL",1)
+		a2tip("Clipboard is URL",1)
 		code := "[URL=" Clipboard "]" sel "[/URL]"
 		clipboard_paste(code)
-		SendInput, {Left 6}
+		SendInput "{Left 6}"
 	}
 	; otherwise just put the selected into the ><
 	Else
 	{
-		tt("otherwise...",1)
+		a2tip("otherwise...",1)
 		code := "[URL=]" sel "[/URL]"
 		clipboard_paste(code)
-		StringLen, hLen, sel
+		hLen := StrLen(sel)
 		hLen += 7
-		SendInput, {Left %hLen%}
+		SendInput "{Left " . hLen . "}"
 	}
 }
 
 
 BBCodeKBDHandler() {
 	sel := clipboard_get()
-	code := "<kbd>" sel "</kbd>"
+	code := "<kbd>" . sel . "</kbd>"
 	clipboard_paste(code)
-	StringLen, sel_len, sel
+	sel_len := StrLen(sel)
 	; hLen += 7
-	SendInput, {Left 6}+{Left %sel_len%}
+	SendInput "{Left 6}+{Left " . sel_len . "}"
 }

@@ -33,8 +33,9 @@ gtranslate(from="en", to="de") {
     }
     else if string_is_web_address(__gtranslate_search) {
         if gtranslate_ask_website_translate {
-            MsgBox, 1, Translate whole webpage?, Open translate.google.com with selected URL`nto have the whole page translated`n%from% > %to%?
-            IfMsgBox Cancel
+            msg := "Open translate.google.com with selected URL`n"
+            msg .= "to have the whole page translated`n" . from . " > " . to ."?"
+            if !msgbox_accepted(msg , "Translate whole webpage?")
                 return
         }
         url := "https://translate.google.com/translate"
@@ -43,7 +44,7 @@ gtranslate(from="en", to="de") {
         url .= "&js=y&prev=_t&hl=en&ie=UTF-8&u="
         url .= uri_encode(__gtranslate_search)
         url .= "&edit-text=&act=url"
-        Run, %url%
+        Run(url)
         return
     }
 
@@ -51,7 +52,7 @@ gtranslate(from="en", to="de") {
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to) ; translate
 
     if (__gtranslation == "")
-        MsgBox No tranlation found for "%__gtranslate_search%".`nAre you connected to the internet?
+        msgbox_error('No tranlation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
     else {
         icon_copy := path_join(a2.paths.resources, "copy.ico")
         icon_paste := path_join(a2.paths.resources, "paste.ico")
@@ -59,7 +60,7 @@ gtranslate(from="en", to="de") {
         icon_audio := path_join(a2.paths.resources, "volume_up.ico")
 
         max_menu_chars := 64
-        if StringLen(__gtranslation) > max_menu_chars
+        if StrLen(__gtranslation) > max_menu_chars
             menu_label := "Paste """ SubStr(__gtranslation, 1, max_menu_chars) "..."
         else
             menu_label := "Paste """ __gtranslation """"

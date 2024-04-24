@@ -12,13 +12,13 @@ uniformat_main() {
     for name, file_name in _uniformat_get_set_names()
         menu_list[file_name] := name
     ; menu_list is automatically sorted now
+    UniFormatMenu := Menu()
     for i, name in menu_list
-        Menu, UniFormatMenu, Add, %name%, _uniformat_handler
+        UniFormatMenu.Add(name, _uniformat_handler)
 
-    Menu, UniFormatMenu, Add
-    Menu, UniFormatMenu, Add, Cancel, _uniformat_handler
-    Menu, UniFormatMenu, Show
-    Menu, UniFormatMenu, DeleteAll
+    UniFormatMenu.Add()
+    UniFormatMenu.Add("Cancel", _uniformat_handler)
+    UniFormatMenu.Show()
 }
 
 _uniformat_handler(menu_name) {
@@ -40,25 +40,21 @@ uniformat_replace(set_name) {
     _uniformat_selection :=
     count := 0
 
-    current_case := A_StringCaseSense
-    if !data.case
-        StringCaseSense, On
-
     ; To prevent double replacements we look up the replacing chars to see
     ; if they appear in the trigger ones to replace these by position later.
     replace_by_pos := []
-    Loop, % data.num_letters
+    Loop(data.num_letters)
         if (string_is_in_array(data.replacements[A_Index], data.letters, A_Index))
             replace_by_pos.push(data.letters[A_Index])
 
     ; Perform StrReplace for all matching characters
     placeholders := {}
-    Loop, % data.num_letters
+    Loop(data.num_letters)
     {
         if InStr(new_string, data.letters[A_Index], !data.case) {
             count++
             if (string_is_in_array(data.letters[A_Index], replace_by_pos)) {
-                Loop, 42
+                Loop(42)
                 {
                     placeholder := "<$$" string_random(10) "%%>"
                     if (!InStr(new_string, placeholder))
@@ -75,9 +71,6 @@ uniformat_replace(set_name) {
     ; Replace again any placeholders we assigned
     for placeholder, replacement in placeholders
         new_string := StrReplace(new_string, placeholder, replacement)
-
-    if !data.case
-        StringCaseSense, %current_case%
 
     if data.reverse
         new_string := string_reverse(new_string)
@@ -110,8 +103,8 @@ uniformat_get_letters(set_name) {
     args := ["case", "reverse", "shrink", "onebyone"]
     trim_chars := ["#", " "]
 
-    FileEncoding, UTF-8
-    Loop, Read, %letters_file%
+    FileEncoding "UTF-8"
+    Loop Read, letters_file
     {
         line := Trim(A_LoopReadLine)
         if !line
@@ -141,8 +134,8 @@ _uniformat_get_set_names() {
     if (!_uniformat_names) {
         _uniformat_names := {}
         sets_pattern := path_join(path_neighbor(A_LineFile, "sets"), "*.txt")
-        FileEncoding, UTF-8
-        Loop, Files, % sets_pattern
+        FileEncoding "UTF-8"
+        Loop Files, sets_pattern
         {
             if (string_startswith(A_LoopFileName, "_ ") and !uniformat_show_wip)
                 Continue

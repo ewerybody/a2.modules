@@ -7,7 +7,7 @@ texTools_upper() {
     if (!sel)
         Return
 
-    StringUpper, sel, sel
+    sel := StrUpper(sel)
     clipboard_paste(sel)
     _texTools_reselect(sel)
 }
@@ -17,7 +17,7 @@ texTools_lower() {
     if (!sel)
         Return
 
-    StringLower, sel, sel
+    sel := StrLower(sel)
     clipboard_paste(sel)
     _texTools_reselect(sel)
 }
@@ -28,14 +28,13 @@ texTools_random_case() {
         Return
 
     new := ""
-    Loop, % StrLen(sel)
+    Loop(StrLen(sel))
     {
         letter := SubStr(sel, A_Index , 1)
-        Random, rand, 0, 1
-        if (rand)
-            StringLower, letter, letter
+        if (Random(0, 1))
+            letter := StrLower(letter)
         else
-            StringUpper, letter, letter
+            letter := StrUpper(letter)
         new .= letter
     }
     clipboard_paste(new)
@@ -51,7 +50,7 @@ _texTools_selection() {
     Return sel
 }
 
-_textools_reselect(ByRef string) {
-    len := StringLen(string)
-    SendInput, +{Left %len%}
+_textools_reselect(string) {
+    len := StrLen(string)
+    SendInput("+{Left " . len . "}")
 }

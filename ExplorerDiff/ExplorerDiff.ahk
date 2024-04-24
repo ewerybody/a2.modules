@@ -19,15 +19,15 @@ ExplorerDiff() {
         Return
     }
 
-    if (paths.Length() == 2) {
+    if (paths.Length == 2) {
         _ExplorerDiff(paths)
         Return
     }
-    if (!paths.Length())
+    if (!paths.Length)
         paths.Push(explorer_get_path())
 
-    a2log_debug("paths.Length(): " paths.Length(), "ExplorerDiff")
-    if (paths.Length() == 1) {
+    a2log_debug("paths.Length(): " paths.Length, "ExplorerDiff")
+    if (paths.Length == 1) {
         global _ExplorerDiff_WaitForPath
         if (_ExplorerDiff_WaitForPath == paths[1])
             Return
@@ -66,9 +66,9 @@ _ExplorerDiff(files) {
 
 _ExplorerDiff_Wait() {
     global _ExplorerDiff_WaitForPath
-    Sleep, 300
+    Sleep 300
 
-    SetTimer, _ExplorerDiff_Wait_Call, 30
+    SetTimer _ExplorerDiff_Wait_Call, 30
 
     _ExplorerDiff_Wait_Call:
         if (GetKeyState("Escape", "p") == "D") {
@@ -78,7 +78,7 @@ _ExplorerDiff_Wait() {
 
         if (!_ExplorerDiff_WaitForPath) {
             a2tip()
-            SetTimer, _ExplorerDiff_Wait_Call, Off
+            SetTimer _ExplorerDiff_Wait_Call, Off
             Return
         }
 
@@ -112,20 +112,20 @@ ExplorerDiff_Files(files) {
     }
 
     a2tip("ExplorerDiff: reading file 1 ...", 60)
-    FileRead, contents, %file1%
+    contents := FileRead(file1)
     lines1 := []
-    Loop, parse, contents, `n
+    Loop parse, contents, "`n"
         lines1.Insert(A_LoopField)
 
     a2tip("ExplorerDiff: reading file 2 ...", 60)
-    FileRead, contents, %file2%
+    contents := FileRead(file2)
     lines2 := []
-    Loop, parse, contents, `n
+    Loop parse, contents, "`n"
         lines2.Insert(A_LoopField)
-    contents :=
+    contents := ""
 
-    if (lines1.Length() != lines2.Length()) {
-        a2tip("ExplorerDiff: Different line lenghts ... (" lines1.Length() "/" lines2.Length() ")")
+    if (lines1.Length != lines2.Length) {
+        a2tip("ExplorerDiff: Different line lenghts ... (" lines1.Length "/" lines2.Length ")")
         ExplorerDiff_Run(files)
         Return
     }
@@ -133,7 +133,7 @@ ExplorerDiff_Files(files) {
     a2tip("ExplorerDiff: Same size, testing line by line ...")
     identical := true
     len := 0
-    Loop % lines1.Length()
+    Loop lines1.Length
     {
         len += StrLen(line1)
         if (lines1[A_Index] != lines2[A_Index]) {

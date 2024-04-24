@@ -30,7 +30,7 @@ getWinfo() {
     max_menu_label_len := 64
     cmd_line := getWinfoCmdLine(thisPID, this_path)
     if (cmd_line) {
-        if (StringLen(cmd_line) > max_menu_label_len) {
+        if (StrLen(cmd_line) > max_menu_label_len) {
             display_line := SubStr(cmd_line, 1, max_menu_label_len) "..."
         }
         else

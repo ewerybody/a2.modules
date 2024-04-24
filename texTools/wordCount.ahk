@@ -6,7 +6,7 @@
     }
 
     words := StrSplit(txt, [A_Tab, A_Space, "`n", "`r"])
-	StringLen, length, txt
+	length := StrLen(txt)
     lines := StrSplit(txt, "`n")
 
     msg := "wordCount: " words.MaxIndex() "`n"

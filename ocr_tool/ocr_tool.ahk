@@ -17,7 +17,7 @@ _ocr_tool_dragging(data) {
     ; Tooltip while dragging? We would first need to make sure that the
     ; tool is not reading itself! :D ie when you drag to the top left
     ; text := teadrinkerocr(data)
-    ; tt(StringLen(text) ": " text, 1)
+    ; a2tip(StrLen(text) ": " text, 1)
 }
 
 _ocr_tool_end(data) {
@@ -38,7 +38,7 @@ _ocr_tool_read(data) {
 
     if (text) {
         Clipboard := text
-        a2tip("OCR Tool (" source "): put " StringLen(text) " characters to Clipboard`n" SubStr(text, 1, 100))
+        a2tip("OCR Tool (" source "): put " StrLen(text) " characters to Clipboard`n" SubStr(text, 1, 100))
     } else
         a2tip("OCR Tool (" source "): Nothing recognized! :/")
 }
@@ -51,12 +51,12 @@ _ocr_tool_start(data) {
 _orc_tool_call(rect, lang) {
     script_path := path_join(a2.paths.ahklib, "teadrinkerocr.ahk")
     shell := ComObjCreate("WScript.Shell")
-    cmd = "%A_AhkPath%" "%script_path%"
+    cmd := '"' . A_AhkPath . '" "' . script_path . '"'
     cmd .= " " rect.x " " rect.y " " rect.w " " rect.h " " lang
     exec := shell.Exec(cmd)
-    sleep, 200
+    sleep 200
     stderr := exec.StdErr.ReadAll()
     if stderr
-        MsgBox, 16, ERROR, %Options%
+        msgbox_error(Options)
     return exec.StdOut.ReadAll()
 }
