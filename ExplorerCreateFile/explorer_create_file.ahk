@@ -9,7 +9,7 @@ explorer_create_file_popup() {
 
     if !explorer_create_file_data
     {
-        msgbox_error("Please open the user interface of ""ExplorerCreateFile"" and add at least one file type."
+        msgbox_error('Please open the user interface of "ExplorerCreateFile" and add at least one file type.'
         , "No files set up!")
         Return
     }
@@ -42,8 +42,8 @@ explorer_create_file_handler(menu_name) {
 
     if (data["ask"])
     {
-        title := "ExplorerCreateFile: New """ menu_name """ file ..."
-        if !explorer_create_file_dialog(file_name, dir_path, ext, """" menu_name """ file", title)
+        title := 'ExplorerCreateFile: New "' . menu_name '" file ...'
+        if !explorer_create_file_dialog(file_name, dir_path, ext, '"' . menu_name '" file', title)
             Return
     }
     if !file_name
@@ -60,7 +60,7 @@ explorer_create_file_handler(menu_name) {
     } catch err {
         Sleep 50
         if !FileExist(file_path) {
-            msgbox_error("Could not create file """ file_name """ with encoding """ encoding """"
+            msgbox_error('Could not create file "' . file_name . '" with encoding "' . encoding . '"'
             , "ExplorerCreateFile: ERROR")
             a2log_debug("File not created! A_LastError:" A_LastError, "ExplorerCreateFile")
             Return

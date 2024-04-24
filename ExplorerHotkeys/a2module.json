@@ -104,7 +104,7 @@
         "disablable": false,
         "enabled": true,
         "functionMode": 2,
-        "functionSend": "Send, {Browser_Forward}",
+        "functionSend": "Send \"{Browser_Forward}\"",
         "key": [
           "Shift+Wheelup"
         ],
@@ -123,7 +123,7 @@
         "disablable": false,
         "enabled": true,
         "functionMode": 2,
-        "functionSend": "Send, {Browser_Back}",
+        "functionSend": "Send \"{Browser_Back}\"",
         "key": [
           "Shift+Wheeldown"
         ],
@@ -172,8 +172,8 @@
     "enabled": false,
     "functionCode": "ExplorerHotkeys_NavOnOff()",
     "functionMode": 0,
-    "functionSend": "Send, {Alt}vn{Enter}",
-    "functionURL": "Run, ",
+    "functionSend": "Send '{Alt}vn{Enter}'",
+    "functionURL": "Run ",
     "key": "Alt+N",
     "keyChange": true,
     "label": "Toggle Navigation Panel (Experimental)",
@@ -194,10 +194,9 @@
   {
     "disablable": true,
     "enabled": false,
-    "functionCode": "a2tip(\"Explorer Up\")\nSend, !{Up}",
+    "functionCode": "a2tip(\"Explorer Up\")\nSend \"!{Up}\"",
     "functionMode": 0,
-    "functionSend": "SendRaw, a2tip(\"!{Up}\")\nSend, !{Up}",
-    "functionURL": "Run, un, .",
+    "functionSend": "SendRaw 'a2tip(\"!{Up}\")\nSend, !{Up}'",
     "key": "XButton1",
     "keyChange": true,
     "label": "Go \"Up\" instead of Back",

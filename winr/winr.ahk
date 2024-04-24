@@ -3,7 +3,7 @@ winr() {
     selection := clipboard_get()
     selection := trim(selection, " `n`t`r")
 
-    if string_startswith(selection, "u'") OR string_startswith(selection, "u""")
+    if string_startswith(selection, "u'") OR string_startswith(selection, 'u"')
         selection := substr(selection, 2)
     selection := string_unquote(selection)
     selection := string_unquote(selection, "'")

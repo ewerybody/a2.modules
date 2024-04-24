@@ -17,7 +17,7 @@ getWinfo() {
 
     wInfoMenu := Menu()
     wInfoMenu.Add("title: " . this_title, getWinfoMenuHandler)
-    wInfoMenu.Add("class: ". this_class, getWinfoMenuHandler)
+    wInfoMenu.Add("class: " . this_class, getWinfoMenuHandler)
     wInfoMenu.Add("hwnd: " . getWinfoID, getWinfoMenuHandler)
     wInfoMenu.Add("pid: " . thisPID, getWinfoMenuHandler)
     wInfoMenu.Add("process: " . this_process, getWinfoMenuHandler)
@@ -36,14 +36,14 @@ getWinfo() {
         else
             display_line := cmd_line
 
-        wInfoMenu.Add("commandline: ". display_line, getWinfoCopyCmdLinePath)
+        wInfoMenu.Add("commandline: " . display_line, getWinfoCopyCmdLinePath)
         if FileExist(cmd_line)
             wInfoMenu.Add("Explore to Command line path", getWinfoGotoCmdLinePath)
     }
 
     ctrl_list := getWinfoCtrls()
     if (ctrl_list.Length) {
-        wInfoMenu.Add("Controls: ". ctrl_list.Length . " ( click to show ... )", getWinfoCtrlsHandler)
+        wInfoMenu.Add("Controls: " . ctrl_list.Length . " ( click to show ... )", getWinfoCtrlsHandler)
         wInfoMenu.Add("Copy All Control Info", getWinfoCopyCtrlsHandler)
     }
     else {
@@ -74,18 +74,17 @@ getWinfo() {
 }
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
-getWinfoMenuHandler:
-    getWinfoID := A_ThisMenuItem
+getWinfoMenuHandler(getWinfoID, *) {
     if (getWinfoID == "Cancel")
         Return
     iTmp := InStr(getWinfoID, A_Space)
     getWinfoID := SubStr(getWinfoID, 1, iTmp + 1)
     Clipboard := getWinfoID
     a2tip(getWinfoID, 0.5)
-return
+}
 
 ; to recover lost windows
-getWinfoSetToCursor:
+getWinfoSetToCursor(*) {
     CoordMode "Mouse", "Screen"
     MouseGetPos &mousex, &mousey
     a2tip(getWinfoID " to " mousex "x" mousey, 2)
@@ -93,7 +92,7 @@ getWinfoSetToCursor:
     WinActivate("ahk_id " . getWinfoID)
     WinWait("ahk_id " . getWinfoID)
     WinMove(mousex - 30, mousey - 10,,, "ahk_id " . getWinfoID)
-return
+}
 
 ; Get array of current windows control names.
 getWinfoCtrls() {
@@ -134,11 +133,7 @@ getWinfoCtrlsHandler() {
     ctrlSubmenu.Show()
 }
 
-getWinfoCopyCtrlsHandler:
-    getWinfoCopyCtrlsHandler(getWinfoID)
-Return
-
-getWinfoCopyCtrlsHandler(getWinfoID) {
+getWinfoCopyCtrlsHandler(*) {
     ctrlList := getWinfoCtrls()
 
     texttmp := ""

@@ -10,8 +10,8 @@ explorer_create_on_paste() {
 
     for i, image_type in ["png", "jpeg"]
     {
-        base64_id := "<img src=""data:image/" image_type ";base64,"
-        if string_startswith(Clipboard, base64_id) AND string_endswith(Clipboard, """>")
+        base64_id := '<img src="data:image/' . image_type . ";base64,"
+        if string_startswith(Clipboard, base64_id) AND string_endswith(Clipboard, '">')
         {
             _explorer_create_from_base64(current_path, base64_id, image_type)
             Return
@@ -121,7 +121,7 @@ _explorer_create_finish(file_name) {
     ; if explorer_try_select(file_name)
     ;     Return
 
-    msgbox_error("Could not create file """ file_name """!", "ExplorerCreateFile: ERROR")
+    msgbox_error('Could not create file "' . file_name '"!', "ExplorerCreateFile: ERROR")
 }
 
 

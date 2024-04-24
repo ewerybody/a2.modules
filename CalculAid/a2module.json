@@ -63,7 +63,7 @@
   {
     "disablable": true,
     "enabled": true,
-    "functionCode": "WinClose, A",
+    "functionCode": "WinClose(\"A\")",
     "functionMode": 0,
     "functionSend": "",
     "functionURL": "",
