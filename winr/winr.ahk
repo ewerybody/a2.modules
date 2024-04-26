@@ -1,3 +1,5 @@
+#include <clipboard>
+
 winr() {
     global winr_paths
     selection := clipboard_get()
@@ -69,7 +71,7 @@ winr_CatchedCallRun(path) {
         catch
         {
             explorer_show(path)
-            a2tip_add("but I cound not 'Run' it!`nExploring to ...:", 1.5)
+            a2tip("Cound not 'Run' path!`nExploring to ...:", 1.5)
         }
     }
 }

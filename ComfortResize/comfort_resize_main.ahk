@@ -71,7 +71,7 @@ comfort_resize_main() {
 
         ; as long as button is pressed [D]own
         If (cr_Button == "D") {
-            If cr_MouseKey = 9 AND cr_LButton <> D
+            If cr_MouseKey = 9 AND cr_LButton != "D"
                 continue
 
             ; aktuelle Mausposition bestimmen
@@ -90,12 +90,12 @@ comfort_resize_main() {
             {
                 cr_RasterXtmp := StrReplace(cr_RasterX, ":", "/")
                 cr_RasterYtmp := StrReplace(cr_RasterY, ":", "/")
-                If InString(cr_RasterXtmp, "/")
+                If InStr(cr_RasterXtmp, "/")
                 {
                     cr_RasterXtmp := StrSplit(cr_RasterXtmp, "/")
                     cr_RasterXtmp := Round(work_area.width * cr_RasterXtmp[1] / cr_RasterXtmp[2])
                 }
-                IfInString cr_RasterYtmp, /
+                If InStr(cr_RasterYtmp, "/")
                 {
                     cr_RasterYtmp := StrSplit(cr_RasterYtmp, "/")
                     cr_RasterYtmp := Round(work_area.height * cr_RasterYtmp[1] / cr_RasterYtmp[2])
@@ -227,7 +227,7 @@ comfort_resize_main() {
             }
 
             ; Bei Stillstand Fenster neu zeichen, wodurch "Schlieren" entfernt werden
-            If (cr_LastX <> cr_WinX1 OR cr_LastY <> cr_WinY1 OR cr_LastW <> cr_WinW OR cr_LastH <> cr_WinH) {
+            If (cr_LastX != cr_WinX1 OR cr_LastY != cr_WinY1 OR cr_LastW != cr_WinW OR cr_LastH != cr_WinH) {
                 ; Zeichenverzoegerung je nach Voreinstellung
                 If cr_SlowMovement = 1
                     SetWinDelay 30

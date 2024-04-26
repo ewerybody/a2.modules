@@ -153,6 +153,6 @@ ExplorerDiff_Files(files) {
 
 
 ExplorerDiff_Run(files) {
-    cmd := """" ExplorerDiff_Path """ """ files[1] """ """ files[2] """"
+    cmd := '"' . ExplorerDiff_Path . '" "' . files[1] . '" "' . files[2] . '"'
     Run(cmd)
 }

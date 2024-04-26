@@ -11,7 +11,7 @@ explorer_create_on_paste() {
     for i, image_type in ["png", "jpeg"]
     {
         base64_id := '<img src="data:image/' . image_type . ";base64,"
-        if string_startswith(Clipboard, base64_id) AND string_endswith(Clipboard, '">')
+        if string_startswith(A_Clipboard, base64_id) AND string_endswith(A_Clipboard, '">')
         {
             _explorer_create_from_base64(current_path, base64_id, image_type)
             Return
@@ -33,7 +33,7 @@ explorer_create_on_paste() {
 
 _explorer_create_from_base64(current_path, base64_id, image_type) {
     baselen := StrLen(base64_id)
-    base64 := Substr(Clipboard, baselen + 1, StrLen(Clipboard) - baselen - 2)
+    base64 := Substr(A_Clipboard, baselen + 1, StrLen(A_Clipboard) - baselen - 2)
     default_ext := "." image_type
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
     title := "ExplorerCreateFile: Image from Clipboard base64 " image_type " data"
@@ -92,7 +92,7 @@ _explorer_create_from_text(current_path) {
     ; Renaming and writing into Address bar is hard to detect.
     default_ext := ".txt"
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultFileName, default_ext)
-    title := "ExplorerCreateFile: File from Clipboard contents (" StrLen(ClipBoard) " bytes)"
+    title := "ExplorerCreateFile: File from Clipboard contents (" StrLen(A_Clipboard) " bytes)"
     subtitle := "The extension might be anything. By default it'll be .txt."
     if !explorer_create_file_dialog(file_name, current_path, default_ext, "Text file", title, subtitle)
         Return
@@ -103,7 +103,7 @@ _explorer_create_from_text(current_path) {
     file_path := _append_default_ext(current_path, &file_name, default_ext)
 
     File := FileOpen(file_path, "w")
-    File.Write(Clipboard)
+    File.Write(A_Clipboard)
 
     _explorer_create_finish(file_name)
 }

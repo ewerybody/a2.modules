@@ -1,3 +1,5 @@
+#include <icon>
+
 explorer_create_file_popup() {
     ; Provide a menu popup to aid simple file creation.
 
@@ -23,7 +25,7 @@ explorer_create_file_popup() {
     {
         ; Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
         ExplorerCreateFileMenu.Add(name, explorer_create_file_handler)
-        _explorer_create_file_add_menu_icon(name, data)
+        _explorer_create_file_add_menu_icon(name, data, ExplorerCreateFileMenu)
     }
     ExplorerCreateFileMenu.Show()
     ExplorerCreateFileMenu.Delete()
@@ -57,7 +59,7 @@ explorer_create_file_handler(menu_name) {
     content := data["content"]
     try {
         FileAppend(content, file_path, encoding)
-    } catch err {
+    } catch Error {
         Sleep 50
         if !FileExist(file_path) {
             msgbox_error('Could not create file "' . file_name . '" with encoding "' . encoding . '"'
