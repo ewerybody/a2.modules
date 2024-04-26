@@ -1,6 +1,7 @@
 ﻿; getWinfo - window information tool
 ; gathers title, process Id, handle, class, size, positon and controls information
 ; in a menu that you can click to get the item in your clipboard
+#include <window>
 
 getWinfo() {
     a2tip("getting Winfo ...")
@@ -51,7 +52,7 @@ getWinfo() {
         wInfoMenu.Disable("No Controls Here")
     }
 
-    window_get_rect(X, Y, Width, Height, getWinfoID)
+    window_get_rect(&X, &Y, &Width, &Height, getWinfoID)
     CoordMode "Mouse", "Screen"
     MouseGetPos &mouseX, &mouseY
     wInfoPosMenu := Menu()
@@ -74,13 +75,13 @@ getWinfo() {
 }
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
-getWinfoMenuHandler(getWinfoID, *) {
-    if (getWinfoID == "Cancel")
+getWinfoMenuHandler(menu_text, *) {
+    if (menu_text == "Cancel")
         Return
-    iTmp := InStr(getWinfoID, A_Space)
-    getWinfoID := SubStr(getWinfoID, 1, iTmp + 1)
-    Clipboard := getWinfoID
-    a2tip(getWinfoID, 0.5)
+    pos := InStr(menu_text, A_Space)
+    menu_text := SubStr(menu_text, pos + 1)
+    A_Clipboard := menu_text
+    a2tip(menu_text, 0.5)
 }
 
 ; to recover lost windows
@@ -100,7 +101,7 @@ getWinfoCtrls() {
 }
 
 ; Display windows controls and details in menu.
-getWinfoCtrlsHandler() {
+getWinfoCtrlsHandler(*) {
     global getWinfoID
 
     ctrlList := getWinfoCtrls()
@@ -143,10 +144,10 @@ getWinfoCopyCtrlsHandler(*) {
         thisCtrlText := SubStr(thisCtrlText, 1, 250)
         texttmp .= ctrl . " " . thisCtrlID . " " . thisCtrlText "`n"
     }
-    Clipboard := texttmp
+    A_Clipboard := texttmp
 }
 
-getWinfoGotoPath() {
+getWinfoGotoPath(*) {
     global getWinfoID
     this_path := WinGetProcessPath("ahk_id " . getWinfoID)
     explorer_show(this_path)
@@ -187,10 +188,10 @@ _getWinfo_get_cmdline_path_from_id() {
 }
 
 
-getWinfoGotoCmdLinePath() {
+getWinfoGotoCmdLinePath(*) {
     explorer_show(_getWinfo_get_cmdline_path_from_id())
 }
 
-getWinfoCopyCmdLinePath() {
-    Clipboard := _getWinfo_get_cmdline_path_from_id()
+getWinfoCopyCmdLinePath(*) {
+    A_Clipboard := _getWinfo_get_cmdline_path_from_id()
 }
