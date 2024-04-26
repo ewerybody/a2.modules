@@ -1,4 +1,7 @@
 ; ExplorerHotkeys
+#include <processes>
+#include <window>
+#include <windows>
 
 ExplorerHotkeys_CallExplorer() {
     global ExplorerHotkeys_CallExplorerPath
@@ -49,7 +52,8 @@ ExplorerHotkeys_ToggleExtensions() {
 
 ExplorerHotkeys_Refresh() {
     win_class := WinGetClass("A")
-    If (win_class = "#32770" OR (WinVer >= WIN_VISTA)) {
+    win_ver := windows_get_version()
+    If (win_class = "#32770" OR (win_ver >= WIN_VISTA)) {
         Send "{F5}"
     } Else {
         PostMessage 0x111, 28931,,, "A"
@@ -97,7 +101,7 @@ ExplorerHotkeys_ReloadAll() {
 
     for i, pid in pids
     {
-        a2tip_add("Closing PID: " pid)
+        a2tip("Closing PID: " pid)
         ProcessClose(pid)
     }
 

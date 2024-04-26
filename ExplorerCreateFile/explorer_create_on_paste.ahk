@@ -1,3 +1,6 @@
+#include <Gdip_all>
+#include <LC>
+
 explorer_create_on_paste() {
     ; Ensure default Explorer behaviour with files in clipboard.
     if WinClip.GetFiles()
@@ -19,7 +22,7 @@ explorer_create_on_paste() {
     }
 
     token := gdip_startup()
-    bitmap := gdipbitmap_from_clipboard()
+    bitmap := Gdip_CreateBitmapFromClipboard()
     if _is_bitmap(bitmap) {
         _explorer_create_from_clip_bitmap(current_path, bitmap)
         Return
@@ -79,7 +82,7 @@ _explorer_create_from_clip_bitmap(current_path, bitmap) {
     file_path := path_join(current_path, file_name)
 
     a2tip("Creating image from clipboard ...")
-    gdipbitmap_to_file(bitmap, file_path)
+    Gdip_SaveBitmapToFile(bitmap, file_path)
     gdip_shutdown(token)
 
     _explorer_create_finish(file_name)
