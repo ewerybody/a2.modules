@@ -96,7 +96,6 @@ comfort_resize_main() {
 
             ; Verschiebung der Maus innerhalb dieser Schleife ermitteln
             cr_OffsetX := cr_X3 - mouse_x, cr_OffsetY := cr_Y3 - mouse_y
-
             cr_DistanceX := cr_DistanceX + cr_OffsetX
             cr_DistanceY := cr_DistanceY + cr_OffsetY
 
@@ -234,7 +233,6 @@ comfort_resize_main() {
                     tt_text := "Position (" cr_WinX1 "," cr_WinY1 ")`n"
                 if (!is_center AND comfort_resize_show_tooltip_size)
                     tt_text := tt_text "Size (" cr_WinW "," cr_WinH ")"
-                tt_text .= "`ncr_AlwaysMoveNonActive: " cr_AlwaysMoveNonActive "`nWinActive(ahk_id): " WinActive(ahk_id)
                 if tt_text
                     Tooltip(tt_text)
             }
