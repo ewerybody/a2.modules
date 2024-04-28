@@ -14,7 +14,7 @@ commandLine_invoke() {
     Send("{ESC}")
 
     cl_CommandParameterC := "/k"
-    cmd_exe := ComSpec
+    cmd_exe := A_ComSpec
     if (hidden) {
         cmd := SubStr(cmd, 3)
         Run cmd_exe . " " . cl_CommandParameterC . " " . cmd, path, "hide"

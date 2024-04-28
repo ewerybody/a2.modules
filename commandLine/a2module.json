@@ -7,14 +7,14 @@
     "tags": [],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/commandLine#commandLine",
-    "version": "0.5"
+    "version": "0.6"
   },
   {
     "children": [
       {
         "disablable": true,
         "enabled": false,
-        "functionCode": "WinClose",
+        "functionCode": "WinClose(\"A\")",
         "functionMode": 0,
         "functionURL": "Run, ",
         "key": "Ctrl+W",
@@ -24,7 +24,8 @@
         "multiple": false,
         "name": "commandLine_closeHotkeyCtrlW",
         "scope": [
-          "ahk_class ConsoleWindowClass"
+          "ahk_class ConsoleWindowClass",
+          "ahk_exe WindowsTerminal.exe"
         ],
         "scopeChange": true,
         "scopeMode": 1,
@@ -33,7 +34,7 @@
       {
         "disablable": true,
         "enabled": true,
-        "functionCode": "WinClose",
+        "functionCode": "WinClose(\"A\")",
         "functionMode": 0,
         "key": "Esc",
         "keyChange": false,
@@ -42,7 +43,8 @@
         "multiple": false,
         "name": "commandLine_closeHotkeyEsc",
         "scope": [
-          "ahk_class ConsoleWindowClass"
+          "ahk_class ConsoleWindowClass",
+          "ahk_exe WindowsTerminal.exe"
         ],
         "scopeChange": true,
         "scopeMode": 1,
@@ -51,7 +53,7 @@
       {
         "disablable": true,
         "enabled": false,
-        "functionCode": "WinClose",
+        "functionCode": "WinClose(\"A\")",
         "functionMode": 0,
         "functionURL": "Run, ",
         "key": "Alt+F4",
@@ -61,7 +63,8 @@
         "multiple": false,
         "name": "commandLine_closeHotkeyAltF4",
         "scope": [
-          "ahk_class ConsoleWindowClass"
+          "ahk_class ConsoleWindowClass",
+          "ahk_exe WindowsTerminal.exe"
         ],
         "scopeChange": true,
         "scopeMode": 1,
