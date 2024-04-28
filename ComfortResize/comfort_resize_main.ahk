@@ -3,20 +3,6 @@
 ; author: eric
 ; created: 2019 4 19
 
-comfort_resize_init() {
-    ; All variables for the 9 regions from the combinations of
-    ; Up/Down, Left/Right and Center
-    global cr_CurDownCenter := IDC_SIZENS
-    global cr_CurUpCenter := IDC_SIZENS
-    global cr_CurCenterLeft := IDC_SIZEWE
-    global cr_CurCenterRight := IDC_SIZEWE
-    global cr_CurUpRight := IDC_SIZENESW
-    global cr_CurDownLeft := IDC_SIZENESW
-    global cr_CurDownRight := IDC_SIZENWSE
-    global cr_CurUpLeft := IDC_SIZENWSE
-    global cr_CurCenterCenter := IDC_SIZEALL
-}
-
 comfort_resize_main() {
     ; get mouse position relative to screen
     CoordMode "Mouse", "Screen"
@@ -35,16 +21,12 @@ comfort_resize_main() {
     ; remember the current mouse cursor
     current_cursor := A_Cursor
 
-    SetBatchLines 2000
-    window_get_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
-
+    window_get_rect(&cr_WinX1, &cr_WinY1, &cr_WinW, &cr_WinH, window_id)
     _cr_set_region(&cr_WinHor, &cr_WinVer, mouse_x, mouse_y, cr_WinX1, cr_WinY1, cr_WinW, cr_WinH)
 
-    If ( (!(window_is_resizable(window_id)) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id))
-    {
+    If ( (!(window_is_resizable(window_id)) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive AND !WinActive(ahk_id)) {
         cr_Resizeable := 0
-        cr_WinHor := "Center"
-        cr_WinVer := "Center"
+        cr_WinHor := "Center", cr_WinVer := "Center"
     }
     Else
         cr_Resizeable := 1
@@ -54,10 +36,20 @@ comfort_resize_main() {
     else
         is_center := false
 
-    cr_DistanceX := 0
-    cr_DistanceY := 0
+    cr_DistanceX := 0, cr_DistanceY := 0
+    ; TODO: can we deprecate these?
+    cr_MagneticBorders := 0
+    cr_SlowMovement := 0
 
     work_area := screen_get_work_area()
+    cr_hCurs := 0
+    cr_LastX := 0, cr_LastY := 0, cr_LastW := 0, cr_LastH := 0
+
+    cr_CurDownCenter := IDC_SIZENS, cr_CurUpCenter := IDC_SIZENS
+    cr_CurCenterLeft := IDC_SIZEWE, cr_CurCenterRight := IDC_SIZEWE
+    cr_CurUpRight := IDC_SIZENESW, cr_CurDownLeft := IDC_SIZENESW
+    cr_CurDownRight := IDC_SIZENWSE,  cr_CurUpLeft := IDC_SIZENWSE
+    cr_CurCenterCenter := IDC_SIZEALL
 
     Loop
     {
@@ -66,27 +58,24 @@ comfort_resize_main() {
             cr_Button := GetKeyState("MButton", "P")
         If InStr(A_ThisHotkey, "LButton")
             cr_Button := GetKeyState("LButton", "P")
-
         cr_LButton := GetKeyState("LButton", "P")
 
         ; as long as button is pressed [D]own
-        If (cr_Button == "D") {
-            If cr_MouseKey = 9 AND cr_LButton != "D"
+        If (cr_Button) {
+            If !cr_LButton
                 continue
 
             ; aktuelle Mausposition bestimmen
             MouseGetPos &cr_X2, &cr_Y2
-            cr_X3 := cr_X2
-            cr_Y3 := cr_Y2
+            cr_X3 := cr_X2, cr_Y3 := cr_Y2
             ; aktuelle Fenstergroesse und -position bestimmen
-            window_get_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
-            cr_WinX2 := cr_WinX1 + cr_WinW
-            cr_WinY2 := cr_WinY1 + cr_WinH
+            window_get_rect(&cr_WinX1, &cr_WinY1, &cr_WinW, &cr_WinH, window_id)
+            ; cr_WinX2 := cr_WinX1 + cr_WinW, cr_WinY2 := cr_WinY1 + cr_WinH
 
             ; Raster
             cr_ShiftState := GetKeyState("Shift", "P")
             cr_CtrlState := GetKeyState("Ctrl", "P")
-            If ( (cr_ShiftState = "D" AND cr_RasterAlways = 0) OR (cr_ShiftState = "U" AND cr_RasterAlways = 1) )
+            If ( (cr_ShiftState AND cr_RasterAlways = 0) OR (!cr_ShiftState AND cr_RasterAlways = 1) )
             {
                 cr_RasterXtmp := StrReplace(cr_RasterX, ":", "/")
                 cr_RasterYtmp := StrReplace(cr_RasterY, ":", "/")
@@ -106,28 +95,26 @@ comfort_resize_main() {
             }
 
             ; Verschiebung der Maus innerhalb dieser Schleife ermitteln
-            cr_OffsetX := cr_X3 - mouse_x
-            cr_OffsetY := cr_Y3 - mouse_y
+            cr_OffsetX := cr_X3 - mouse_x, cr_OffsetY := cr_Y3 - mouse_y
 
             cr_DistanceX := cr_DistanceX + cr_OffsetX
             cr_DistanceY := cr_DistanceY + cr_OffsetY
 
-            If (Abs(cr_DistanceX) < 4 AND Abs(cr_DistanceY) < 4 AND double_click = 0)
+            If (Abs(cr_DistanceX) < 4 AND Abs(cr_DistanceY) < 4 AND !double_click)
             {
-                mouse_x := cr_X3
-                mouse_y := cr_Y3
+                mouse_x := cr_X3, mouse_y := cr_Y3
                 continue
             }
 
             ; Mauspfeil anpassen
             If (!cr_hCurs) {
-                cr_hCurs := DllCall("LoadCursor", "UInt", NULL, "Int", cr_Cur%cr_WinVer%%cr_WinHor%)
+                cr_hCurs := DllCall("LoadCursor", "UInt", 0, "Int", cr_Cur%cr_WinVer%%cr_WinHor%)
                 _cr_set_cursor(cr_hCurs, current_cursor)
             }
 
             ; Wenn das Fenster maximiert ist
             cr_WinMinMax := WinGetMinMax(ahk_id)
-            If (cr_WinMinMax = 1 AND double_click = 0)
+            If (cr_WinMinMax = 1 AND !double_click)
             {
                 If cr_ResizeFixedWindows = 1
                     WinRestore(ahk_id)
@@ -137,41 +124,39 @@ comfort_resize_main() {
 
             ; Abhaengig von der Fensterregion reagieren
             ; In der Mitte wird das Fenster verschoben
-            If ( is_center OR (cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id)) ) {
-                If (double_click = 1 AND cr_Resizeable = 1) {
+            If ( is_center OR (cr_AlwaysMoveNonActive AND !WinActive(ahk_id)) ) {
+                If (double_click AND cr_Resizeable = 1) {
                     window_toggle_maximize(window_id)
                     cr_Resizeable := 0
                     cursor_reset()
                     Return
                 }
-                cr_WinX1 += cr_OffsetX
-                cr_WinY1 += cr_OffsetY
-                If ( (cr_MagneticBorders = 1 AND cr_CtrlState = "U") OR (cr_MagneticBorders = 0 AND cr_CtrlState = "D") ) {
-                    if (cr_WinX1 + cr_WinW > WorkAreaRight)
-                        cr_WinX1 := WorkAreaRight-cr_WinW
-                    if (cr_WinX1 < WorkAreaLeft)
-                        cr_WinX1 := WorkAreaLeft
-                    if (cr_WinY1 + cr_WinH > WorkAreaBottom)
-                        cr_WinY1 := WorkAreaBottom-cr_WinH
-                    if (cr_WinY1 < WorkAreaTop)
-                        cr_WinY1 := WorkAreaTop
+                cr_WinX1 += cr_OffsetX, cr_WinY1 += cr_OffsetY
+                If ( (cr_MagneticBorders = 1 AND !cr_CtrlState) OR (cr_MagneticBorders = 0 AND cr_CtrlState) ) {
+                    if (cr_WinX1 + cr_WinW > work_area.right)
+                        cr_WinX1 := work_area.right-cr_WinW
+                    if (cr_WinX1 < work_area.left)
+                        cr_WinX1 := work_area.Left
+                    if (cr_WinY1 + cr_WinH > work_area.bottom)
+                        cr_WinY1 := work_area.bottom-cr_WinH
+                    if (cr_WinY1 < work_area.top)
+                        cr_WinY1 := work_area.top
                 }
             }
             ; Ansonsten wird die Groesse veraendert
             Else
             {
                 If ( cr_WinHor = "Left" AND cr_Resizeable = 1 ) {
-                    If (double_click = 1) {
+                    If (double_click) {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable := 0
                         cursor_reset()
                         Return
                     }
-                    cr_WinX1 += cr_OffsetX
-                    cr_WinW	-= cr_OffsetX
+                    cr_WinX1 += cr_OffsetX, cr_WinW -= cr_OffsetX
                 }
                 Else If ( cr_WinHor = "Right"	AND cr_Resizeable = 1 ) {
-                    If (double_click = 1) {
+                    If (double_click) {
                         window_toggle_maximize_width(window_id)
                         cr_Resizeable := 0
                         cursor_reset()
@@ -181,17 +166,16 @@ comfort_resize_main() {
                 }
 
                 If (cr_WinVer = "Up" AND cr_Resizeable = 1) {
-                    If (double_click = 1) {
+                    If (double_click) {
                         window_toggle_maximize_height(window_id)
                         cr_Resizeable := 0
                         cursor_reset()
                         Return
                     }
-                    cr_WinY1 += cr_OffsetY
-                    cr_WinH	-= cr_OffsetY
+                    cr_WinY1 += cr_OffsetY, cr_WinH	-= cr_OffsetY
                 }
                 Else If (cr_WinVer = "Down" AND cr_Resizeable = 1) {
-                    If (double_click = 1) {
+                    If (double_click) {
                         window_toggle_maximize_height(window_id)
                         cr_Resizeable := 0
                         cursor_reset()
@@ -200,24 +184,24 @@ comfort_resize_main() {
                     cr_WinH	+= cr_OffsetY
                 }
 
-                If ( (cr_MagneticBorders = 1 AND cr_CtrlState = "U") OR (cr_MagneticBorders = 0 AND cr_CtrlState = "D") ) {
-                    if (cr_WinX1 + cr_WinW > WorkAreaRight)
-                        cr_WinW := WorkAreaRight - cr_WinX1
-                    if (cr_WinX1 < WorkAreaLeft) {
-                        cr_WinW := (cr_WinX1-WorkAreaLeft) + cr_WinW
-                        cr_WinX1 := WorkAreaLeft
+                If ( (cr_MagneticBorders = 1 AND !cr_CtrlState) OR (cr_MagneticBorders = 0 AND cr_CtrlState) ) {
+                    if (cr_WinX1 + cr_WinW > work_area.right)
+                        cr_WinW := work_area.right - cr_WinX1
+                    if (cr_WinX1 < work_area.left) {
+                        cr_WinW := (cr_WinX1-work_area.left) + cr_WinW
+                        cr_WinX1 := work_area.left
                     }
-                    if (cr_WinY1 + cr_WinH > WorkAreaBottom)
-                        cr_WinH := WorkAreaBottom - cr_WinY1
-                    if (cr_WinY1 < WorkAreaTop) {
-                        cr_WinH := (cr_WinY1-WorkAreaTop) + cr_WinH
-                        cr_WinY1 := WorkAreaTop
+                    if (cr_WinY1 + cr_WinH > work_area.bottom)
+                        cr_WinH := work_area.bottom - cr_WinY1
+                    if (cr_WinY1 < work_area.top) {
+                        cr_WinH := (cr_WinY1-work_area.top) + cr_WinH
+                        cr_WinY1 := work_area.top
                     }
                 }
             }
 
             ; Raster
-            If ( (cr_ShiftState = "D" AND cr_RasterAlways = 0) OR (cr_ShiftState = "U" AND cr_RasterAlways = 1) ) {
+            If ( (cr_ShiftState AND cr_RasterAlways = 0) OR (!cr_ShiftState AND cr_RasterAlways = 1) ) {
                 cr_WinX1 := Round(cr_WinX1/cr_RasterXtmp)*cr_RasterXtmp
                 cr_WinY1 := Round(cr_WinY1/cr_RasterYtmp)*cr_RasterYtmp
                 If (cr_Resizeable = 1) {
@@ -241,32 +225,28 @@ comfort_resize_main() {
             window_set_rect(cr_WinX1, cr_WinY1, cr_WinW, cr_WinH, window_id)
 
             ; Mausposition fuer diese Schleife uebernehmen
-            mouse_x := cr_X2
-            mouse_y := cr_Y2
+            mouse_x := cr_X2, mouse_y := cr_Y2
 
             ; update tooltip
-            If ( !(cr_AlwaysMoveNonActive = 1 AND !WinActive(ahk_id)) AND (comfort_resize_show_tooltip_pos OR comfort_resize_show_tooltip_size)) {
+            If ( !(cr_AlwaysMoveNonActive AND !WinActive(ahk_id)) AND (comfort_resize_show_tooltip_pos OR comfort_resize_show_tooltip_size)) {
                 tt_text := ""
                 if (is_center AND comfort_resize_show_tooltip_pos)
                     tt_text := "Position (" cr_WinX1 "," cr_WinY1 ")`n"
                 if (!is_center AND comfort_resize_show_tooltip_size)
-                    tt_text := tt_text "Size (" cr_WinW "," cr_WinH ")" Style " " ExStyle
+                    tt_text := tt_text "Size (" cr_WinW "," cr_WinH ")"
+                tt_text .= "`ncr_AlwaysMoveNonActive: " cr_AlwaysMoveNonActive "`nWinActive(ahk_id): " WinActive(ahk_id)
                 if tt_text
                     Tooltip(tt_text)
             }
 
-            cr_LastX := cr_WinX1
-            cr_LastY := cr_WinY1
-            cr_LastW := cr_WinW
-            cr_LastH := cr_WinH
+            cr_LastX := cr_WinX1, cr_LastY := cr_WinY1
+            cr_LastW := cr_WinW, cr_LastH := cr_WinH
 
         } Else {
             ; Wenn der Mausbutton losgelassen wurde, Tooltip loeschen und abbrechen
-            cr_LastX := 0
-            cr_LastY := 0
-            cr_LastW := 0
-            cr_LastH := 0
-            Tooltip
+            cr_LastX := 0, cr_LastY := 0
+            cr_LastW := 0, cr_LastH := 0
+            Tooltip()
             If (Abs(cr_DistanceX) < 4 AND Abs(cr_DistanceY) < 4) {
                 If (!WinActive("ahk_id" window_id))
                     WinActivate(ahk_id)
@@ -287,7 +267,10 @@ _comfort_resize_get_doubleclick(mx, my) {
     if (!comfort_resize_pixel_threshold OR !comfort_resize_time_threshold)
         return 0
 
-    static last_mouse_x, last_mouse_y, click_time, last_dbl_click
+    static last_mouse_x := 0
+    static last_mouse_y := 0
+    static click_time := 0
+    static last_dbl_click := 0
 
     If (A_Priorhotkey != A_Thishotkey)
         return 0
@@ -318,10 +301,6 @@ _comfort_resize_get_doubleclick(mx, my) {
         last_dbl_click := A_TickCount
     } Else
     double_click := 0
-
-    ; msg .= "quick_enough: " . quick_enough . "(" . diff_t . "), late_enough: " . late_enough . "(" . diff_last . ")"
-    ; a2log_debug(msg, "comfort_resize")
-
     return double_click
 }
 

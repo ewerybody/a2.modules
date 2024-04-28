@@ -3,14 +3,11 @@
     "author": "eric",
     "date": "2019 4 19",
     "description": "Fuzzy window manipulation via 9 nice big zones divided by top, bottom, left, right, center.",
+    "display_name": "",
     "tags": [],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#comfortresize",
-    "version": "0.1"
-  },
-  {
-    "code": "comfort_resize_init()",
-    "typ": "init"
+    "version": "0.2"
   },
   {
     "file": "comfort_resize_main.ahk",
