@@ -1,11 +1,15 @@
 ﻿; getWinfo - window information tool
 ; gathers title, process Id, handle, class, size, positon and controls information
 ; in a menu that you can click to get the item in your clipboard
+#include <jxon>
 #include <window>
 
+
 getWinfo() {
-    a2tip("getting Winfo ...")
-    Sleep 50
+    module_data := jxon_read(path_neighbor(A_LineFile, "a2module.json"))
+    title := "getWinfo " module_data[1]["version"]
+    a2tip(title . "...")
+
     global getWinfoID
     getWinfoID := WinGetID("A")
     ahkid := "ahk_id " . getWinfoID
@@ -17,6 +21,8 @@ getWinfo() {
     this_ver := FileGetVersion(this_path)
 
     wInfoMenu := Menu()
+    wInfoMenu.Add(title, getWinfoMenuHandler)
+    wInfoMenu.Disable(title)
     wInfoMenu.Add("title: " . this_title, getWinfoMenuHandler)
     wInfoMenu.Add("class: " . this_class, getWinfoMenuHandler)
     wInfoMenu.Add("hwnd: " . getWinfoID, getWinfoMenuHandler)
@@ -70,8 +76,8 @@ getWinfo() {
     wInfoMenu.Add("Cancel", getWinfoMenuHandler)
 
     CoordMode "Menu", "Screen"
-    wInfoMenu.Show(mouseX + 15, mouseY + 47)
     a2tip()
+    wInfoMenu.Show()
 }
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
