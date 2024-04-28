@@ -28,13 +28,12 @@ calculAid_open() {
     ; This calls to open a Calculator, but the PID is useless.
     ; Windows will now use ApplicationFrameHost.exe to host a Calculator
     a2tip("CalculAid: Calling new ...")
-    Run "calc.exe",, UseErrorLevel, calcPID
+    Run "calc.exe"
+    if A_LastError
+        msgbox_error("Could not open up 'calc.exe'!")
 
     ; We'll have to wait a moment for it to be available
     new_id := calculAid_wait_for_new(found_ids)
-    ; txt := string_join(found_ids, "`n")
-    ; MsgBox, calc_is_active: %calc_is_active%`nCalculAid_ReuseOpenOne:%CalculAid_ReuseOpenOne%`nnew_id:%new_id%`n`n%txt%
-
 	If calculAid_openAtCursor {
 		CoordMode "Mouse", "Screen"
 		MouseGetPos &mx, &my
@@ -47,10 +46,8 @@ calculAid_open() {
 
 
 calculAid_get_current() {
-    this_lng := SubStr(A_Language, -1)
-    names := {09: "Calculator", 07: "Rechner"}
-    this_name := names[this_lng]
-
+    lang_names := Map("9", "Calculator", "7", "Rechner")
+    this_name := lang_names[SubStr(A_Language, -1)]
     return WinGetList(this_name . " ahk_class ApplicationFrameWindow ahk_exe ApplicationFrameHost.exe")
 }
 
@@ -71,5 +68,4 @@ calculAid_wait_for_new(found_ids) {
         if (t1 > 1000)
             Break
     }
-    ; MsgBox, nothing found!`ntries: %tries%
 }
