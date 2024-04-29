@@ -18,21 +18,24 @@ details_popup_menu() {
     DetailsMenu.Show()
 }
 
-details_popup_handler(menu_name) {
+details_popup_handler(menu_name, *) {
     global _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
     these_entries := details_popup_data[menu_name]["data"]
-    single_item := details_popup_data[menu_name]["single_item"]
+    if details_popup_data[menu_name].has("single_item")
+        single_item := details_popup_data[menu_name]["single_item"]
+    else
+        single_item := false
 
     if (menu_name == "Cancel" and !these_entries)
         Return
 
-    if (single_item AND _details_handled_entries.Length()) {
+    if (single_item AND _details_handled_entries.Length) {
         _details_cleanup()
         return
     }
 
-    if (these_entries.Count() == _details_handled_entries.Length()) {
+    if (these_entries.Count == _details_handled_entries.Length) {
         _details_cleanup()
         a2tip("All Pasted!")
         Return
@@ -50,11 +53,11 @@ details_popup_handler(menu_name) {
     DetailsSubMenu.Show()
 }
 
-details_entry_handler(entry_name) {
+details_entry_handler(entry_name, entry_pos, *) {
     global _details_popup_menu_name
     these_entries := details_popup_data[_details_popup_menu_name]["data"]
 
-    if (entry_name == "Cancel" and A_ThisMenuItemPos > these_entries.Length())
+    if (entry_name == "Cancel" and entry_pos > these_entries.Length)
         Return
 
     ; entry_name might be a simple number! Make sure this is a string pointing into the object:
@@ -62,7 +65,7 @@ details_entry_handler(entry_name) {
     cmd_path := path_neighbor(A_LineFile, "details_paste_entry.ahk")
 
     cmd := '"' . A_AhkPath . '" "' . cmd_path . '" "' . value . '"'
-    shell := ComObjCreate("WScript.Shell")
+    shell := ComObject("WScript.Shell")
     exec := shell.Exec(cmd)
 
     errors := exec.StdErr.ReadAll()
