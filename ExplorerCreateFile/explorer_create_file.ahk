@@ -33,10 +33,10 @@ explorer_create_file_popup() {
     ; Menu, ExplorerCreateFileMenu, DeleteAll
 }
 
-explorer_create_file_handler(menu_name) {
+explorer_create_file_handler(menu_name, *) {
     data := explorer_create_file_data[menu_name]
-    file_name := data["file_name"]
-    ext := data["ext"]
+    file_name := data.get("file_name", "file_name")
+    ext := data.get("ext", "")
     if ext
         ext := string_prefix(ext, ".")
     dir_path := explorer_get_path()
@@ -45,7 +45,7 @@ explorer_create_file_handler(menu_name) {
     if (data["ask"])
     {
         title := 'ExplorerCreateFile: New "' . menu_name '" file ...'
-        if !explorer_create_file_dialog(file_name, dir_path, ext, '"' . menu_name '" file', title)
+        if !explorer_create_file_dialog(&file_name, dir_path, ext, '"' . menu_name '" file', title)
             Return
     }
     if !file_name
@@ -55,8 +55,8 @@ explorer_create_file_handler(menu_name) {
         file_name := file_name . ext
     file_path := path_join(dir_path, file_name)
 
-    encoding := data["encoding"]
-    content := data["content"]
+    encoding := data.get("encoding", "UTF-8")
+    content := data.get("content", "")
     try {
         FileAppend(content, file_path, encoding)
     } catch Error {
@@ -76,6 +76,9 @@ explorer_create_file_handler(menu_name) {
 }
 
 _explorer_create_file_get_icon_path(name, data) {
+    if !data.has("icon")
+        Return ""
+
     icon_name := data["icon"]
     if (!icon_name) {
         if data["ext"] {

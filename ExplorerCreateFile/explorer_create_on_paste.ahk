@@ -1,9 +1,11 @@
 #include <Gdip_all>
+#include <WinClip>
 #include <LC>
 
 explorer_create_on_paste() {
     ; Ensure default Explorer behaviour with files in clipboard.
-    if WinClip.GetFiles()
+    wc := WinClip()
+    if wc.GetFiles()
     {
         Send(A_ThisHotkey)
         return
@@ -21,14 +23,14 @@ explorer_create_on_paste() {
         }
     }
 
-    token := gdip_startup()
+    gdip_token := gdip_startup()
     bitmap := Gdip_CreateBitmapFromClipboard()
     if _is_bitmap(bitmap) {
-        _explorer_create_from_clip_bitmap(current_path, bitmap)
+        _explorer_create_from_clip_bitmap(current_path, bitmap, gdip_token)
         Return
     }
 
-    gdip_shutdown(token)
+    gdip_shutdown(gdip_token)
 
     Send(A_ThisHotkey)
 }
@@ -41,7 +43,7 @@ _explorer_create_from_base64(current_path, base64_id, image_type) {
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
     title := "ExplorerCreateFile: Image from Clipboard base64 " image_type " data"
     subtitle := "The extension can only be ." image_type "."
-    if !explorer_create_file_dialog(file_name, current_path, "." image_type, "Image file", title, subtitle)
+    if !explorer_create_file_dialog(&file_name, current_path, "." image_type, "Image file", title, subtitle)
         Return
 
     ext := path_split_ext(file_name)[2]
@@ -53,7 +55,7 @@ _explorer_create_from_base64(current_path, base64_id, image_type) {
     File.Write("")
     File.Close()
 
-    nBytes := LC_Str2Bin(bitmap, base64, 0x1)
+    nBytes := LC_Str2Bin(&bitmap, &base64, 0x1)
     File := FileOpen(file_path, "w")
     File.RawWrite(bitmap, nBytes)
     File.Close()
@@ -61,7 +63,7 @@ _explorer_create_from_base64(current_path, base64_id, image_type) {
     _explorer_create_finish(file_name)
 }
 
-_explorer_create_from_clip_bitmap(current_path, bitmap) {
+_explorer_create_from_clip_bitmap(current_path, bitmap, gdip_token) {
     if (ExplorerCreateFile_DefaultImageExt)
         default_ext := ExplorerCreateFile_DefaultImageExt
 
@@ -70,9 +72,9 @@ _explorer_create_from_clip_bitmap(current_path, bitmap) {
 
     title := "ExplorerCreateFile: Image from Clipboard"
     subtitle := "The extension might be .png, .jpg, .gif, .bmp or .tif..."
-    if !explorer_create_file_dialog(file_name, current_path, ".png", "Image file", title, subtitle)
+    if !explorer_create_file_dialog(&file_name, current_path, ".png", "Image file", title, subtitle)
     {
-        gdip_shutdown(token)
+        gdip_shutdown(gdip_token)
         Return
     }
 
@@ -83,7 +85,7 @@ _explorer_create_from_clip_bitmap(current_path, bitmap) {
 
     a2tip("Creating image from clipboard ...")
     Gdip_SaveBitmapToFile(bitmap, file_path)
-    gdip_shutdown(token)
+    gdip_shutdown(gdip_token)
 
     _explorer_create_finish(file_name)
 }
@@ -93,29 +95,29 @@ _explorer_create_from_text(current_path) {
     Return
     ; Disabling Clipboard text to file for now since it's way to easy to mess up
     ; Renaming and writing into Address bar is hard to detect.
-    default_ext := ".txt"
-    file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultFileName, default_ext)
-    title := "ExplorerCreateFile: File from Clipboard contents (" StrLen(A_Clipboard) " bytes)"
-    subtitle := "The extension might be anything. By default it'll be .txt."
-    if !explorer_create_file_dialog(file_name, current_path, default_ext, "Text file", title, subtitle)
-        Return
+    ; default_ext := ".txt"
+    ; file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultFileName, default_ext)
+    ; title := "ExplorerCreateFile: File from Clipboard contents (" StrLen(A_Clipboard) " bytes)"
+    ; subtitle := "The extension might be anything. By default it'll be .txt."
+    ; if !explorer_create_file_dialog(&file_name, current_path, default_ext, "Text file", title, subtitle)
+    ;     Return
 
-    ext := path_split_ext(file_name)[2]
-    if !ext
-        file_name := file_name default_ext
-    file_path := _append_default_ext(current_path, &file_name, default_ext)
+    ; ext := path_split_ext(file_name)[2]
+    ; if !ext
+    ;     file_name := file_name default_ext
+    ; file_path := _append_default_ext(current_path, &file_name, default_ext)
 
-    File := FileOpen(file_path, "w")
-    File.Write(A_Clipboard)
+    ; File := FileOpen(file_path, "w")
+    ; File.Write(A_Clipboard)
 
-    _explorer_create_finish(file_name)
+    ; _explorer_create_finish(file_name)
 }
 
 
 _explorer_create_finish(file_name) {
     Loop 10
     {
-        if explorer_select(basename)
+        if explorer_select(file_name)
             Return
         Sleep 400
     }
