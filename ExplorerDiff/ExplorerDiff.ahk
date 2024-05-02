@@ -2,7 +2,7 @@
 ; Context aware file comparing from a single Explorer Hotkey.
 ; author: eric
 ; created: 2022 2 2
-
+#include <time>
 
 ExplorerDiff() {
     paths := explorer_get_selected()
@@ -69,29 +69,30 @@ _ExplorerDiff_Wait() {
     Sleep 300
 
     SetTimer _ExplorerDiff_Wait_Call, 30
+}
 
-    _ExplorerDiff_Wait_Call:
-        if (GetKeyState("Escape", "p") == "D") {
-            a2tip("ExplorerDiff: Escaped")
-            _ExplorerDiff_WaitForPath := ""
-        }
+_ExplorerDiff_Wait_Call() {
+    if (GetKeyState("Escape", "p") == "D") {
+        a2tip("ExplorerDiff: Escaped")
+        _ExplorerDiff_WaitForPath := ""
+    }
 
-        if (!_ExplorerDiff_WaitForPath) {
-            a2tip()
-            SetTimer _ExplorerDiff_Wait_Call, Off
-            Return
-        }
+    if (!_ExplorerDiff_WaitForPath) {
+        a2tip()
+        SetTimer _ExplorerDiff_Wait_Call, 0
+        Return
+    }
 
-        if path_is_dir(_ExplorerDiff_WaitForPath)
-            mode := "Folder"
-        else
-            mode := "File"
-        a2tip("ExplorerDiff: Selected " mode ":`n" _ExplorerDiff_WaitForPath "`nSelect another " mode " and press " A_ThisHotkey " again.`nOr hit Escape.")
-    Return
+    if path_is_dir(_ExplorerDiff_WaitForPath)
+        mode := "Folder"
+    else
+        mode := "File"
+    a2tip("ExplorerDiff: Selected " mode ":`n" _ExplorerDiff_WaitForPath "`nSelect another " mode " and press " A_ThisHotkey " again.`nOr hit Escape.")
 }
 
 
 ExplorerDiff_Files(files) {
+    global ExplorerDiff_MaxSize
     file1 := files[1], file2 := files[2]
     size1 := FileGetSize(file1), size2 := FileGetSize(file2)
 
@@ -115,13 +116,13 @@ ExplorerDiff_Files(files) {
     contents := FileRead(file1)
     lines1 := []
     Loop parse, contents, "`n"
-        lines1.Insert(A_LoopField)
+        lines1.Push(A_LoopField)
 
     a2tip("ExplorerDiff: reading file 2 ...", 60)
     contents := FileRead(file2)
     lines2 := []
     Loop parse, contents, "`n"
-        lines2.Insert(A_LoopField)
+        lines2.Push(A_LoopField)
     contents := ""
 
     if (lines1.Length != lines2.Length) {
@@ -135,7 +136,6 @@ ExplorerDiff_Files(files) {
     len := 0
     Loop lines1.Length
     {
-        len += StrLen(line1)
         if (lines1[A_Index] != lines2[A_Index]) {
             a2tip("ExplorerDiff: Found Difference on line " A_Index " ... ", 15)
             ExplorerDiff_Run(files)
