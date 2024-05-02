@@ -92,7 +92,6 @@ _ExplorerDiff_Wait_Call() {
 
 
 ExplorerDiff_Files(files) {
-    global ExplorerDiff_MaxSize
     file1 := files[1], file2 := files[2]
     size1 := FileGetSize(file1), size2 := FileGetSize(file2)
 
@@ -102,9 +101,6 @@ ExplorerDiff_Files(files) {
         ExplorerDiff_Run(files)
         Return
     }
-
-    if (!ExplorerDiff_MaxSize)
-        ExplorerDiff_MaxSize := 1.0
 
     if (size1 > (ExplorerDiff_MaxSize * 1024 * 1024)) {
         a2tip("ExplorerDiff: Files bigger than " ExplorerDiff_MaxSize " MB ... ")
