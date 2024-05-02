@@ -6,18 +6,10 @@
 
 ExplorerDiff() {
     paths := explorer_get_selected()
-
-    if (ExplorerDiff_Path == "" OR ExplorerDiff_Path == ".") {
-        msgbox_error("No Diff app set! Please open the dialog and set one!"
-            , "ExplorerDiff: No Diff app")
+    global _ExplorerDiff_WaitForPath
+    ; static single_path := ""
+    if _ExplorerDiff_CheckDiffApp()
         Return
-    }
-
-    if (!FileExist(ExplorerDiff_Path)) {
-        msgbox_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
-            , "ExplorerDiff: Diff app path invalid")
-        Return
-    }
 
     if (paths.Length == 2) {
         _ExplorerDiff(paths)
@@ -26,29 +18,29 @@ ExplorerDiff() {
     if (!paths.Length)
         paths.Push(explorer_get_path())
 
-    a2log_debug("paths.Length(): " paths.Length, "ExplorerDiff")
-    if (paths.Length == 1) {
-        global _ExplorerDiff_WaitForPath
-        if (_ExplorerDiff_WaitForPath == paths[1])
-            Return
-
-        if (_ExplorerDiff_WaitForPath) {
-            _ExplorerDiff([_ExplorerDiff_WaitForPath, paths[1]])
-            Return
-        }
-
-        _ExplorerDiff_WaitForPath := paths[1]
-        _ExplorerDiff_Wait()
+    if (paths.Length != 1) {
+        msgbox_error("Please select 2 files OR 2 folders exactly!"
+            , "ExplorerDiff: Too many paths!")
         Return
     }
 
-    msgbox_error("Please select 2 files OR 2 folders exactly!"
-        , "ExplorerDiff: Too many paths!")
+    try {
+        if (_ExplorerDiff_WaitForPath == paths[1])
+            Return
+    }
+    try {
+        if (_ExplorerDiff_WaitForPath) {
+            _ExplorerDiff([_ExplorerDiff_WaitForPath, paths[1]])
+            _ExplorerDiff_WaitForPath := ""
+            Return
+        }
+    }
+
+    _ExplorerDiff_WaitForPath := paths[1]
+    SetTimer _ExplorerDiff_Wait_Call, 30
 }
 
 _ExplorerDiff(files) {
-    global _ExplorerDiff_WaitForPath
-    _ExplorerDiff_WaitForPath := ""
     if (path_is_dir(files[1]) AND path_is_dir(files[2])) {
         ExplorerDiff_Run(files)
         Return
@@ -60,19 +52,12 @@ _ExplorerDiff(files) {
 
     msgbox_error("Please select 2 files OR 2 folders exactly!"
         , "ExplorerDiff: File/Folder Mismatch")
-    Return
 }
 
-
-_ExplorerDiff_Wait() {
-    global _ExplorerDiff_WaitForPath
-    Sleep 300
-
-    SetTimer _ExplorerDiff_Wait_Call, 30
-}
 
 _ExplorerDiff_Wait_Call() {
-    if (GetKeyState("Escape", "p") == "D") {
+    global _ExplorerDiff_WaitForPath
+    if (GetKeyState("Escape", "p")) {
         a2tip("ExplorerDiff: Escaped")
         _ExplorerDiff_WaitForPath := ""
     }
@@ -151,4 +136,20 @@ ExplorerDiff_Files(files) {
 ExplorerDiff_Run(files) {
     cmd := '"' . ExplorerDiff_Path . '" "' . files[1] . '" "' . files[2] . '"'
     Run(cmd)
+}
+
+
+_ExplorerDiff_CheckDiffApp() {
+    if (ExplorerDiff_Path == "" OR ExplorerDiff_Path == ".") {
+        msgbox_error("No Diff app set! Please open the dialog and set one!"
+            , "ExplorerDiff: No Diff app")
+        Return true
+    }
+
+    if (!FileExist(ExplorerDiff_Path)) {
+        msgbox_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
+            , "ExplorerDiff: Diff app path invalid")
+        Return true
+    }
+    Return false
 }
