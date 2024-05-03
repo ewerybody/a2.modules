@@ -1,7 +1,6 @@
 #include <clipboard>
 
 winr() {
-    global winr_paths
     selection := clipboard_get()
     selection := trim(selection, " `n`t`r")
 
