@@ -9,8 +9,8 @@
 	length := StrLen(txt)
     lines := StrSplit(txt, "`n")
 
-    msg := "wordCount: " words.MaxIndex() "`n"
+    msg := "wordCount: " words.Length "`n"
     msg .= "characters: " length "`n"
-    msg .= "lines: " lines.MaxIndex() "`n"
+    msg .= "lines: " lines.Length "`n"
 	a2tip(msg, wordCount_tooltip_timeout)
 }

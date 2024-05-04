@@ -10,7 +10,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/texTools#textools",
-    "version": "0.4"
+    "version": "0.4.1"
   },
   {
     "file": "wordCount.ahk",
