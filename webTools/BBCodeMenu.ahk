@@ -14,14 +14,13 @@ BBCodeMenu() {
 	BBCode_Menu.Show()
 }
 
-BBCodeMenuHandler() {
+BBCodeMenuHandler(menu_item, *) {
 	sel := clipboard_get()
-	code := "[" A_ThisMenuItem "]" sel "[/" A_ThisMenuItem "]"
+	code := "[" menu_item "]" sel "[/" menu_item "]"
 	clipboard_paste(code)
 }
 
-
-BBCodeURLHandler() {
+BBCodeURLHandler(*) {
 	sel := clipboard_get()
 	If (string_is_web_address(sel))
 	{
@@ -30,10 +29,10 @@ BBCodeURLHandler() {
 		SendInput "{Left 6}"
 	}
 	; if clipboard already contains a URL put that in the [URL= and the selection between ][/URL]
-	Else If (string_is_web_address(Clipboard))
+	Else If (string_is_web_address(A_Clipboard))
 	{
 		a2tip("Clipboard is URL",1)
-		code := "[URL=" Clipboard "]" sel "[/URL]"
+		code := "[URL=" A_Clipboard "]" sel "[/URL]"
 		clipboard_paste(code)
 		SendInput "{Left 6}"
 	}
@@ -49,8 +48,7 @@ BBCodeURLHandler() {
 	}
 }
 
-
-BBCodeKBDHandler() {
+BBCodeKBDHandler(*) {
 	sel := clipboard_get()
 	code := "<kbd>" . sel . "</kbd>"
 	clipboard_paste(code)
