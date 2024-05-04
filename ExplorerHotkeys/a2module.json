@@ -50,7 +50,8 @@
     "multiple": true,
     "name": "ExplorerHotkeys_ToggleHiddenHotkey",
     "scope": [
-      "ahk_class CabinetWClass"
+      "ahk_class CabinetWClass",
+      "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
     "scopeChange": true,
     "scopeMode": 1,
@@ -73,7 +74,8 @@
     "multiple": true,
     "name": "ExplorerHotkeys_ToggleExtensionsHotkey",
     "scope": [
-      "ahk_class CabinetWClass"
+      "ahk_class CabinetWClass",
+      "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
     "scopeChange": true,
     "scopeMode": 1,
@@ -92,7 +94,8 @@
     "multiple": true,
     "name": "ExplorerHotkeys_ToggleSelectedVisibility",
     "scope": [
-      "ahk_class CabinetWClass"
+      "ahk_class CabinetWClass",
+      "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
     "scopeChange": true,
     "scopeMode": 1,
