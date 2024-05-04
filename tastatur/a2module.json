@@ -9,16 +9,15 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/tastatur#tastatur",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "children": [
       {
         "disablable": true,
         "enabled": false,
-        "functionCode": "Send, @",
         "functionMode": 2,
-        "functionSend": "Send, @",
+        "functionSend": "Send \"@\"",
         "key": "Ralt+Q",
         "keyChange": true,
         "label": "Write an @ symbol",
@@ -33,9 +32,8 @@
       {
         "disablable": true,
         "enabled": false,
-        "functionCode": "Send, \u20ac",
         "functionMode": 2,
-        "functionSend": "Send, \u20ac",
+        "functionSend": "Send \"\u20ac\"",
         "key": "Ralt+E",
         "keyChange": true,
         "label": "Write a \u20acuro currency symbol",
@@ -50,9 +48,8 @@
       {
         "disablable": true,
         "enabled": true,
-        "functionCode": "Send, \u00b0",
         "functionMode": 2,
-        "functionSend": "Send, \u00b0",
+        "functionSend": "Send \"\u00b0\"",
         "key": "Alt+`",
         "keyChange": true,
         "label": "Write a \u00b0 degree symbol",
@@ -68,7 +65,7 @@
         "disablable": true,
         "enabled": true,
         "functionMode": 2,
-        "functionSend": "Send, \u00b2",
+        "functionSend": "Send \"\u00b2\"",
         "key": "Ralt+2",
         "keyChange": true,
         "label": "Write a \u00b2 square symbol",
@@ -84,7 +81,7 @@
         "disablable": true,
         "enabled": true,
         "functionMode": 2,
-        "functionSend": "Send, \u00b3",
+        "functionSend": "Send \"\u00b3\"",
         "key": "Ralt+3",
         "keyChange": true,
         "label": "Write a \u00b3 cubic symbol",
