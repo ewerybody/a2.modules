@@ -10,18 +10,18 @@ slasher() {
     slasher_menu.Show()
 }
 
-slasher_menu_handler:
+slasher_menu_handler(_menu_item, menu_pos, *) {
     Selection := clipboard_get()
-    if (A_ThisMenuItemPos == 1) {
+    if (menu_pos == 1) {
         If InStr(Selection, "/")
             outstr := StrReplace(Selection, "/" , "\")
         else
         If InStr(Selection, "\")
             outstr := StrReplace(Selection, "\" , "/")
     }
-    else if (A_ThisMenuItemPos == 2)
+    else if (menu_pos == 2)
         outstr := StrReplace(Selection, "\" , "\\")
-    else if (A_ThisMenuItemPos == 3)
+    else if (menu_pos == 3)
         outstr := StrReplace(Selection, "\\" , "\")
     clipboard_paste(outstr)
-Return
+}
