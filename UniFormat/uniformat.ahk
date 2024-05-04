@@ -1,5 +1,3 @@
-global _uniformat_names := {}
-
 uniformat_main() {
     global _uniformat_selection
     _uniformat_selection := clipboard_get()
@@ -8,7 +6,7 @@ uniformat_main() {
         return
     }
     ; Display the menu sorted by filename,
-    menu_list := {}
+    menu_list := Map()
     for name, file_name in _uniformat_get_set_names()
         menu_list[file_name] := name
     ; menu_list is automatically sorted now
@@ -21,14 +19,16 @@ uniformat_main() {
     UniFormatMenu.Show()
 }
 
-_uniformat_handler(menu_name) {
+_uniformat_handler(menu_name, *) {
     uniformat_replace(_uniformat_get_set_names()[menu_name])
 }
 
 uniformat_replace(set_name) {
+    if set_name == "Cancel"
+        Return
     global _uniformat_selection
     data := uniformat_get_letters(set_name)
-    if (set_name == "Cancel" and !data)
+    if !data
         Return
 
     if (_uniformat_selection)
@@ -48,10 +48,11 @@ uniformat_replace(set_name) {
             replace_by_pos.push(data.letters[A_Index])
 
     ; Perform StrReplace for all matching characters
-    placeholders := {}
+    placeholders := Map()
+    case_sense := data.settings.get("case", 0)
     Loop(data.num_letters)
     {
-        if InStr(new_string, data.letters[A_Index], !data.case) {
+        if InStr(new_string, data.letters[A_Index], case_sense) {
             count++
             if (string_is_in_array(data.letters[A_Index], replace_by_pos)) {
                 Loop(42)
@@ -61,10 +62,10 @@ uniformat_replace(set_name) {
                         Break
                 }
                 placeholders[placeholder] := data.replacements[A_Index]
-                new_string := StrReplace(new_string, data.letters[A_Index], placeholder)
+                new_string := StrReplace(new_string, data.letters[A_Index], placeholder, case_sense)
             }
             else
-                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index])
+                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index], case_sense)
         }
     }
 
@@ -72,14 +73,14 @@ uniformat_replace(set_name) {
     for placeholder, replacement in placeholders
         new_string := StrReplace(new_string, placeholder, replacement)
 
-    if data.reverse
+    if data.settings.get("reverse", 0)
         new_string := string_reverse(new_string)
 
     if !count
         a2tip("UniFormat: Nothing replaced")
     else {
         msg := "UniFormat: Found " count " items to replace."
-        if data.shrink
+        if data.settings.get("shrink", 0)
             msg .= "`nCharacters before/now:" sel_length_before "/" StrLen(new_string)
         a2tip(msg, 2)
     }
@@ -97,6 +98,7 @@ uniformat_get_letters(set_name) {
     data.letters := []
     data.replacements := []
     data.num_letters := 0
+    data.settings := Map()
     header_done := False
 
     letters_file := path_neighbor(A_LineFile, "sets\" string_suffix(set_name, ".txt"))
@@ -115,7 +117,7 @@ uniformat_get_letters(set_name) {
             line := string_trimLeft(line, trim_chars)
             parts := StrSplit(line, "=",,2)
             if string_is_in_array(parts[1], args)
-                data[parts[1]] := parts[2]
+                data.settings[parts[1]] := parts[2]
             Continue
         }
         header_done := 1
@@ -130,16 +132,16 @@ uniformat_get_letters(set_name) {
 }
 
 _uniformat_get_set_names() {
-    static _uniformat_names
-    if (!_uniformat_names) {
-        _uniformat_names := {}
+    static _uniformat_names := Map()
+    if (!_uniformat_names.Count) {
         sets_pattern := path_join(path_neighbor(A_LineFile, "sets"), "*.txt")
-        FileEncoding "UTF-8"
         Loop Files, sets_pattern
         {
-            if (string_startswith(A_LoopFileName, "_ ") and !uniformat_show_wip)
+            if string_startswith(A_LoopFileName, "_ ") ; and !uniformat_show_wip
                 Continue
-            line := FileReadLine(A_LoopFileFullPath, 1)
+            FileObj := FileOpen(A_LoopFileFullPath, "r", "UTF-8")
+            line := FileObj.ReadLine()
+            FileObj.Close()
             if string_startswith(line, "# name=")
                 name := SubStr(line, 8)
             else
