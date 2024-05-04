@@ -16,5 +16,10 @@ testahk() {
     FileDelete(testfile)
     FileAppend(sel, testfile, "UTF-8")
     cmd := '"' A_AhkPath '" "' testfile '"'
-    Run cmd
+
+    if (TestAHK_AHKPath != "." AND FileExist(TestAHK_AHKPath))
+        ahk_path := TestAHK_AHKPath
+    else
+        ahk_path := A_AhkPath
+    Run '"' . ahk_path . '" "' . testfile . '"'
 }

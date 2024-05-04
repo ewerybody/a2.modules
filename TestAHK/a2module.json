@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/TestAHK#testahk",
-    "version": "0.1"
+    "version": "0.2"
   },
   {
     "disablable": true,
@@ -30,5 +30,15 @@
   {
     "file": "testahk.ahk",
     "typ": "include"
+  },
+  {
+    "browse_type": 1,
+    "file_types": "autohotkey*.exe",
+    "label": "What executable to use (if not default)",
+    "name": "TestAHK_AHKPath",
+    "save_mode": false,
+    "typ": "path",
+    "value": ".",
+    "writable": false
   }
 ]
