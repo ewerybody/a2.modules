@@ -1,7 +1,6 @@
 # name=UniCr㎲h
 # desc=Shorten strings with Uni㏇de Ԙpla₠me௱s for l🙱t🙰 ㏇㎆㏌atЮ㎱.<br>a2/Autohotkey version with kind permission of <a href=https://htwins.net/unicrush>htwins's <b>Unicrush</b></a> 🙇.
 # shrink=1
-# case=1
 
 (( ⸨
 )) ⸩

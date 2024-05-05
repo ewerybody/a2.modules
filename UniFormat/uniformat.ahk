@@ -52,7 +52,7 @@ uniformat_replace(set_name) {
     case_sense := data.settings.get("case", 0)
     Loop(data.num_letters)
     {
-        if InStr(new_string, data.letters[A_Index], case_sense) {
+        if InStr(new_string, data.letters[A_Index], !case_sense) {
             count++
             if (string_is_in_array(data.letters[A_Index], replace_by_pos)) {
                 Loop(42)
@@ -62,10 +62,10 @@ uniformat_replace(set_name) {
                         Break
                 }
                 placeholders[placeholder] := data.replacements[A_Index]
-                new_string := StrReplace(new_string, data.letters[A_Index], placeholder, case_sense)
+                new_string := StrReplace(new_string, data.letters[A_Index], placeholder, !case_sense)
             }
             else
-                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index], case_sense)
+                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index], !case_sense)
         }
     }
 
@@ -115,6 +115,8 @@ uniformat_get_letters(set_name) {
         ;Gather settings and put them on the data object
         if (!header_done and string_startswith(line, "#")) {
             line := string_trimLeft(line, trim_chars)
+            if !InStr(line, "=")
+                Continue
             parts := StrSplit(line, "=",,2)
             if string_is_in_array(parts[1], args)
                 data.settings[parts[1]] := parts[2]
