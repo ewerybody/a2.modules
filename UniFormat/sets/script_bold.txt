@@ -1,5 +1,5 @@
 # name=𝓢𝓬𝓻𝓲𝓹𝓽 𝓑𝓸𝓵𝓭
-# desc=𝓢𝓬𝓻𝓲𝓹𝓽 𝓑𝓸𝓵𝓭 letters from <a href=https://unicode-table.com/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a>.
+# desc=𝓢𝓬𝓻𝓲𝓹𝓽 𝓑𝓸𝓵𝓭 letters from <a href=https://symbl.cc/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a>.
 
 A 𝓐
 B 𝓑

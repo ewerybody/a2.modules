@@ -1,5 +1,5 @@
 # name=𝒮𝒸𝓇𝒾𝓅𝓉
-# desc=𝒮𝒸𝓇𝒾𝓅𝓉 𝓁ℯ𝓉𝓉ℯ𝓇𝓈 assembled from <a href=https://unicode-table.com/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a> and the <a href=https://unicode-table.com/en/blocks/letterlike-symbols>the "Letterlike Symbols"-block</a>.
+# desc=𝒮𝒸𝓇𝒾𝓅𝓉 𝓁ℯ𝓉𝓉ℯ𝓇𝓈 assembled from <a href=https://symbl.cc/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a> and the <a href=https://symbl.cc/en/blocks/letterlike-symbols>the "Letterlike Symbols"-block</a>.
 
 A 𝒜
 B ℬ

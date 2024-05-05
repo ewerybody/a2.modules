@@ -1,6 +1,6 @@
 # name=ᚱꂹꋊᛙꏸ
 # case=1
-# desc="ᚱꂹꋊᛙꏸ style english alphabet" from the <a href=https://unicode-table.com/en/sets/fancy-letters>the Fancy-Letters page on unicode-table.com</a>. Mostly from the <a href=https://unicode-table.com/en/blocks/runic>runic</a> and <a href=https://unicode-table.com/en/blocks/yi-syllables>Yi</a> <a href=https://unicode-table.com/en/blocks/yi-radicals>blocks</a>.
+# desc="ᚱꂹꋊᛙꏸ style english alphabet" from the <a href=https://symbl.cc/en/sets/fancy-letters>the Fancy-Letters page on unicode-table.com</a>. Mostly from the <a href=https://symbl.cc/en/blocks/runic>runic</a> and <a href=https://symbl.cc/en/blocks/yi-syllables>Yi</a> <a href=https://symbl.cc/en/blocks/yi-radicals>blocks</a>.
 
 A ꋫ
 B ꃃ ꃳ
@@ -12,7 +12,7 @@ G ꁅ ꁍ ꐄ
 H ꑛ ꃄ ꀍ ꁝ
 I ᛙ ꂑ
 J ꀭ ꀮ 𐐈
-K ꀗ
+K ꀗ 丬
 L ꒒
 M ꁒ ᛖ
 N ꋊ ꊮ ꇀ ᛞ ꁹ ꇁ ꎈ

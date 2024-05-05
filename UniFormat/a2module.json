@@ -20,7 +20,7 @@
       "Win+Shift+U"
     ],
     "keyChange": true,
-    "label": "Main Menu",
+    "label": "Show menu with all formatings",
     "multiple": true,
     "name": "UniFormat_Hotkey",
     "scopeChange": true,

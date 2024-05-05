@@ -1,5 +1,5 @@
 # name=Ｆｕｌｌｗｉｄｔｈ ＡＳＣＩＩ
-# desc=Ｆｕｌｌｗｉｄｔｈ ＡＳＣＩＩ variants from the <a href=https://unicode-table.com/en/blocks/halfwidth-and-fullwidth-forms>Halfwidth and Fullwidth Forms</a> block.
+# desc=Ｆｕｌｌｗｉｄｔｈ ＡＳＣＩＩ variants from the <a href=https://symbl.cc/en/blocks/halfwidth-and-fullwidth-forms>Halfwidth and Fullwidth Forms</a> block.
 
 A Ａ
 B Ｂ

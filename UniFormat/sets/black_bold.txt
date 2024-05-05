@@ -1,5 +1,5 @@
 # name=𝕭𝖑𝖆𝖈𝖐 𝖑𝖊𝖙𝖙𝖊𝖗𝖘 𝖇𝖔𝖑𝖉
-# desc=Bold 𝕱𝖗𝖆𝖐𝖙𝖚𝖗/𝖇𝖑𝖆𝖈𝖐 𝖑𝖊𝖙𝖙𝖊𝖗𝖘 from <a href=https://unicode-table.com/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a>.
+# desc=Bold 𝕱𝖗𝖆𝖐𝖙𝖚𝖗/𝖇𝖑𝖆𝖈𝖐 𝖑𝖊𝖙𝖙𝖊𝖗𝖘 from <a href=https://symbl.cc/en/blocks/mathematical-alphanumeric-symbols>the "Mathematical Alphanumeric Symbols"-block</a>.
 
 A 𝕬
 B 𝕭

@@ -1,6 +1,6 @@
 # name=🅒🅘🅡🅒🅛🅔🅓 🅑🅛🅐🅒🅚
 # case=1
-# desc=🅒🅘🅡🅒🅛🅔🅓 white on black upper case letters and numbers from the <a href=https://unicode-table.com/en/blocks/enclosed-alphanumeric-supplement>Enclosed Alphanumeric Supplement</a> and other blocks.
+# desc=🅒🅘🅡🅒🅛🅔🅓 white on black upper case letters and numbers from the <a href=https://symbl.cc/en/blocks/enclosed-alphanumeric-supplement>Enclosed Alphanumeric Supplement</a> and other blocks.
 #
 # The numbers have multiple sources! For all but 0: Dingbat circled digits | sans-serif
 # For the 0: enclosed-alphanumeric-supplement | enclosed-alphanumerics
