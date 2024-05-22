@@ -57,7 +57,7 @@ details_entry_handler(entry_name, entry_pos, *) {
     global _details_popup_menu_name
     these_entries := details_popup_data[_details_popup_menu_name]["data"]
 
-    if (entry_name == "Cancel" and entry_pos > these_entries.Length)
+    if (entry_name == "Cancel" and entry_pos > these_entries.Count)
         Return
 
     ; entry_name might be a simple number! Make sure this is a string pointing into the object:
