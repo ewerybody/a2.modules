@@ -74,7 +74,7 @@ gtranslate(from:="en", to:="de") {
         else
             same_label := "Translation resulted in identical output!"
 
-        gtranslate_menu.Add(same_label, a2tip)
+        gtranslate_menu.Add(same_label, gtranslate_insert)
         gtranslate_menu.Disable(same_label)
     }
 
