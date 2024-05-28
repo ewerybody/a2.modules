@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
-    "version": "0.4"
+    "version": "0.5"
   },
   {
     "disablable": true,
@@ -53,7 +53,7 @@
       "ahk_class CabinetWClass",
       "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
-    "scopeChange": true,
+    "scopeChange": false,
     "scopeMode": 1,
     "typ": "hotkey"
   },
@@ -77,7 +77,7 @@
       "ahk_class CabinetWClass",
       "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
-    "scopeChange": true,
+    "scopeChange": false,
     "scopeMode": 1,
     "typ": "hotkey"
   },
@@ -97,7 +97,7 @@
       "ahk_class CabinetWClass",
       "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
-    "scopeChange": true,
+    "scopeChange": false,
     "scopeMode": 1,
     "typ": "hotkey"
   },
@@ -118,7 +118,7 @@
         "scope": [
           "ahk_class CabinetWClass"
         ],
-        "scopeChange": true,
+        "scopeChange": false,
         "scopeMode": 1,
         "typ": "hotkey"
       },
@@ -137,7 +137,7 @@
         "scope": [
           "ahk_class CabinetWClass"
         ],
-        "scopeChange": true,
+        "scopeChange": false,
         "scopeMode": 1,
         "typ": "hotkey"
       }
@@ -149,62 +149,36 @@
     "typ": "group"
   },
   {
-    "file": "ftpExplorerCopy.ahk",
-    "typ": "include"
-  },
-  {
     "disablable": true,
-    "enabled": false,
-    "functionCode": "ftpExplorerCopy()",
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_Group()",
     "functionMode": 0,
-    "key": "Alt+V",
-    "keyChange": true,
-    "label": "from FTP-Explorer get http-url into Clipboard",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "ftpExplorerCopyHotkey",
-    "scope": [
-      "ahk_class CabinetWClass"
+    "key": [
+      "Ctrl+G"
     ],
-    "scopeChange": true,
+    "keyChange": true,
+    "label": "Group Selected into new Folder",
+    "multiple": true,
+    "name": "ExplorerHotkeys_Group",
+    "scope": [
+      "ahk_class CabinetWClass ahk_exe explorer.exe"
+    ],
+    "scopeChange": false,
     "scopeMode": 1,
     "typ": "hotkey"
   },
   {
     "disablable": true,
-    "enabled": false,
-    "functionCode": "ExplorerHotkeys_NavOnOff()",
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_UnGroup()",
     "functionMode": 0,
-    "functionSend": "Send '{Alt}vn{Enter}'",
-    "functionURL": "Run ",
-    "key": "Alt+N",
-    "keyChange": true,
-    "label": "Toggle Navigation Panel (Experimental)",
-    "mode": "ahk",
-    "multiple": true,
-    "name": "ExplorerHotkeys_NavOnOff",
-    "scope": [
-      "ahk_class CabinetWClass"
+    "key": [
+      "Alt+U"
     ],
-    "scopeChange": true,
-    "scopeMode": 1,
-    "typ": "hotkey"
-  },
-  {
-    "file": "navOnOff.ahk",
-    "typ": "include"
-  },
-  {
-    "disablable": true,
-    "enabled": false,
-    "functionCode": "a2tip(\"Explorer Up\")\nSend \"!{Up}\"",
-    "functionMode": 0,
-    "functionSend": "SendRaw 'a2tip(\"!{Up}\")\nSend, !{Up}'",
-    "key": "XButton1",
     "keyChange": true,
-    "label": "Go \"Up\" instead of Back",
+    "label": "Ungroup single or selected",
     "multiple": true,
-    "name": "ExplorerHotkeys_BackHotkey",
+    "name": "ExplorerHotkeys_UnGroup",
     "scope": [
       "ahk_class CabinetWClass ahk_exe explorer.exe"
     ],
@@ -213,18 +187,7 @@
     "typ": "hotkey"
   },
   {
-    "disablable": true,
-    "enabled": false,
-    "functionCode": "ExplorerHotkeys_ReloadAll()",
-    "functionMode": 0,
-    "key": [
-      "Win+Shift+E"
-    ],
-    "keyChange": true,
-    "label": "Reload Explorer process & windows",
-    "multiple": true,
-    "name": "ExplorerHotkeys_ReloadAllHotkey",
-    "scopeChange": true,
-    "typ": "hotkey"
+    "file": "Explorer_GroupUngroup.ahk",
+    "typ": "include"
   }
 ]
