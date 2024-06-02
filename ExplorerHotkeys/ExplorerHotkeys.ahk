@@ -86,3 +86,18 @@ ExplorerHotkeys_ShowHideSeleced() {
 
     a2tip("Toggled Visibility of " items.Length " items.")
 }
+
+ExplorerHotkeys_Props() {
+    items := explorer_get_selected()
+    path := explorer_get_path()
+
+    if items.Length {
+        Send("!{Enter}")
+        Return
+    }
+    cmd := 'properties "' . path . '"'
+    try
+        Run cmd
+    catch
+        msgbox_error('Could not open Properties with command:`n  ' . cmd)
+}
