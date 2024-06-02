@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
-    "version": "0.5"
+    "version": "0.6"
   },
   {
     "disablable": true,
@@ -189,5 +189,24 @@
   {
     "file": "Explorer_GroupUngroup.ahk",
     "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "ExplorerHotkeys_Props()",
+    "functionMode": 0,
+    "key": [
+      "Alt+Enter"
+    ],
+    "keyChange": true,
+    "label": "Open Folder Properties if nothing selected",
+    "multiple": true,
+    "name": "ExplorerHotkeys_PropsHotkey",
+    "scope": [
+      "ahk_class CabinetWClass ahk_exe explorer.exe"
+    ],
+    "scopeChange": true,
+    "scopeMode": 1,
+    "typ": "hotkey"
   }
 ]
