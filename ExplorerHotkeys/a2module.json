@@ -173,7 +173,7 @@
     "functionCode": "ExplorerHotkeys_UnGroup()",
     "functionMode": 0,
     "key": [
-      "Alt+U"
+      "Ctrl+U"
     ],
     "keyChange": true,
     "label": "Ungroup single or selected",

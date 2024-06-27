@@ -2,7 +2,7 @@ ExplorerHotkeys_Group() {
     xpath := explorer_get_path()
     items := explorer_get_selected()
     if (!items.length) {
-        a2tip("nothing to Group...", 1.5)
+        SendInput("^+n")
         Return
     }
 
