@@ -1,8 +1,8 @@
 ExplorerHotkeys_Group() {
-    xpath := explorer_get_path()
+    root_path := explorer_get_path()
     items := explorer_get_selected()
     if (!items.length) {
-        a2tip("nothing to Group...", 1.5)
+        SendInput("^+n")
         Return
     }
 
@@ -12,7 +12,7 @@ ExplorerHotkeys_Group() {
     if ibx.Result = "Cancel" or ibx.value = ""
         Return false
 
-    dir_path := path_join(xpath, ibx.value)
+    dir_path := path_join(root_path, ibx.value)
     if DirExist(dir_path) {
         msgbox_error(dir_path "`nalready exists!", "Group Error")
         ExplorerHotkeys_Group()
@@ -20,10 +20,11 @@ ExplorerHotkeys_Group() {
     }
     DirCreate(dir_path)
     for item_path in items {
+        base_name := path_join(dir_path, path_basename(item_path))
         if path_is_file(item_path)
-            FileMove(item_path, dir_path . "\" A_LoopFileName)
+            FileMove(item_path, base_name)
         else if path_is_dir(item_path)
-            DirMove(item_path, dir_path . "\" A_LoopFileName)
+            DirMove(item_path, base_name)
     }
 
     Send("{F5}")
@@ -32,21 +33,21 @@ ExplorerHotkeys_Group() {
 }
 
 ExplorerHotkeys_UnGroup() {
-    xpath := explorer_get_path()
+    root_path := explorer_get_path()
     items := explorer_get_selected()
-    ;ask := false
+    ask := false
     if (!items.length) {
         items := explorer_get_all()
         ask := true
     }
 
     folders := []
-    filesFound := false
+    files_found := false
     for x in items {
         if path_is_dir(x)
             folders.push(x)
         else if path_is_file(x)
-            filesFound := true
+            files_found := true
     }
 
     if (!folders.length) {
@@ -54,20 +55,18 @@ ExplorerHotkeys_UnGroup() {
         Return
     }
 
-    ; msgbox("Folders: " folders.length "`n " string_join(folders) "`nfilesFound:" filesFound)
-;     x := folders.length
-;     if ((ask == true) && (filesFound)) || (filesFound){
-;         if !msgbox("Would you like to unpack all the " x " folders here continue?", "unpackFolder", 33)
-;             Return
-;     }
+    if ((ask == true) && (files_found)) || (files_found){
+        if !msgbox("Would you like to unpack all the " folders.length " folders here continue?", "unpackFolder", 33)
+            Return
+    }
 
-    files_moved := 0
+    files_moved := []
     notempty := []
     for folder_path in folders {
         items_exist := []
         Loop Files, folder_path . "\*.*"
         {
-            new_path := xpath "\" A_LoopFileName
+            new_path := root_path "\" A_LoopFileName
             if FileExist(new_path)
                 items_exist.push(new_path)
         }
@@ -76,10 +75,14 @@ ExplorerHotkeys_UnGroup() {
             return
         }
 
-        Loop Files, folder_path . "\*.*"
+        Loop Files, folder_path . "\*.*", "FD"
         {
-            FileMove(A_LoopFileFullPath, xpath . "\" A_LoopFileName)
-            files_moved++
+            target_path := root_path . "\" A_LoopFileName
+            if path_is_file(A_LoopFileFullPath)
+                FileMove(A_LoopFileFullPath, target_path)
+            else
+                DirMove(A_LoopFileFullPath, target_path)
+            files_moved.push(target_path)
         }
 
         empty := true
@@ -99,10 +102,10 @@ ExplorerHotkeys_UnGroup() {
         msgbox_error("not emptied: " string_join(notempty, "`n"))
     }
 
-    if files_moved {
-        a2tip("files_moved: " files_moved, 2)
+    if files_moved.length {
+        a2tip("Items moved: " files_moved.length, 2)
         Send("{F5}")
         Sleep 500
-        Send("{Space}")
+        explorer_select(files_moved)
     }
 }

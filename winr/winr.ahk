@@ -51,7 +51,6 @@ winr_CallDialog() {
     runWindow := "Run ahk_class #32770"
     Send "#r"
     WinWaitActive(runWindow)
-    global winr_move_to_cursor
     if (winr_move_to_cursor) {
         CoordMode "Mouse", "Screen"
         MouseGetPos &clq_mousex, &clq_mousey
@@ -61,7 +60,6 @@ winr_CallDialog() {
 
 winr_CatchedCallRun(path) {
     path := StrReplace(path, "/", "\")
-    global winr_explore_check
     if winr_explore_check
         explorer_show(path)
     else {
