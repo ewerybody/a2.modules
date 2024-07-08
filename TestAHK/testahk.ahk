@@ -13,7 +13,8 @@ testahk() {
     a2tip("testahk...", 1)
     sel := "#SingleInstance force`n" sel
     testfile := A_Temp . "\_a2_test_ahk.ahk"
-    FileDelete(testfile)
+    if FileExist(testfile)
+        FileDelete(testfile)
     FileAppend(sel, testfile, "UTF-8")
     cmd := '"' A_AhkPath '" "' testfile '"'
 
