@@ -2,29 +2,29 @@
 # case=1
 # desc="ᚱꂹꋊᛙꏸ style english alphabet" from the <a href=https://symbl.cc/en/sets/fancy-letters>the Fancy-Letters page on unicode-table.com</a>. Mostly from the <a href=https://symbl.cc/en/blocks/runic>runic</a> and <a href=https://symbl.cc/en/blocks/yi-syllables>Yi</a> <a href=https://symbl.cc/en/blocks/yi-radicals>blocks</a>.
 
-A ꋫ
-B ꃃ ꃳ
+A ꋫ 𐤠
+B ꃃ ꃳ ᛔ ᛒ ᗽ
 C ꏸ ꀯ ꁊ
 D ꁕ
 E ꍟ ᛊ
-F ꄘ ᚩ ꄝ
-G ꁅ ꁍ ꐄ
-H ꑛ ꃄ ꀍ ꁝ
+F ꄘ ᚩ ꄝ ᚨ ᚫ
+G ꁅ ꁍ ꐄ ꍌ
+H ꑛ ꃄ ꀍ ꁝ ᚻ ᚺ
 I ᛙ ꂑ
 J ꀭ ꀮ 𐐈
 K ꀗ 丬
 L ꒒
-M ꁒ ᛖ
+M ꁒ ᛖ ᛗ
 N ꋊ ꊮ ꇀ ᛞ ꁹ ꇁ ꎈ
 O ꆂ ꃪ 𐊔
-P ꉣ
-Q ꁸ
+P ꉣ ᚹ ꎙ
+Q ꁸ ꐍ
 R ᚱ ꒓
 S ꌚ ꂢ ᛇ ꒔ ꁴ
 T ꓅ ᛠ
 U ꂹ ꐇ ꁁ
-V ꏝ
-W ꅐ
-X ꇓ ꒾
-Y ꐟ
-Z ꁴ
+V ꏝ ɣ
+W ꅐ ꅏ
+X ꇓ ꒾ ᚸ ᛯ
+Y ꐟ ᛘ ᛠ
+Z ꁴ ꍞ

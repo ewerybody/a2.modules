@@ -1,6 +1,6 @@
 # name=uʍop-ǝpᴉƨpu pǝppᴉɿɟ
 # reverse=1
-# desc=Letters uʍop-ǝpᴉƨpu pǝppᴉɿɟ (with varying legibility ꓒIʍ).
+# desc=Letters uʍop-ǝpᴉƨpu pǝppᴉɿɟ (with varying legibility ꓒᴉ𐤵).
 
 A ꓯ ∀
 B ꓭ 𐤡 𐐒
@@ -15,7 +15,6 @@ J ꓩ 𐊓 ſ
 K ꓘ Ʞ
 L ⅂ Ꞁ 𐐓
 M ꟽ
-N ᴻ
 
 P ꓒ d
 Q Ò Ờ
