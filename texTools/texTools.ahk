@@ -41,6 +41,29 @@ texTools_random_case() {
     _texTools_reselect(sel)
 }
 
+texToolsStrike() {
+    _texToolsDecorate("̶")
+}
+
+texToolsUnderline() {
+    _texToolsDecorate("͟")
+}
+
+_texToolsDecorate(deco_string) {
+    sel := _texTools_selection()
+    if (!sel)
+        Return
+
+    new := ""
+    Loop(StrLen(sel))
+    {
+        letter := SubStr(sel, A_Index , 1)
+        new .= deco_string . letter
+    }
+    clipboard_paste(new)
+}
+
+
 _texTools_selection() {
     sel := clipboard_get()
     if (!sel) {

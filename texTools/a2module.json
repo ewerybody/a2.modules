@@ -10,7 +10,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/texTools#textools",
-    "version": "0.4.1"
+    "version": "0.5.0"
   },
   {
     "file": "wordCount.ahk",
@@ -42,7 +42,7 @@
     "step_len": 1.0,
     "suffix": "s",
     "typ": "number",
-    "value": 3
+    "value": 1
   },
   {
     "disablable": true,
@@ -87,6 +87,36 @@
     "label": "mAkE sELECtED teXt RaNdoM CaSE",
     "multiple": true,
     "name": "texTools_random_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "texToolsUnderline()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+Shift+D"
+    ],
+    "keyChange": true,
+    "label": "<span style=\"text-decoration: underline;\">Underline</span> some text with Unicode",
+    "multiple": true,
+    "name": "texTools_underline_Hotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "texToolsStrike()",
+    "functionMode": 0,
+    "key": [
+      "Ctrl+Shift+S"
+    ],
+    "keyChange": true,
+    "label": "<span style=\"text-decoration: line-through;\">Strikethrough</span> some text with Unicode",
+    "multiple": true,
+    "name": "texTools_strike_Hotkey",
     "scopeChange": true,
     "typ": "hotkey"
   }
