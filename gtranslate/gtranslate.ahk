@@ -105,18 +105,6 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     ApiURi .= "&q=" encoded ;srcTxt
     a2log_debug("Calling URL:" ApiURi, "gtranslate")
 
-    ; Headers := "Content-Type: application/json`n"
-    ; Headers .= "user-agent: Mozilla/5.0`n"
-
-    ; if gtranslate_use_proxy
-    ; {
-    ;     Headers .= Settings.Proxy.Authentication.Username && Settings.Proxy.Authentication.Password ? "Proxy-Authorization: Basic " base64_encode(Settings.Proxy.Authentication.Username ":" Settings.Proxy.Authentication.Password) : ""  ; TODO decrypt pw?
-    ;     Options .= Settings.Proxy.Enabled ? "Proxy: " Settings.Proxy.Address ":" Settings.Proxy.Port "`n" : ""
-    ; }
-
-    ; a2log_debug("HTTPRequest request HEADER:" Headers, "gtranslate")
-    ; a2log_debug("HTTPRequest request Options:" Options, "gtranslate")
-
     a2tip("gtranslate: looking up '" SubStr(srcTxt, 1 , 32) "' ...", 2)
     whr := ComObject("WinHttp.WinHttpRequest.5.1")
     whr.Open("GET", ApiURi, true)
@@ -126,10 +114,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     ; Using 'true' above and the call below allows the script to remain responsive.
     whr.WaitForResponse()
     response := whr.ResponseText
-    ; HTTPRequest(ApiURi , response, Headers, Options)
     a2tip()
-
-    ; a2log_debug("HTTPRequest response HEADER:" Headers, "gtranslate")
     a2log_debug("HTTPRequest response BODY:" response, "gtranslate")
 
     RegExMatch(response, '\[\"(.+?)\"', &match)
@@ -162,12 +147,13 @@ gtranslate_open_webpage(*) {
 
 gtranslate_any(){
     icon_path := path_neighbor(A_LineFile, "a2icon24.png")
-    user_cfg := Jxon_Load(a2.db.find(A_LineFile, "user_cfg"))
+    user_cfg_str := a2.db.find(A_LineFile, "user_cfg")
+    user_cfg := Jxon_Load(&user_cfg_str)
     languages := Jxon_Read(path_neighbor(A_LineFile, "languages.json"))
     last_selected_any := a2.db.find(A_LineFile, "last_selected_any")
 
     gtranslate_anymenu := Menu()
-    for name, data in user_cfg.gtranslate_lister {
+    for name, data in user_cfg["gtranslate_lister"] {
         gtranslate_anymenu.Add(name, _gtranslate_any_handler)
         gtranslate_anymenu.SetIcon(name, icon_path,, 0)
     }
@@ -191,9 +177,9 @@ gtranslate_any(){
 }
 
 _gtranslate_any_lang_handler(sel, *){
-    parts := StrSplit(sel, ": ")
+    parts := StrSplit(sel, ":")
     a2.db.find_set(A_LineFile, "last_selected_any", sel)
-    gtranslate("auto", parts[2])
+    gtranslate("auto", Trim(parts[2]))
 }
 
 _gtranslate_any_handler(sel, *){
