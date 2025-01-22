@@ -112,7 +112,14 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     whr.SetRequestHeader("user-agent", "Mozilla/5.0")
     whr.Send()
     ; Using 'true' above and the call below allows the script to remain responsive.
-    whr.WaitForResponse()
+    Try
+        whr.WaitForResponse()
+    Catch {
+        a2tip("WinHttpRequest Failed!")
+        a2log_error("WinHttpRequest Failed!", "gtranslate")
+        Return
+    }
+
     response := whr.ResponseText
     a2tip()
     a2log_debug("HTTPRequest response BODY:" response, "gtranslate")
