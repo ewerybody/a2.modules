@@ -4,12 +4,15 @@ details_popup_menu() {
 
     DetailsMenu := Menu()
     count := 0
+    if !IsSet(details_popup_data)
+        global details_popup_data := Map()
+
     for name, _data in details_popup_data {
         DetailsMenu.Add(name, details_popup_handler)
         count++
     }
     if (count == 0) {
-        MsgBox_info("There is nothing to popup! Apparently there was no data added yet?")
+        MsgBox_info("There is nothing to popup! Apparently there was no data added yet?", "DetailsPopup")
         Return
     }
 
@@ -21,6 +24,10 @@ details_popup_menu() {
 details_popup_handler(menu_name, *) {
     global _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
+    if !details_popup_data[menu_name].Has("data") {
+        MsgBox_info("There is nothing to popup! Apparently there was no data added to '" menu_name "' yet?", "DetailsPopup")
+        Return
+    }
     these_entries := details_popup_data[menu_name]["data"]
     if details_popup_data[menu_name].has("single_item")
         single_item := details_popup_data[menu_name]["single_item"]
@@ -61,7 +68,7 @@ details_entry_handler(entry_name, entry_pos, *) {
         Return
 
     ; entry_name might be a simple number! Make sure this is a string pointing into the object:
-    value := these_entries["" entry_name ""]
+    value := these_entries[entry_name]
     cmd_path := path_neighbor(A_LineFile, "details_paste_entry.ahk")
 
     cmd := '"' . A_AhkPath . '" "' . cmd_path . '" "' . value . '"'

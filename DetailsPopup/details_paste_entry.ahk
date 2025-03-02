@@ -7,7 +7,7 @@ SendMode "Input"
 
 entry := A_Args[1]
 
-a2tip("Left Mouse Button or Return/Enter ⮐ To Paste`nEscape To Cancel", 0)
+a2tip("Left Mouse Button or Return/Enter ⮐ To Paste`nEscape To Cancel", 100)
 
 Escape::Details_Abort
 ~LButton::Details_Paste
