@@ -18,7 +18,10 @@ getWinfo() {
     thisPID := WinGetPID(ahkid)
     this_process := WinGetProcessName(ahkid)
     this_path := WinGetProcessPath(ahkid)
-    this_ver := FileGetVersion(this_path)
+    try
+        this_ver := FileGetVersion(this_path)
+    catch
+        this_ver := "- No Data -"
 
     wInfoMenu := Menu()
     wInfoMenu.Add(title, getWinfoMenuHandler)
