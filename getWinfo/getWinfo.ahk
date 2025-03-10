@@ -8,6 +8,8 @@
 getWinfo() {
     module_data := jxon_read(path_neighbor(A_LineFile, "a2module.json"))
     title := "getWinfo " module_data[1]["version"]
+    icon_copy := path_join(a2.paths.resources, "copy.ico")
+    icon_folder := path_join(a2.paths.resources, "folder2.ico")
     a2tip(title . "...")
 
     global getWinfoID
@@ -26,14 +28,24 @@ getWinfo() {
     wInfoMenu := Menu()
     wInfoMenu.Add(title, getWinfoMenuHandler)
     wInfoMenu.Disable(title)
-    wInfoMenu.Add("title: " . this_title, getWinfoMenuHandler)
-    wInfoMenu.Add("class: " . this_class, getWinfoMenuHandler)
-    wInfoMenu.Add("hwnd: " . getWinfoID, getWinfoMenuHandler)
-    wInfoMenu.Add("pid: " . thisPID, getWinfoMenuHandler)
-    wInfoMenu.Add("process: " . this_process, getWinfoMenuHandler)
-    wInfoMenu.Add("version: " . this_ver, getWinfoMenuHandler)
-    wInfoMenu.Add("path: " . this_path, getWinfoMenuHandler)
+
+    add_copy_action(title, to_menu := "") {
+        if !to_menu
+            to_menu := wInfoMenu
+        to_menu.Add(title, getWinfoMenuHandler)
+        to_menu.SetIcon(title, icon_copy,, 0)
+    }
+
+    add_copy_action("title: " . this_title)
+    add_copy_action("class: " . this_class)
+    add_copy_action("hwnd: " . getWinfoID)
+    add_copy_action("pid: " . thisPID)
+    add_copy_action("process: " . this_process)
+    add_copy_action("version: " . this_ver)
+    add_copy_action("path: " . this_path)
+
     wInfoMenu.Add("Explore to path", getWinfoGotoPath)
+    wInfoMenu.SetIcon("Explore to path", icon_folder,, 0)
 
     ; "The names of menus and menu items can be up to 260 characters long."
     ; https://www.autohotkey.com/docs/commands/Menu.htm#Remarks ...260 is a lot!
@@ -47,6 +59,7 @@ getWinfo() {
             display_line := cmd_line
 
         wInfoMenu.Add("commandline: " . display_line, getWinfoCopyCmdLinePath)
+        wInfoMenu.SetIcon("commandline: " . display_line, icon_copy,, 0)
         if FileExist(cmd_line)
             wInfoMenu.Add("Explore to Command line path", getWinfoGotoCmdLinePath)
     }
@@ -55,6 +68,7 @@ getWinfo() {
     if (ctrl_list.Length) {
         wInfoMenu.Add("Controls: " . ctrl_list.Length . " ( click to show ... )", getWinfoCtrlsHandler)
         wInfoMenu.Add("Copy All Control Info", getWinfoCopyCtrlsHandler)
+        wInfoMenu.SetIcon("Copy All Control Info", icon_copy,, 0)
     }
     else {
         wInfoMenu.Add("No Controls Here", getWinfoMenuHandler)
@@ -65,13 +79,16 @@ getWinfo() {
     CoordMode "Mouse", "Screen"
     MouseGetPos &mouseX, &mouseY
     wInfoPosMenu := Menu()
-    wInfoPosMenu.Add("x: " . X, getWinfoMenuHandler)
-    wInfoPosMenu.Add("y: " . Y, getWinfoMenuHandler)
-    wInfoPosMenu.Add("w: " . Width, getWinfoMenuHandler)
-    wInfoPosMenu.Add("h: " . Height, getWinfoMenuHandler)
-    wInfoPosMenu.Add("x|y|w|h: " x "|" y "|" Width "|" Height, getWinfoMenuHandler)
+    add_copy_action("x: " . X, wInfoPosMenu)
+    add_copy_action("y: " . Y, wInfoPosMenu)
+    add_copy_action("w: " . Width, wInfoPosMenu)
+    add_copy_action("h: " . Height, wInfoPosMenu)
+    add_copy_action("x|y|w|h: " x "|" y "|" Width "|" Height, wInfoPosMenu)
     wInfoPosMenu.Add("SetToCursor", getWinfoSetToCursor)
-    wInfoPosMenu.Add("MousePos: " . mouseX . "," . mouseY, getWinfoMenuHandler)
+    add_copy_action("MousePos: " . mouseX . "," . mouseY, wInfoPosMenu)
+    minmax := WinGetMinMax("ahk_id " . getWinfoID)
+    isfullscreen := window_is_fullscreen(getWinfoID)
+    wInfoPosMenu.Add("minmax: " . minmax . " isfullscreen: " . isfullscreen, getWinfoSetToCursor)
 
     wInfoMenu.Add("Pos: " X " x " Y " Size: " Width " x " Height "...", wInfoPosMenu)
 
