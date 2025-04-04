@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
-    "version": "0.6"
+    "version": "0.7.0"
   },
   {
     "disablable": true,
@@ -146,6 +146,59 @@
     "enabled": true,
     "label": "Browse Forward/Backward on MouseWheel",
     "name": "ExplorerHotkeys_ShiftWheelBox",
+    "typ": "group"
+  },
+  {
+    "children": [
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "ExplorerHotkeys_NextDir()",
+        "functionMode": 0,
+        "functionSend": "Send \"{Browser_Forward}\"",
+        "key": [
+          "Alt+Shift+Right"
+        ],
+        "keyChange": true,
+        "label": "Next Folder",
+        "multiple": true,
+        "name": "ExplorerHotkeys_NextDirHotkey",
+        "scope": [
+          "ahk_class CabinetWClass"
+        ],
+        "scopeChange": false,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "disablable": false,
+        "enabled": true,
+        "functionCode": "ExplorerHotkeys_PrevDir()",
+        "functionMode": 0,
+        "functionSend": "Send \"{Browser_Back}\"",
+        "key": [
+          "Alt+Shift+Left"
+        ],
+        "keyChange": true,
+        "label": "Previous Folder",
+        "multiple": true,
+        "name": "ExplorerHotkeys_PrevDirHotkey",
+        "scope": [
+          "ahk_class CabinetWClass"
+        ],
+        "scopeChange": false,
+        "scopeMode": 1,
+        "typ": "hotkey"
+      },
+      {
+        "file": "ExplorerHotkeys_NextPrevDir.ahk",
+        "typ": "include"
+      }
+    ],
+    "disablable": true,
+    "enabled": false,
+    "label": "Browse to Next/Previous Neighbor Folder",
+    "name": "ExplorerHotkeys_NextPreviousDirBox",
     "typ": "group"
   },
   {
