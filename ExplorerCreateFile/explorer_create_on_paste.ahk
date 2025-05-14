@@ -3,7 +3,7 @@
 #include <LC>
 
 explorer_create_on_paste() {
-    ; Ensure default Explorer behaviour with files in clipboard.
+    ; Ensure default Explorer behavior with files in clipboard.
     wc := WinClip()
     if wc.GetFiles()
     {
@@ -25,7 +25,7 @@ explorer_create_on_paste() {
 
     gdip_token := gdip_startup()
     bitmap := Gdip_CreateBitmapFromClipboard()
-    if _is_bitmap(bitmap) {
+    if _explorer_create_is_bitmap(bitmap) {
         _explorer_create_from_clip_bitmap(current_path, bitmap, gdip_token)
         Return
     }
@@ -37,8 +37,8 @@ explorer_create_on_paste() {
 
 
 _explorer_create_from_base64(current_path, base64_id, image_type) {
-    baselen := StrLen(base64_id)
-    base64 := Substr(A_Clipboard, baselen + 1, StrLen(A_Clipboard) - baselen - 2)
+    base_len := StrLen(base64_id)
+    base64 := Substr(A_Clipboard, base_len + 1, StrLen(A_Clipboard) - base_len - 2)
     default_ext := "." image_type
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
     title := "ExplorerCreateFile: Image from Clipboard base64 " image_type " data"
@@ -64,10 +64,10 @@ _explorer_create_from_base64(current_path, base64_id, image_type) {
 }
 
 _explorer_create_from_clip_bitmap(current_path, bitmap, gdip_token) {
-    if (ExplorerCreateFile_DefaultImageExt)
+    default_ext := ".png"
+    if (IsSet(ExplorerCreateFile_DefaultImageExt) and ExplorerCreateFile_DefaultImageExt != "")
         default_ext := ExplorerCreateFile_DefaultImageExt
 
-    default_ext := ".png"
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
 
     title := "ExplorerCreateFile: Image from Clipboard"
@@ -105,7 +105,7 @@ _explorer_create_from_text(current_path) {
     ; ext := path_split_ext(file_name)[2]
     ; if !ext
     ;     file_name := file_name default_ext
-    ; file_path := _append_default_ext(current_path, &file_name, default_ext)
+    ; file_path := _explorer_create_append_default_ext(current_path, &file_name, default_ext)
 
     ; File := FileOpen(file_path, "w")
     ; File.Write(A_Clipboard)
@@ -130,7 +130,7 @@ _explorer_create_finish(file_name) {
 }
 
 
-_is_bitmap(bitmap) {
+_explorer_create_is_bitmap(bitmap) {
     for _, error_code in [-1, -2, -3, -4] {
         if (error_code == bitmap)
             Return false
@@ -138,10 +138,9 @@ _is_bitmap(bitmap) {
     Return true
 }
 
-_append_default_ext(current_path, &file_name, default_ext) {
+_explorer_create_append_default_ext(current_path, &file_name, default_ext) {
     ext := path_split_ext(file_name)[2]
     if !ext
         file_name := file_name default_ext
     return path_join(current_path, file_name)
 }
-

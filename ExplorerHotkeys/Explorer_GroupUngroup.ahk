@@ -61,7 +61,7 @@ ExplorerHotkeys_UnGroup() {
     }
 
     files_moved := []
-    notempty := []
+    not_empty := []
     for folder_path in folders {
         items_exist := []
         Loop Files, folder_path . "\*.*"
@@ -71,9 +71,11 @@ ExplorerHotkeys_UnGroup() {
                 items_exist.push(new_path)
         }
         if items_exist.length {
-            msgbox_error('Alreay existing!`n' string_join(items_exist, '`n'), 'Ungroup Error')
+            msgbox_error('Already existing!`n' string_join(items_exist, '`n'), 'Ungroup Error')
             return
         }
+
+        a2tip("Ungrouping " . folder_path . " ...")
 
         Loop Files, folder_path . "\*.*", "FD"
         {
@@ -95,11 +97,11 @@ ExplorerHotkeys_UnGroup() {
         if empty
             DirDelete(folder_path)
         else
-            notempty.push(folder_path)
+            not_empty.push(folder_path)
     }
 
-    if (notempty.length) {
-        msgbox_error("not emptied: " string_join(notempty, "`n"))
+    if (not_empty.length) {
+        msgbox_error("not emptied: " string_join(not_empty, "`n"))
     }
 
     if files_moved.length {
