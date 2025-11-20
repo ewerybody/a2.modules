@@ -1,26 +1,30 @@
-﻿; direct to user website
-; https://translate.google.com/#en/de/hallo
-; translate website
-; https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=&edit-text=&act=url
-; translate api call
-; https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=de&dt=t&q=File%20not%20visible
-; other translate api call
-; http://translate.google.de/translate_a/t?client=x&text=File%20not%20visible&sl=auto&tl=de
-; text to speech
-; https://translate.google.com/translate_tts?ie=UTF-8&q=bonjour&tl=fr&client=tw-ob
-; https://stackoverflow.com/questions/32053442/google-translate-tts-api-blocked
+﻿/* gtranslate - to look up selected text on an online translator.
+
+direct to user website
+https://translate.google.com/#en/de/hallo
+translate website
+https://translate.google.com/translate?sl=de&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=&edit-text=&act=url
+translate api call
+https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=de&dt=t&q=File%20not%20visible
+other translate api call
+http://translate.google.de/translate_a/t?client=x&text=File%20not%20visible&sl=auto&tl=de
+text to speech
+https://translate.google.com/translate_tts?ie=UTF-8&q=bonjour&tl=fr&client=tw-ob
+https://stackoverflow.com/questions/32053442/google-translate-tts-api-blocked
+*/
 #include <uri>
 
 __gtranslation := ""
 __gtranslate_search := ""
-__gtranslate_lngs := ""
+__gtranslate_langs := ""
 
 gtranslate(from:="en", to:="de") {
-    global __gtranslate_search, __gtranslate_lngs
+    global __gtranslate_search, __gtranslate_langs
     sel := clipboard_get() ; get selected text
 
     __gtranslate_search := trim(sel, " `n`t`r")
-    __gtranslate_lngs := from "|" to
+    __gtranslate_search := RegExReplace(__gtranslate_search, '\s+', " ")
+    __gtranslate_langs := from "|" to
 
     ; No Selection:
     if (__gtranslate_search == "")
@@ -52,10 +56,11 @@ gtranslate(from:="en", to:="de") {
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to)
 
     if (__gtranslation == "") {
-        msgbox_error('No tranlation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
+        msgbox_error('No translation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
         Return
     }
 
+    __gtranslation := RegExReplace(__gtranslation, '\\r\\n', "`n")
     icon_copy := path_join(a2.paths.resources, "copy.ico")
     icon_paste := path_join(a2.paths.resources, "paste.ico")
     icon_path := path_neighbor(A_LineFile, "a2icon24.png")
@@ -97,6 +102,7 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
 
     a2log_debug("Text to translate:" srcTxt, "gtranslate")
     encoded := uri_encode(srcTxt)
+    encoded := RegExReplace(encoded, "%0D", "")
 
     ApiURi := "https://translate.googleapis.com/translate_a/single?client=gtx"
     ApiURi .= "&sl=" srcLng
@@ -144,8 +150,8 @@ gtranslate_copy(*) {
 
 
 gtranslate_open_webpage(*) {
-    global __gtranslate_search, __gtranslate_lngs
-    lng_from_to := StrSplit(__gtranslate_lngs, "|")
+    global __gtranslate_search, __gtranslate_langs
+    lng_from_to := StrSplit(__gtranslate_langs, "|")
     url := "https://translate.google.com/#"
     url .= lng_from_to[1] "/" lng_from_to[2] "/"
     url .= __gtranslate_search
@@ -159,10 +165,10 @@ gtranslate_any(){
     languages := Jxon_Read(path_neighbor(A_LineFile, "languages.json"))
     last_selected_any := a2.db.find(A_LineFile, "last_selected_any")
 
-    gtranslate_anymenu := Menu()
+    gtranslate_any_menu := Menu()
     for name, data in user_cfg["gtranslate_lister"] {
-        gtranslate_anymenu.Add(name, _gtranslate_any_handler)
-        gtranslate_anymenu.SetIcon(name, icon_path,, 0)
+        gtranslate_any_menu.Add(name, _gtranslate_any_handler)
+        gtranslate_any_menu.SetIcon(name, icon_path,, 0)
     }
 
     gtranslate_submenu := Menu()
@@ -172,15 +178,15 @@ gtranslate_any(){
         ; NOPE! Adding icons to ALL of the languages takes a couple seconds!!
         ; Menu, gtranslate_submenu, Icon, %lang%: %short%, %icon_path%,, 0
     }
-    gtranslate_anymenu.Add("All Languages", gtranslate_submenu)
-    gtranslate_anymenu.SetIcon("All Languages", icon_path,, 0)
+    gtranslate_any_menu.Add("All Languages", gtranslate_submenu)
+    gtranslate_any_menu.SetIcon("All Languages", icon_path,, 0)
     if (last_selected_any)
     {
-        gtranslate_anymenu.Add(last_selected_any, _gtranslate_any_lang_handler)
-        gtranslate_anymenu.SetIcon(last_selected_any, icon_path,, 0)
+        gtranslate_any_menu.Add(last_selected_any, _gtranslate_any_lang_handler)
+        gtranslate_any_menu.SetIcon(last_selected_any, icon_path,, 0)
     }
 
-    gtranslate_anymenu.Show()
+    gtranslate_any_menu.Show()
 }
 
 _gtranslate_any_lang_handler(sel, *){
@@ -198,8 +204,8 @@ _gtranslate_any_handler(sel, *){
 ; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=63835
 ; credits to: teadrinker, garry
 gtranslate_audio(*) {
-    global __gtranslation, __gtranslate_lngs
-    lng_from_to := StrSplit(__gtranslate_lngs, "|")
+    global __gtranslation, __gtranslate_langs
+    lng_from_to := StrSplit(__gtranslate_langs, "|")
     url := "https://translate.google.com/translate_tts?ie=UTF-8&q=" __gtranslation "&tl=" lng_from_to[2] "&client=tw-ob"
 
     whr := ComObject("Msxml2.XMLHTTP.6.0")
@@ -222,6 +228,6 @@ gtranslate_audio(*) {
 
     a2tip('gtranslate: Playing back "' . lng_from_to[2] '" ...', 10)
     SoundPlay(tmp_path, "Wait")
-    filedelete(tmp_path)
+    FileDelete(tmp_path)
     a2tip()
 }
