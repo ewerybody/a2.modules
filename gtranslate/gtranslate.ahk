@@ -19,7 +19,7 @@ __gtranslate_search := ""
 __gtranslate_langs := ""
 
 gtranslate(from:="en", to:="de") {
-    global __gtranslate_search, __gtranslate_langs
+    global __gtranslate_search, __gtranslate_langs, __gtranslation
     sel := clipboard_get() ; get selected text
 
     __gtranslate_search := trim(sel, " `n`t`r")
@@ -42,19 +42,12 @@ gtranslate(from:="en", to:="de") {
             if !msgbox_accepted(msg , "Translate whole webpage?")
                 return
         }
-        url := "https://translate.google.com/translate"
-        url .= "?sl=" from
-        url .= "&tl=" to
-        url .= "&js=y&prev=_t&hl=en&ie=UTF-8&u="
-        url .= uri_encode(__gtranslate_search)
-        url .= "&edit-text=&act=url"
-        Run(url)
+
+        gtranslate_website(from, to)
         return
     }
 
-    global __gtranslation
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to)
-
     if (__gtranslation == "") {
         msgbox_error('No translation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
         Return
@@ -91,7 +84,7 @@ gtranslate(from:="en", to:="de") {
     gtranslate_menu.Add(audio_label, gtranslate_audio)
     gtranslate_menu.SetIcon(audio_label, icon_audio,, 0)
 
-    gtranslate_menu.Add("Show in web browser", gtranslate_open_webpage)
+    gtranslate_menu.Add("Show in web browser", gtranslate_open_website)
     gtranslate_menu.SetIcon("Show in web browser", icon_path,, 0)
     gtranslate_menu.Show()
 }
@@ -149,13 +142,12 @@ gtranslate_copy(*) {
 }
 
 
-gtranslate_open_webpage(*) {
-    global __gtranslate_search, __gtranslate_langs
-    lng_from_to := StrSplit(__gtranslate_langs, "|")
-    url := "https://translate.google.com/#"
-    url .= lng_from_to[1] "/" lng_from_to[2] "/"
-    url .= __gtranslate_search
-    Run url
+gtranslate_open_website(*) {
+    lng_from_to := StrSplit(__gtranslate_langs, "|",, MaxArraySize := 2)
+    url := "https://translate.google.com/?"
+    url .= "sl=" lng_from_to[1] "&tl=" lng_from_to[2] "&text="
+    url .= uri_encode(__gtranslate_search)
+    Run(url)
 }
 
 gtranslate_any(){
@@ -230,4 +222,40 @@ gtranslate_audio(*) {
     SoundPlay(tmp_path, "Wait")
     FileDelete(tmp_path)
     a2tip()
+}
+
+
+gtranslate_website(from, to) {
+    url_parts := StrSplit(__gtranslate_search, "://",, MaxArraySize := 2)
+    ; gtranslate url has to start with https anyway
+    url := "https://"
+    ; deal with search string not containing http
+    start_index := 1
+    if InStr(url_parts[1], "http")
+        start_index++
+
+    if InStr(url_parts[start_index], "/") {
+        root_rest := StrSplit(url_parts[start_index], "/",, MaxArraySize := 2)
+        root := root_rest[1]
+        rest := root_rest[2]
+    } else {
+        root := url_parts[2]
+        rest := ""
+    }
+    ; dashes to double dashes
+    root := StrReplace(root, "-", "--")
+    ; add root path with replaced dots as dashes in from of the google address
+    url .= StrReplace(root, ".", "-") ".translate.goog/"
+
+    languages_code := "?_x_tr_sl=" from "&_x_tr_tl=" to "&_x_tr_hl=" to
+    ; deal with anchor in links
+    if InStr(rest, "#") {
+        anchor_parts := StrSplit(rest, "#",, MaxArraySize := 2)
+        url .= anchor_parts[1] languages_code
+        url .= "#" anchor_parts[2]
+    } else {
+        url .= rest languages_code
+    }
+
+    Run(url)
 }
