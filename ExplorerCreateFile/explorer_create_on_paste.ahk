@@ -8,20 +8,12 @@ explorer_create_on_paste() {
     if wc.GetFiles()
     {
         Send(A_ThisHotkey)
-        return
+        Return
     }
 
     current_path := explorer_get_path()
-
-    for i, image_type in ["png", "jpeg"]
-    {
-        base64_id := '<img src="data:image/' . image_type . ";base64,"
-        if string_startswith(A_Clipboard, base64_id) AND string_endswith(A_Clipboard, '">')
-        {
-            _explorer_create_from_base64(current_path, base64_id, image_type)
-            Return
-        }
-    }
+    if _explorer_create_is_base64(A_Clipboard, current_path)
+        Return
 
     gdip_token := gdip_startup()
     bitmap := Gdip_CreateBitmapFromClipboard()
@@ -36,9 +28,37 @@ explorer_create_on_paste() {
 }
 
 
-_explorer_create_from_base64(current_path, base64_id, image_type) {
-    base_len := StrLen(base64_id)
-    base64 := Substr(A_Clipboard, base_len + 1, StrLen(A_Clipboard) - base_len - 2)
+_explorer_create_is_base64(input_string, current_path) {
+    tmp_string := Trim(input_string)
+    tmp_index := InStr(SubStr(tmp_string, 1, 64), ";base64,")
+    if !tmp_index
+        return false
+
+    if SubStr(tmp_string, -2) == '">' {
+        base64 := SubStr(tmp_string, tmp_index + 8, -2)
+    } else {
+        base64 := SubStr(tmp_string, tmp_index + 8)
+    }
+    prefix := SubStr(tmp_string, 1, tmp_index - 1)
+
+    tmp_index := InStr(prefix, "data:image/")
+    if !tmp_index
+        return false
+
+    image_format := SubStr(prefix, tmp_index + 11)
+    if image_format == "jpeg" {
+        image_format := "jpg"
+    } else if image_format == "x-icon" {
+        image_format := "ico"
+    }
+
+    _explorer_create_from_base64(current_path, base64, image_format)
+
+    Return true
+}
+
+
+_explorer_create_from_base64(current_path, base64, image_type) {
     default_ext := "." image_type
     file_name := path_get_free_name(current_path, ExplorerCreateFile_DefaultImageName, default_ext)
     title := "ExplorerCreateFile: Image from Clipboard base64 " image_type " data"
@@ -51,17 +71,14 @@ _explorer_create_from_base64(current_path, base64_id, image_type) {
         file_name := file_name default_ext
     file_path := path_join(current_path, file_name)
 
+    nBytes := LC_Base64ToBuf(base64, &bitmap)
     File := FileOpen(file_path, "w")
-    File.Write("")
-    File.Close()
-
-    nBytes := LC_Str2Bin(&bitmap, &base64, 0x1)
-    File := FileOpen(file_path, "w")
-    File.RawWrite(bitmap, nBytes)
+    File.RawWrite(bitmap.Ptr, nBytes)
     File.Close()
 
     _explorer_create_finish(file_name)
 }
+
 
 _explorer_create_from_clip_bitmap(current_path, bitmap, gdip_token) {
     default_ext := ".png"
