@@ -9,8 +9,12 @@ With options to
 * **Resize Focused Windows Only / Move Inactive Ones** - makes only active windows work with the 9 zones. Not currently focussed ones will only have "one" region: for moving.
 * **Show Tooltip** - during move or resize operation with stats
 * **Make it use a raster while holding <b><kbd>Shift</kbd></b> key** to lock into a discrete grid instead of pixel by pixel.
-* **Maximize on Doubleclick** - according to the 9 regions: left/right regions: maximize horizontaly, top/bottom region: maximize vertically, center: maximize whole window.
+* **Maximize on Doubleclick** - according to the 9 regions: left/right regions: maximize horizontally, top/bottom region: maximize vertically, center: maximize whole window.
   This also **toggles** the maximization in the according regions.
+
+* **Check Display Border** - To take the top, left, right bottom display borders into consideration when moving or resizing windows.
+  - ☑️ **Snap To Border** - makes the borders magnetic within the range defined by **Border Threshold** underneath.
+  * ☑️ **Allow Outside** - is **on** by default but you can prevent moving windows outside the borders with this.
 
 This one was partially ported from the original ac'tivAid ComfortResize by Bernd Schandl, [Wolfgang Reszel](https://github.com/Tekl), [Michael Telgkamp](https://telgkamp.de).\
 [file a **ComfortResize** issue](https://github.com/ewerybody/a2.modules/issues/new?labels=mod%3AComfortResize)

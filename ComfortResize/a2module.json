@@ -7,7 +7,7 @@
     "tags": [],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/ComfortResize#comfortresize",
-    "version": "0.2"
+    "version": "0.3"
   },
   {
     "file": "comfort_resize_main.ahk",
@@ -22,7 +22,7 @@
       "Win+Lbutton"
     ],
     "keyChange": true,
-    "label": "call ComfortResize",
+    "label": "Call ComfortResize",
     "multiple": true,
     "name": "ComfortResize_Hotkey",
     "scopeChange": true,
@@ -44,13 +44,13 @@
     "children": [
       {
         "label": "Position",
-        "name": "comfort_resize_show_tooltip_pos",
+        "name": "cr_show_tooltip_pos",
         "typ": "check",
         "value": false
       },
       {
         "label": "Size",
-        "name": "comfort_resize_show_tooltip_size",
+        "name": "cr_show_tooltip_size",
         "typ": "check",
         "value": true
       }
@@ -58,15 +58,11 @@
     "disablable": false,
     "enabled": true,
     "label": "Show Tooltip",
-    "name": "comfort_resize_show_tooltip",
+    "name": "cr_show_tooltip",
     "typ": "group"
   },
   {
     "children": [
-      {
-        "text": "Hold <b>Shift</b> Key additionally to enable the Raster",
-        "typ": "label"
-      },
       {
         "label": "Raster X",
         "label_over_field": false,
@@ -88,6 +84,10 @@
         "name": "cr_RasterAlways",
         "typ": "check",
         "value": false
+      },
+      {
+        "text": "Alternatively: Hold <b>Shift</b> Key to enable the Raster.",
+        "typ": "label"
       }
     ],
     "disablable": false,
@@ -103,7 +103,7 @@
         "label": "Double Click position threshold",
         "max": 100.0,
         "min": 1.0,
-        "name": "comfort_resize_pixel_threshold",
+        "name": "cr_pixel_threshold",
         "slider": false,
         "step_len": 1.0,
         "suffix": "pixels",
@@ -111,22 +111,59 @@
         "value": 5
       },
       {
-        "decimals": 0,
+        "decimals": 6,
         "label": "Double Click time threshold",
         "max": 1000.0,
         "min": 50.0,
-        "name": "comfort_resize_time_threshold",
+        "name": "cr_time_threshold",
         "slider": false,
         "step_len": 1.0,
         "suffix": "miliseconds",
         "typ": "number",
-        "value": 400
+        "value": 400.0
       }
     ],
     "disablable": true,
     "enabled": true,
     "label": "Maximize on Doubleclick",
     "name": "comfort_resize_doubleclick",
+    "typ": "group"
+  },
+  {
+    "children": [
+      {
+        "label": "Snap To Border",
+        "name": "cr_snap_to_border",
+        "typ": "check",
+        "value": false
+      },
+      {
+        "decimals": 0,
+        "label": "Border Threshold",
+        "max": 100.0,
+        "min": 1.0,
+        "name": "cr_border_threshold",
+        "slider": false,
+        "step_len": 1.0,
+        "suffix": "pixel",
+        "typ": "number",
+        "value": 10
+      },
+      {
+        "label": "Allow Outside",
+        "name": "cr_allow_outside",
+        "typ": "check",
+        "value": true
+      },
+      {
+        "text": "Alternatively: Hold <b>Ctrl</b> Key to keep windows from moving outside.",
+        "typ": "label"
+      }
+    ],
+    "disablable": true,
+    "enabled": false,
+    "label": "Check Display Border",
+    "name": "cr_check_border",
     "typ": "group"
   }
 ]
