@@ -103,7 +103,7 @@ uniformat_get_letters(set_name) {
 
     letters_file := path_neighbor(A_LineFile, "sets\" string_suffix(set_name, ".txt"))
     args := ["case", "reverse", "shrink", "onebyone"]
-    trim_chars := ["#", " "]
+    trim_chars := "# "
 
     FileEncoding "UTF-8"
     Loop Read, letters_file
@@ -114,7 +114,7 @@ uniformat_get_letters(set_name) {
 
         ;Gather settings and put them on the data object
         if (!header_done and string_startswith(line, "#")) {
-            line := string_trimLeft(line, trim_chars)
+            line := string_strip_left(line, trim_chars)
             if !InStr(line, "=")
                 Continue
             parts := StrSplit(line, "=",,2)
