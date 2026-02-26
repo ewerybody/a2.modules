@@ -1,0 +1,30 @@
+# name=Cyrillic
+# desc=Cyrillic looking
+# case=1
+
+A Д А
+B Б В
+C С
+D Ꭰ Ԁ
+E Є Е Ё
+F Ꮈ
+G Ꮹ Ԍ
+H Н Ң
+I І
+J Ј
+K Ќ К Қ Ӄ
+L L Ꮮ
+M М
+N Й И П
+O Ө О
+P Р Ф
+Q Ԛ
+R Я
+S Ѕ
+T Т Ҭ
+U Ц Џ
+V Ꮩ Ꮴ
+W Ш
+X Х
+Y Ч У
+Z Ꮓ

@@ -20,12 +20,12 @@ uniformat_main() {
 }
 
 _uniformat_handler(menu_name, *) {
+    if menu_name == "Cancel"
+        Return
     uniformat_replace(_uniformat_get_set_names()[menu_name])
 }
 
 uniformat_replace(set_name) {
-    if set_name == "Cancel"
-        Return
     global _uniformat_selection
     data := uniformat_get_letters(set_name)
     if !data
@@ -40,36 +40,25 @@ uniformat_replace(set_name) {
     _uniformat_selection :=
     count := 0
 
-    ; To prevent double replacements we look up the replacing chars to see
-    ; if they appear in the trigger ones to replace these by position later.
-    replace_by_pos := []
-    Loop(data.num_letters)
-        if (string_is_in_array(data.replacements[A_Index], data.letters, A_Index))
-            replace_by_pos.push(data.letters[A_Index])
-
-    ; Perform StrReplace for all matching characters
+    ; Two-pass replacement using Unicode Private Use Area (U+E000+) chars as
+    ; placeholders. PUA chars never appear in normal text, so they can't be
+    ; source letters and won't corrupt placeholders mid-loop.
     placeholders := Map()
+    pua_idx := 0
     case_sense := data.settings.get("case", 0)
+
+    ; Pass 1: replace all source letters with unique PUA placeholders
     Loop(data.num_letters)
     {
         if InStr(new_string, data.letters[A_Index], !case_sense) {
             count++
-            if (string_is_in_array(data.letters[A_Index], replace_by_pos)) {
-                Loop(42)
-                {
-                    placeholder := "<$$" string_random(10) "%%>"
-                    if (!InStr(new_string, placeholder))
-                        Break
-                }
-                placeholders[placeholder] := data.replacements[A_Index]
-                new_string := StrReplace(new_string, data.letters[A_Index], placeholder, !case_sense)
-            }
-            else
-                new_string := StrReplace(new_string, data.letters[A_Index], data.replacements[A_Index], !case_sense)
+            placeholder := Chr(0xE000 + pua_idx++)
+            placeholders[placeholder] := data.replacements[A_Index]
+            new_string := StrReplace(new_string, data.letters[A_Index], placeholder, !case_sense)
         }
     }
 
-    ; Replace again any placeholders we assigned
+    ; Pass 2: swap all placeholders for the actual replacements
     for placeholder, replacement in placeholders
         new_string := StrReplace(new_string, placeholder, replacement)
 
@@ -89,7 +78,7 @@ uniformat_replace(set_name) {
 }
 
 uniformat_get_letters(set_name) {
-    ; Get data from a sets txt by spliting by spaces and
+    ; Get data from a sets txt by splitting by spaces and
     ; getting 1st as key and 2nd as value.
     data := {}
     ; `letters` is now a LIST instead of object! lower and upper-case keys would
