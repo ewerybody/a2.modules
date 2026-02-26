@@ -92,7 +92,7 @@ AE Ӕ
 ae ӕ ᴂ æ
 AO Ꜵ
 ao ꜵ ᴔ
-AA Ꜳ
+AA Ꜳ 𐞀
 aa ꜳ
 am ㏂
 AR 🜇
@@ -116,7 +116,7 @@ cm ㎝
 Co ㏇
 c/o ℅
 c/u ℆
-CE ₠
+CE ₠ 𐖁
 
 d' ď
 da ㍲
@@ -135,6 +135,7 @@ Dp ₯
 er 🙰
 et 🙱
 'E Έ
+ec 𐔀
 
 FAX ℻
 ff ﬀ
@@ -167,7 +168,7 @@ ii ⅱ
 iii ⅲ
 ij ĳ
 IJ Ĳ
-IA Ꙗ
+IA Ꙗ 𖬚
 IE Ѥ
 in ㏌
 IO Ю
@@ -176,6 +177,7 @@ IX Ⅸ
 IV Ⅳ
 iv ⅳ
 ix ⅸ
+isi 𐠚
 
 JH Ԩ
 JX Ԕ
@@ -237,16 +239,14 @@ nW ㎻
 
 'O Ό
 oc ⳪
-oe ɶ
 OO Ꚙ
 oo ꚙ
 OI Ꙕ
 oi ꙕ
-OE Œ
-oe ɶ
+OE Œ œ
+oe œ ɶ ꟹ
 Oy Ѹ
 oy ѹ
-oe ꟹ
 ov ㍵
 
 qp ȹ
