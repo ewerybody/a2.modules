@@ -13,6 +13,7 @@ https://translate.google.com/translate_tts?ie=UTF-8&q=bonjour&tl=fr&client=tw-ob
 https://stackoverflow.com/questions/32053442/google-translate-tts-api-blocked
 */
 #include <uri>
+#include <a2dlg>
 
 __gtranslation := ""
 __gtranslate_search := ""
@@ -30,10 +31,16 @@ gtranslate(from:="en", to:="de") {
     if (__gtranslate_search == "")
     {
         msg := "Enter something to translate (" from " > " to ") ..."
-        ibx := InputBox(msg, "gtranslate", "w640 h150")
-        if ibx.Result = "Cancel"
+
+        ; ibx := InputBox(msg, "gtranslate", "w640 h150")
+        ; if ibx.Result = "Cancel"
+        ;     return
+        ; __gtranslate_search := trim(ibx.value)
+
+        result := a2dlg_input(msg, "gtranslate")
+        if !result
             return
-        __gtranslate_search := trim(ibx.value)
+        __gtranslate_search := trim(result)
     }
     else if string_is_web_address(__gtranslate_search) {
         if gtranslate_ask_website_translate {
