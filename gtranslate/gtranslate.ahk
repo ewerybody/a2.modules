@@ -46,7 +46,7 @@ gtranslate(from:="en", to:="de") {
         if gtranslate_ask_website_translate {
             msg := "Open translate.google.com with selected URL`n"
             msg .= "to have the whole page translated`n" . from . " > " . to . "?"
-            if !msgbox_accepted(msg , "Translate whole webpage?")
+            if !a2dlg_yes_no(msg , "Translate whole webpage?")
                 return
         }
 
@@ -56,7 +56,7 @@ gtranslate(from:="en", to:="de") {
 
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to)
     if (__gtranslation == "") {
-        msgbox_error('No translation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
+        a2dlg_error('No translation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
         Return
     }
 

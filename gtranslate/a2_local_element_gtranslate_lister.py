@@ -5,7 +5,7 @@ import os
 import sys
 from copy import deepcopy
 
-from a2qt import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 
 import a2ctrl
 import a2element.hotkey
