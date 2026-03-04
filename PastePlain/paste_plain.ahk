@@ -6,7 +6,7 @@
 paste_plain_paste() {
     files := clipboard_get_files()
     if (files)
-        paste_plain_build_filesmenu(files)
+        paste_plain_build_files_menu(files)
 
     else {
         ; It looks Ridiculous! But that's fixes it most of the time.
@@ -19,7 +19,7 @@ paste_plain_paste() {
     }
 }
 
-paste_plain_build_filesmenu(files) {
+paste_plain_build_files_menu(files) {
     global PastePlain_ShowFileMenuCheckBox
     if (!PastePlain_ShowFileMenuCheckBox) {
         clipboard_paste(A_Clipboard)
@@ -27,14 +27,14 @@ paste_plain_build_filesmenu(files) {
     }
     PastePlainMenu := Menu()
     PastePlainMenu.Add("Paste Paths (" . files.Length . ")", paste_plain_files)
-    PastePlainMenu.Add("Basenames Only", paste_plain_basename)
+    PastePlainMenu.Add("Base Names Only", paste_plain_basename)
     PastePlainMenu.Add("/Forward/Slashes", paste_plain_forward)
     PastePlainMenu.Add("\\Double\\Backslashes", paste_plain_double)
 
     ; Create another menu destined to become a submenu of the above menu.
     PastePlainClipMenu := Menu()
     PastePlainClipMenu.Add("Paste Paths (" . files.Length . ")", paste_plain_to_clipboard)
-    PastePlainClipMenu.Add("Basenames Only", paste_plain_to_clipboard_basenames)
+    PastePlainClipMenu.Add("Base Names Only", paste_plain_to_clipboard_base_names)
     PastePlainClipMenu.Add("/Forward/Slashes", paste_plain_to_clipboard_forward)
     PastePlainClipMenu.Add("\\Double\\Backslashes", paste_plain_to_clipboard_double)
 
@@ -51,7 +51,7 @@ paste_plain_files(*) {
 }
 
 paste_plain_basename(*) {
-    clipboard_paste(_paste_plain_basenames())
+    clipboard_paste(_paste_plain_base_names())
 }
 
 paste_plain_forward(*) {
@@ -69,8 +69,8 @@ paste_plain_to_clipboard(*) {
     A_Clipboard := A_Clipboard
 }
 
-paste_plain_to_clipboard_basenames(*) {
-    A_Clipboard := _paste_plain_basenames()
+paste_plain_to_clipboard_base_names(*) {
+    A_Clipboard := _paste_plain_base_names()
 }
 
 paste_plain_to_clipboard_forward(*) {
@@ -96,9 +96,7 @@ paste_plain_link_paths(*) {
 }
 
 
-; Helper functions ---------------------------------------------------------------------------------
-
-_paste_plain_basenames() {
+_paste_plain_base_names() {
     txt := ""
     for i, item in clipboard_get_files()
         txt := txt path_basename(item) "`n"
