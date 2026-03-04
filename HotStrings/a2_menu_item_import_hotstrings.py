@@ -1,13 +1,13 @@
 ﻿# a2 menu item script "import_hotstrings"
 import a2core
 import a2mod
-from a2qt import QtWidgets
+from PySide6 import QtWidgets
 
 log = a2core.get_logger(__name__)
 SUCCESS_MSG = (
     'Importing {file_name} there were {num_hotstrings} Hotstrings '
     'in {num_groups} groups:\n {groups}\n'
-    'The first imported group is seleced now but these are not yet enabled!'
+    'The first imported group is selected now but these are not yet enabled!'
     'Review the import first and then enable a group through the menu.'
 )
 
@@ -54,7 +54,7 @@ def main(a2: a2core.A2Obj, mod: a2mod.Mod):
 
     new_group_names, num_hotstrings = [], 0
     for name, group in hs_input.get(Args.groups, {}).items():
-        if not Args.hotstrings in group:
+        if Args.hotstrings not in group:
             continue
         if not group[Args.hotstrings]:
             continue

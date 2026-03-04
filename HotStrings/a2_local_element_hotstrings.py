@@ -3,7 +3,7 @@ import sys
 import hashlib
 from copy import deepcopy
 
-from a2qt import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 
 import a2util
 import a2ctrl

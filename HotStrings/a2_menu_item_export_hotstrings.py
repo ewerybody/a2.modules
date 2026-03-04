@@ -1,6 +1,6 @@
 ﻿import os
 import a2util
-from a2qt import QtWidgets
+from PySide6 import QtWidgets
 import hotstrings_io
 
 
