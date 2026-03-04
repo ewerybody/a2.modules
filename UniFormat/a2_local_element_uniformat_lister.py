@@ -6,7 +6,7 @@ import a2path
 import a2element.hotkey
 from a2element import DrawCtrl, EditCtrl
 from a2widget import a2hotkey, a2item_editor, key_value_table
-from a2qt import QtWidgets
+from PySide6 import QtWidgets
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 SETS = os.path.join(THIS_DIR, 'sets')
