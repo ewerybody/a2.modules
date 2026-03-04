@@ -12,7 +12,7 @@ details_popup_menu() {
         count++
     }
     if (count == 0) {
-        MsgBox_info("There is nothing to popup! Apparently there was no data added yet?", "DetailsPopup")
+        a2dlg_info("There is nothing to popup! Apparently there was no data added yet?", "DetailsPopup")
         Return
     }
 
@@ -22,10 +22,13 @@ details_popup_menu() {
 }
 
 details_popup_handler(menu_name, *) {
+    if !details_popup_data.Has(menu_name)
+        return
+
     global _details_popup_menu_name, _details_handled_entries
     _details_popup_menu_name := menu_name
     if !details_popup_data[menu_name].Has("data") {
-        MsgBox_info("There is nothing to popup! Apparently there was no data added to '" menu_name "' yet?", "DetailsPopup")
+        a2dlg_info("There is nothing to popup! Apparently there was no data added to '" menu_name "' yet?", "DetailsPopup")
         Return
     }
     these_entries := details_popup_data[menu_name]["data"]
@@ -77,7 +80,7 @@ details_entry_handler(entry_name, entry_pos, *) {
 
     errors := exec.StdErr.ReadAll()
     if (errors) {
-        MsgBox_error(errors)
+        a2dlg_error(errors)
         Return
     }
 
