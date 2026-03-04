@@ -1,7 +1,9 @@
 #include <icon>
+#Include <a2dlg>
+#Include <a2log>
 
+; Provide a menu popup to aid simple file creation.
 explorer_create_file_popup() {
-    ; Provide a menu popup to aid simple file creation.
 
     ; TODO: before throwing this away, make a default?
     ; explorer_create_file_data := {Autohotkey: {ext: "ahk", file_name: "ahk_script", content: "", ask: true}
@@ -9,28 +11,22 @@ explorer_create_file_popup() {
     ; , JSON: {ext: "json", file_name: "some_data", content: "", ask: true}
     ; , Text: {ext: "txt", file_name: "text", content: "", ask: true}}
 
-    if !explorer_create_file_data
-    {
-        msgbox_error('Please open the user interface of "ExplorerCreateFile" and add at least one file type.'
+    if !explorer_create_file_data {
+        a2dlg_error('Please open the user interface of "ExplorerCreateFile" and add at least one file type.'
         , "No files set up!")
         Return
     }
 
     ExplorerCreateFileMenu := Menu()
-    ; MyMenu.Add("Item 1", MenuHandler)
-    ; MyMenu.Add("Item 2", MenuHandler)
     ; MyMenu.Add()  ; Add a separator line.
 
-    for name, data in explorer_create_file_data
-    {
+    for name, data in explorer_create_file_data {
         ; Menu, ExplorerCreateFileMenu, Add, %name%, explorer_create_file_handler
         ExplorerCreateFileMenu.Add(name, explorer_create_file_handler)
         _explorer_create_file_add_menu_icon(name, data, ExplorerCreateFileMenu)
     }
     ExplorerCreateFileMenu.Show()
     ExplorerCreateFileMenu.Delete()
-    ; Menu, ExplorerCreateFileMenu, Show
-    ; Menu, ExplorerCreateFileMenu, DeleteAll
 }
 
 explorer_create_file_handler(menu_name, *) {
@@ -62,7 +58,7 @@ explorer_create_file_handler(menu_name, *) {
     } catch Error {
         Sleep 50
         if !FileExist(file_path) {
-            msgbox_error('Could not create file "' . file_name . '" with encoding "' . encoding . '"'
+            a2dlg_error('Could not create file "' . file_name . '" with encoding "' . encoding . '"'
             , "ExplorerCreateFile: ERROR")
             a2log_debug("File not created! A_LastError:" A_LastError, "ExplorerCreateFile")
             Return
@@ -76,12 +72,10 @@ explorer_create_file_handler(menu_name, *) {
 }
 
 _explorer_create_file_get_icon_path(name, data) {
-    if !data.has("icon")
-        Return ""
-
-    icon_name := data["icon"]
-    if (!icon_name) {
-        if data["ext"] {
+    if data.has("icon") and data["icon"]
+        icon_name := data["icon"]
+    else {
+        if data.has("ext") and data["ext"] {
             default_icon := icon_from_type(data["ext"])
             if default_icon
                 Return default_icon
@@ -101,29 +95,20 @@ _explorer_create_file_add_menu_icon(name, data, ExplorerCreateFileMenu) {
     if !icon_path
         Return
 
-    icon_nr := ""
-
-    if InStr(icon_path, ",") {
-        parts := StrSplit(icon_path, ",")
-        icon_path := parts[1]
-        icon_nr := parts[2]
-    }
-
-    if (!FileExist(icon_path)) {
-        path := path_expand_env(icon_path)
+    icon_obj := icon_path_split(icon_path)
+    if (!FileExist(icon_obj.file)) {
+        path := path_expand_env(icon_obj.file)
         ; We don't need to bend icon_path to the found path
         ; Setting icons with %envvars% works right away!
         if (!FileExist(path)) {
             a2log_debug("No icon path:" path, "ExplorerCreateFile")
             Return
         }
+
     }
 
-    if (icon_nr != "") {
-        ExplorerCreateFileMenu.SetIcon(name, icon_path, icon_nr)
-        ; Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%, %icon_nr%
-    } else {
-        ExplorerCreateFileMenu.SetIcon(name, icon_path)
-        ; Menu, ExplorerCreateFileMenu, Icon, %name%, %icon_path%
-    }
+    if (icon_obj.opt)
+        ExplorerCreateFileMenu.SetIcon(name, icon_obj.file, icon_obj.idx)
+    else
+        ExplorerCreateFileMenu.SetIcon(name, icon_obj.file)
 }

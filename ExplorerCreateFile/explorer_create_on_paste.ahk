@@ -1,6 +1,8 @@
+#include <a2dlg>
 #include <Gdip_all>
 #include <WinClip>
 #include <LC>
+
 
 explorer_create_on_paste() {
     ; Ensure default Explorer behavior with files in clipboard.
@@ -143,7 +145,7 @@ _explorer_create_finish(file_name) {
     ; if explorer_try_select(file_name)
     ;     Return
 
-    msgbox_error('Could not create file "' . file_name '"!', "ExplorerCreateFile: ERROR")
+    a2dlg_error('Could not create file "' . file_name '"!', "ExplorerCreateFile: ERROR")
 }
 
 

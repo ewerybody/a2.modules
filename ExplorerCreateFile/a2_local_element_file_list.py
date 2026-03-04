@@ -3,7 +3,7 @@ import os
 import a2util
 import a2ctrl
 from a2ctrl import Icons
-from a2qt import QtWidgets
+from PySide6 import QtWidgets
 from a2element import DrawCtrl, EditCtrl
 from a2widget import a2item_editor, a2text_field, a2combo
 
