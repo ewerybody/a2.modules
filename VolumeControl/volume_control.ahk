@@ -45,5 +45,5 @@ volume_control_toggle_mute() {
     if SoundGetMute()
         a2tip("Master: Muted")
     else
-        a2tip("Master: Unmuted, Volume: " Round(SoundGetVolume()))
+        a2tip("Master: Un-muted, Volume: " Round(SoundGetVolume()))
 }

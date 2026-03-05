@@ -1,6 +1,6 @@
 ﻿[
   {
-    "author": "Wolfgang Reszel, Michael Telgkamp",
+    "author": "Wolfgang Reszel, Michael Telgkamp, Eric Werner",
     "date": "2021 2 23",
     "description": "Hotkeys for Sound Volume control.",
     "display_name": "",
@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/tree/master/VolumeControl#volumecontrol",
-    "version": "0.6.0"
+    "version": "0.7.0"
   },
   {
     "disablable": true,
@@ -32,7 +32,7 @@
     "functionCode": "volume_control_down()",
     "functionMode": 0,
     "key": [
-      "Win+Alt+Wheeldown"
+      "Win+Alt+WheelDown"
     ],
     "keyChange": true,
     "label": "Volume Down",
@@ -58,6 +58,12 @@
     "value": 5
   },
   {
+    "label": "Logarithmic Behavior",
+    "name": "volume_control_log_change",
+    "typ": "check",
+    "value": false
+  },
+  {
     "disablable": true,
     "enabled": false,
     "functionCode": "volume_control_toggle_mute()",
@@ -70,9 +76,22 @@
     "typ": "hotkey"
   },
   {
-    "label": "Logarithmic Behaviour",
-    "name": "volume_control_log_change",
-    "typ": "check",
-    "value": false
+    "file": "volume_control_switcher.ahk",
+    "typ": "include"
+  },
+  {
+    "disablable": true,
+    "enabled": true,
+    "functionCode": "volume_control_switcher_menu()",
+    "functionMode": 0,
+    "key": [
+      "Win+Alt+Mbutton"
+    ],
+    "keyChange": true,
+    "label": "Show menu to switch Audio Outputs",
+    "multiple": true,
+    "name": "VolumeControl_AudioOutputHotkey",
+    "scopeChange": true,
+    "typ": "hotkey"
   }
 ]
