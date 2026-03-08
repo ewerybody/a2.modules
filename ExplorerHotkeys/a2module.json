@@ -9,7 +9,7 @@
     ],
     "typ": "nfo",
     "url": "https://github.com/ewerybody/a2.modules/blob/master/ExplorerHotkeys/README.md#explorerhotkeys",
-    "version": "0.7.0"
+    "version": "0.8.0"
   },
   {
     "disablable": true,
@@ -53,7 +53,7 @@
       "ahk_class CabinetWClass",
       "Program Manager ahk_class Progman ahk_exe explorer.exe"
     ],
-    "scopeChange": false,
+    "scopeChange": true,
     "scopeMode": 1,
     "typ": "hotkey"
   },

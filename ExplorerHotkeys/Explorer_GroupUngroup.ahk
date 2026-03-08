@@ -1,3 +1,5 @@
+#Include <a2dlg>
+
 ExplorerHotkeys_Group() {
     root_path := explorer_get_path()
     items := explorer_get_selected()
@@ -8,13 +10,13 @@ ExplorerHotkeys_Group() {
 
     title := "ExplorerHotkeys_Group"
     msg := "Group " items.length " selected items into folder:"
-    ibx := InputBox(msg, title, "w420 h110", "New Folder")
-    if ibx.Result = "Cancel" or ibx.value = ""
+    result := a2dlg_input(msg, title, "New Folder",, true)
+    if !result
         Return false
 
-    dir_path := path_join(root_path, ibx.value)
+    dir_path := path_join(root_path, result)
     if DirExist(dir_path) {
-        msgbox_error(dir_path "`nalready exists!", "Group Error")
+        a2dlg_error(dir_path "`nalready exists!", "Group Error",,, true)
         ExplorerHotkeys_Group()
         return
     }
@@ -55,8 +57,10 @@ ExplorerHotkeys_UnGroup() {
         Return
     }
 
-    if ((ask == true) && (files_found)) || (files_found){
-        if !msgbox("Would you like to unpack all the " folders.length " folders here continue?", "unpackFolder", 33)
+    ; Ask User to confirm ungroup when selection is mixed or
+    ; there is no selection and files and folders in the current explorer.
+    if ((ask == true) && (files_found)) || (files_found) {
+        if !a2dlg_yes_no("Would you like to unpack all the " folders.length " folders here continue?", "unpackFolder",, true)
             Return
     }
 
@@ -64,21 +68,19 @@ ExplorerHotkeys_UnGroup() {
     not_empty := []
     for folder_path in folders {
         items_exist := []
-        Loop Files, folder_path . "\*.*"
-        {
+        Loop Files, folder_path . "\*" {
             new_path := root_path "\" A_LoopFileName
             if FileExist(new_path)
                 items_exist.push(new_path)
         }
         if items_exist.length {
-            msgbox_error('Already existing!`n' string_join(items_exist, '`n'), 'Ungroup Error')
+            a2dlg_error('Already existing!`n' string_join(items_exist, '`n'), 'Ungroup Error',,, true)
             return
         }
 
         a2tip("Ungrouping " . folder_path . " ...")
 
-        Loop Files, folder_path . "\*.*", "FD"
-        {
+        Loop Files, folder_path . "\*", "FD" {
             target_path := root_path . "\" A_LoopFileName
             if path_is_file(A_LoopFileFullPath)
                 FileMove(A_LoopFileFullPath, target_path)
@@ -89,8 +91,7 @@ ExplorerHotkeys_UnGroup() {
 
         empty := true
         ; checking if all went right
-        Loop Files, folder_path "\*.*"
-        {
+        Loop Files, folder_path "\*" {
             empty := false
             break
         }
@@ -101,7 +102,7 @@ ExplorerHotkeys_UnGroup() {
     }
 
     if (not_empty.length) {
-        msgbox_error("not emptied: " string_join(not_empty, "`n"))
+        a2dlg_error("not emptied: " string_join(not_empty, "`n"),,,, true)
     }
 
     if files_moved.length {

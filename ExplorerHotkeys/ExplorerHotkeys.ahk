@@ -1,5 +1,6 @@
 ; ExplorerHotkeys
 #include <processes>
+#Include <a2dlg>
 #include <window>
 #include <windows>
 
@@ -14,7 +15,7 @@ ExplorerHotkeys_CallExplorer() {
     msg := "The call Explorer-path set in ExplorerHotkeys is inexistent!`n`n"
     msg .= ExplorerHotkeys_CallExplorerPath . "`n`nMaybe the directory was deleted? "
     msg .= "Please make sure the path exists or choose an existing one in the dialog!"
-    MsgBox_error(msg, "ExplorerHotkeys Error")
+    a2dlg_error(msg, "ExplorerHotkeys Error")
     Run "C:\\"
 }
 
@@ -74,7 +75,7 @@ ExplorerHotkeys_DuplicateWindow() {
 }
 
 
-ExplorerHotkeys_ShowHideSeleced() {
+ExplorerHotkeys_ShowHideSelected() {
     items := explorer_get_selected()
     if (!items.Length) {
         a2tip("Nothing Selected!", 1)
@@ -99,5 +100,5 @@ ExplorerHotkeys_Props() {
     try
         Run cmd
     catch
-        msgbox_error('Could not open Properties with command:`n  ' . cmd)
+        a2dlg_error('Could not open Properties with command:`n  ' . cmd)
 }
