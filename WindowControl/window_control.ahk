@@ -2,18 +2,20 @@
 ; author: Wolfgang Reszel, Jack Tissen
 ; created: 2021 2 23
 
+/**
+ * Minimize the active window.
+ */
 window_control_minimize() {
-    ; Minimize the active window.
-    window_control_check_MouseHotkey()
+    win_id := window_control_check_MouseHotkey()
     ; TODO: What was this for?
     ; If func_IsWindowInIgnoreList?()
     ;     Return
-    ahkid := "ahk_id " . WinGetID("A")
-    WinMoveBottom(ahkid)
+    ahk_id := "ahk_id " win_id
+    WinMoveBottom(ahk_id)
 
     ; WinMinimize, ahk_id %wc_ID%
     ; TODO: Why is this better?
-    PostMessage 0x0112, 0x0000f020, 0x00f40390,, ahkid
+    PostMessage 0x0112, 0x0000f020, 0x00f40390,, ahk_id
 }
 
 window_control_maximize() {
@@ -51,16 +53,17 @@ window_control_toggle_always_on_top() {
     }
 }
 
+/**
+ * Make sure to get window handle from window under mouse cursor
+ * If action is triggered via mouse key! Otherwise from currently activated.
+ * @returns {Integer}
+ */
 window_control_check_MouseHotkey() {
-    ; If action is triggered via mouse key,
-    ; make sure the window under the cursor is activated!
-    If string_is_in_array(A_ThisHotkey, ["MButton","LButton","RButton","XButton1","XButton2"])
-    {
-        MouseGetPos ,,&win_id
-        window_activate(win_id)
+    for button in ["MButton","LButton","RButton","XButton1","XButton2"] {
+        if InStr(A_ThisHotkey, button) {
+            MouseGetPos ,,&win_id
+            return win_id
+        }
     }
-    Else
-        win_id := WinGetID("A")
-
-    return win_id
+    return WinGetID("A")
 }
