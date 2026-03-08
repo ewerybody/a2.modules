@@ -84,7 +84,7 @@
   {
     "disablable": true,
     "enabled": true,
-    "functionCode": "ExplorerHotkeys_ShowHideSeleced()",
+    "functionCode": "ExplorerHotkeys_ShowHideSelected()",
     "functionMode": 0,
     "key": [
       "Alt+H"
