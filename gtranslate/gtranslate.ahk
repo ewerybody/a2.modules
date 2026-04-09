@@ -12,8 +12,9 @@ text to speech
 https://translate.google.com/translate_tts?ie=UTF-8&q=bonjour&tl=fr&client=tw-ob
 https://stackoverflow.com/questions/32053442/google-translate-tts-api-blocked
 */
-#include <uri>
 #include <a2dlg>
+#Include <i18n>
+#include <uri>
 
 __gtranslation := ""
 __gtranslate_search := ""
@@ -21,7 +22,9 @@ __gtranslate_langs := ""
 
 gtranslate(from:="en", to:="de") {
     global __gtranslate_search, __gtranslate_langs, __gtranslation
-    sel := clipboard_get() ; get selected text
+    t := i18n_domain('general')
+    tg := i18n_locale(A_LineFile,'de')
+    sel := clipboard_get()
 
     __gtranslate_search := trim(sel, " `n`t`r")
     __gtranslate_search := RegExReplace(__gtranslate_search, '\s+', " ")
@@ -30,13 +33,7 @@ gtranslate(from:="en", to:="de") {
     ; No Selection:
     if (__gtranslate_search == "")
     {
-        msg := "Enter something to translate (" from " > " to ") ..."
-
-        ; ibx := InputBox(msg, "gtranslate", "w640 h150")
-        ; if ibx.Result = "Cancel"
-        ;     return
-        ; __gtranslate_search := trim(ibx.value)
-
+        msg := tg['enter_something'] " (" from " > " to ") ..."
         result := a2dlg_input(msg, "gtranslate")
         if !result
             return
@@ -44,9 +41,8 @@ gtranslate(from:="en", to:="de") {
     }
     else if string_is_web_address(__gtranslate_search) {
         if gtranslate_ask_website_translate {
-            msg := "Open translate.google.com with selected URL`n"
-            msg .= "to have the whole page translated`n" . from . " > " . to . "?"
-            if !a2dlg_yes_no(msg , "Translate whole webpage?")
+            msg := tg['ask_whole_page'] from . " > " . to . "?"
+            if !a2dlg_yes_no(msg , tg["translate_whole"])
                 return
         }
 
@@ -61,38 +57,34 @@ gtranslate(from:="en", to:="de") {
     }
 
     __gtranslation := RegExReplace(__gtranslation, '\\r\\n', "`n")
-    icon_copy := path_join(a2.paths.resources, "copy.ico")
-    icon_paste := path_join(a2.paths.resources, "paste.ico")
     icon_path := path_neighbor(A_LineFile, "a2icon24.png")
-    icon_audio := path_join(a2.paths.resources, "volume_up.ico")
 
     max_menu_chars := 64
     if StrLen(__gtranslation) > max_menu_chars
-        menu_label := 'Paste "' . SubStr(__gtranslation, 1, max_menu_chars) . '"...'
+        menu_label := t['paste'] ': "' SubStr(__gtranslation, 1, max_menu_chars) . '"...'
     else
-        menu_label := 'Paste "' . __gtranslation . '"'
+        menu_label := t['paste'] ': "' __gtranslation '"'
 
     gtranslate_menu := Menu()
     if (__gtranslation = __gtranslate_search) {
         if (from == "auto")
-            same_label := "Auto translation resulted in identical output!"
-        else
-            same_label := "Translation resulted in identical output!"
+            same_label := "Auto-"
+        same_label .= tg['identical']
 
         gtranslate_menu.Add(same_label, gtranslate_insert)
         gtranslate_menu.Disable(same_label)
     }
 
     gtranslate_menu.Add(menu_label, gtranslate_insert)
-    gtranslate_menu.SetIcon(menu_label, icon_paste,, 0)
-    gtranslate_menu.Add("Copy to Clipboard", gtranslate_copy)
-    gtranslate_menu.SetIcon("Copy to Clipboard", icon_copy,, 0)
-    audio_label := 'Play Audio "' . to . '"'
+    gtranslate_menu.SetIcon(menu_label, A2Icons.paste,, 0)
+    gtranslate_menu.Add(t['to_clipboard'], gtranslate_copy)
+    gtranslate_menu.SetIcon(t['to_clipboard'], A2Icons.to_clipboard,, 0)
+    audio_label := tg['play_audio'] ' "' . to . '"'
     gtranslate_menu.Add(audio_label, gtranslate_audio)
-    gtranslate_menu.SetIcon(audio_label, icon_audio,, 0)
+    gtranslate_menu.SetIcon(audio_label, A2Icons.volume_up,, 0)
 
-    gtranslate_menu.Add("Show in web browser", gtranslate_open_website)
-    gtranslate_menu.SetIcon("Show in web browser", icon_path,, 0)
+    gtranslate_menu.Add(t['show_in_web'], gtranslate_open_website)
+    gtranslate_menu.SetIcon(t['show_in_web'], icon_path,, 0)
     gtranslate_menu.Show()
 }
 
@@ -163,6 +155,7 @@ gtranslate_any(){
     user_cfg := Jxon_Load(&user_cfg_str)
     languages := Jxon_Read(path_neighbor(A_LineFile, "languages.json"))
     last_selected_any := a2.db.find(A_LineFile, "last_selected_any")
+    tg := i18n_locale(A_LineFile,'de')
 
     gtranslate_any_menu := Menu()
     for name, data in user_cfg["gtranslate_lister"] {
@@ -177,8 +170,8 @@ gtranslate_any(){
         ; NOPE! Adding icons to ALL of the languages takes a couple seconds!!
         ; Menu, gtranslate_submenu, Icon, %lang%: %short%, %icon_path%,, 0
     }
-    gtranslate_any_menu.Add("All Languages", gtranslate_submenu)
-    gtranslate_any_menu.SetIcon("All Languages", icon_path,, 0)
+    gtranslate_any_menu.Add(tg['all_languages'], gtranslate_submenu)
+    gtranslate_any_menu.SetIcon(tg['all_languages'], icon_path,, 0)
     if (last_selected_any)
     {
         gtranslate_any_menu.Add(last_selected_any, _gtranslate_any_lang_handler)

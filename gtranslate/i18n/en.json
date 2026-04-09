@@ -1,0 +1,8 @@
+﻿{
+    "enter_something": "Enter something to translate",
+    "ask_whole_page": "Open translate.google.com with selected URL\nto have the entire page translated\n",
+    "translate_whole": "Translate whole webpage?",
+    "identical": "Translation resulted in identical output!",
+    "play_audio": "Play Audio",
+    "all_languages": "All Languages"
+}
