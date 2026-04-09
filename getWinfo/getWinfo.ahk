@@ -1,5 +1,5 @@
 ﻿; getWinfo - window information tool
-; gathers title, process Id, handle, class, size, positon and controls information
+; gathers title, process Id, handle, class, size, position and controls information
 ; in a menu that you can click to get the item in your clipboard
 #include <jxon>
 #include <window>
@@ -13,13 +13,13 @@ getWinfo() {
     a2tip(title . "...")
 
     global getWinfoID
-    getWinfoID := WinGetID("A")
-    ahkid := "ahk_id " . getWinfoID
-    this_title := WinGetTitle(ahkid)
-    this_class := WinGetClass(ahkid)
-    thisPID := WinGetPID(ahkid)
-    this_process := WinGetProcessName(ahkid)
-    this_path := WinGetProcessPath(ahkid)
+    getWinfoID := WinExist("A")
+    ahk_id := "ahk_id " . getWinfoID
+    this_title := WinGetTitle(ahk_id)
+    this_class := WinGetClass(ahk_id)
+    thisPID := WinGetPID(ahk_id)
+    this_process := WinGetProcessName(ahk_id)
+    this_path := WinGetProcessPath(ahk_id)
     try
         this_ver := FileGetVersion(this_path)
     catch
@@ -27,25 +27,25 @@ getWinfo() {
 
     wInfoMenu := Menu()
     wInfoMenu.Add(title, getWinfoMenuHandler)
+    wInfoMenu.SetIcon(title, A2Icons.a2)
     wInfoMenu.Disable(title)
 
-    add_copy_action(title, to_menu := "") {
-        if !to_menu
-            to_menu := wInfoMenu
-        to_menu.Add(title, getWinfoMenuHandler)
-        to_menu.SetIcon(title, icon_copy,, 0)
+    add_action(title, icon := "", to_menu := "", handler := "") {
+        to_menu := to_menu ? to_menu : wInfoMenu
+        handler := handler ? handler : getWinfoMenuHandler
+        icon := icon ? icon : A2Icons.copy
+        to_menu.Add(title, handler)
+        to_menu.SetIcon(title, icon)
     }
 
-    add_copy_action("title: " . this_title)
-    add_copy_action("class: " . this_class)
-    add_copy_action("hwnd: " . getWinfoID)
-    add_copy_action("pid: " . thisPID)
-    add_copy_action("process: " . this_process)
-    add_copy_action("version: " . this_ver)
-    add_copy_action("path: " . this_path)
-
-    wInfoMenu.Add("Explore to path", getWinfoGotoPath)
-    wInfoMenu.SetIcon("Explore to path", icon_folder,, 0)
+    add_action("title: " this_title)
+    add_action("class: " this_class)
+    add_action("hwnd: " getWinfoID)
+    add_action("pid: " thisPID)
+    add_action("process: " this_process)
+    add_action("version: " this_ver)
+    add_action("path: " this_path)
+    add_action("Explore to path", A2Icons.folder,, getWinfoGotoPath)
 
     ; "The names of menus and menu items can be up to 260 characters long."
     ; https://www.autohotkey.com/docs/commands/Menu.htm#Remarks ...260 is a lot!
@@ -58,42 +58,40 @@ getWinfo() {
         else
             display_line := cmd_line
 
-        wInfoMenu.Add("commandline: " . display_line, getWinfoCopyCmdLinePath)
-        wInfoMenu.SetIcon("commandline: " . display_line, icon_copy,, 0)
+        add_action("commandline: " display_line,,, getWinfoCopyCmdLinePath)
         if FileExist(cmd_line)
-            wInfoMenu.Add("Explore to Command line path", getWinfoGotoCmdLinePath)
+            add_action("Explore to Command line path", A2Icons.folder,, getWinfoGotoCmdLinePath)
     }
 
-    ctrl_list := getWinfoCtrls()
+    ctrl_list := getWinfoControls()
     if (ctrl_list.Length) {
-        wInfoMenu.Add("Controls: " . ctrl_list.Length . " ( click to show ... )", getWinfoCtrlsHandler)
-        wInfoMenu.Add("Copy All Control Info", getWinfoCopyCtrlsHandler)
-        wInfoMenu.SetIcon("Copy All Control Info", icon_copy,, 0)
+        wInfoMenu.Add("Controls: " . ctrl_list.Length . " ( click to show ... )", getWinfoControlsHandler)
+        add_action("Copy All Control Info",,, getWinfoCopyControlsHandler)
     }
     else {
         wInfoMenu.Add("No Controls Here", getWinfoMenuHandler)
         wInfoMenu.Disable("No Controls Here")
     }
 
-    window_get_rect(&X, &Y, &Width, &Height, getWinfoID)
+    geo := window_get_geometry(getWinfoID)
     CoordMode "Mouse", "Screen"
     MouseGetPos &mouseX, &mouseY
     wInfoPosMenu := Menu()
-    add_copy_action("x: " . X, wInfoPosMenu)
-    add_copy_action("y: " . Y, wInfoPosMenu)
-    add_copy_action("w: " . Width, wInfoPosMenu)
-    add_copy_action("h: " . Height, wInfoPosMenu)
-    add_copy_action("x|y|w|h: " x "|" y "|" Width "|" Height, wInfoPosMenu)
+    add_action("x: " . geo.x,, wInfoPosMenu)
+    add_action("y: " . geo.y,, wInfoPosMenu)
+    add_action("w: " . geo.w,, wInfoPosMenu)
+    add_action("h: " . geo.h,, wInfoPosMenu)
+    add_action("x|y|w|h: " geo.x "|" geo.y "|" geo.w "|" geo.h,, wInfoPosMenu)
+    add_action("frame: " geo.frame.left "|" geo.frame.right "|" geo.frame.top "|" geo.frame.bottom,, wInfoPosMenu)
     wInfoPosMenu.Add("SetToCursor", getWinfoSetToCursor)
-    add_copy_action("MousePos: " . mouseX . "," . mouseY, wInfoPosMenu)
-    minmax := WinGetMinMax("ahk_id " . getWinfoID)
-    isfullscreen := window_is_fullscreen(getWinfoID)
-    wInfoPosMenu.Add("minmax: " . minmax . " isfullscreen: " . isfullscreen, getWinfoSetToCursor)
+    add_action("MousePos: " . mouseX . "," . mouseY,, wInfoPosMenu)
+    min_max := WinGetMinMax("ahk_id " . getWinfoID)
+    is_fullscreen := window_is_fullscreen(getWinfoID)
+    wInfoPosMenu.Add("min max: " . min_max . " is fullscreen: " . is_fullscreen, getWinfoSetToCursor)
 
-    wInfoMenu.Add("Pos: " X " x " Y " Size: " Width " x " Height "...", wInfoPosMenu)
-
+    wInfoMenu.Add("Pos: " geo.x " x " geo.y " Size: " geo.w " x " geo.h "...", wInfoPosMenu)
     wInfoMenu.Add()
-    wInfoMenu.Add("Cancel", getWinfoMenuHandler)
+    add_action("Cancel", A2Icons.clear,, getWinfoMenuHandler)
 
     CoordMode "Menu", "Screen"
     a2tip()
@@ -104,8 +102,7 @@ getWinfo() {
 getWinfoMenuHandler(menu_text, *) {
     if (menu_text == "Cancel")
         Return
-    pos := InStr(menu_text, A_Space)
-    menu_text := SubStr(menu_text, pos + 1)
+    menu_text := SubStr(menu_text, InStr(menu_text, A_Space) + 1)
     A_Clipboard := menu_text
     a2tip(menu_text, 0.5)
 }
@@ -113,26 +110,22 @@ getWinfoMenuHandler(menu_text, *) {
 ; to recover lost windows
 getWinfoSetToCursor(*) {
     CoordMode "Mouse", "Screen"
-    MouseGetPos &mousex, &mousey
-    a2tip(getWinfoID " to " mousex "x" mousey, 2)
-    ;position the windowtitle under the cursor so one can move it instantly:
+    MouseGetPos &mouse_x, &mouse_y
+    a2tip(getWinfoID " to " mouse_x "x" mouse_y, 2)
+    ;position the window-title under the cursor so one can move it instantly:
     WinActivate("ahk_id " . getWinfoID)
     WinWait("ahk_id " . getWinfoID)
-    WinMove(mousex - 30, mousey - 10,,, "ahk_id " . getWinfoID)
+    WinMove(mouse_x - 30, mouse_y - 10,,, "ahk_id " . getWinfoID)
 }
 
 ; Get array of current windows control names.
-getWinfoCtrls() {
+getWinfoControls() {
     return WinGetControls("ahk_id " . getWinfoID)
 }
 
 ; Display windows controls and details in menu.
-getWinfoCtrlsHandler(*) {
-    global getWinfoID
-
-    ctrlList := getWinfoCtrls()
-    ; menuList := []
-
+getWinfoControlsHandler(*) {
+    ctrlList := getWinfoControls()
     ctrlSubmenu := Menu()
     startTime := A_TickCount
     for i, ctrl in ctrlList {
@@ -141,73 +134,63 @@ getWinfoCtrlsHandler(*) {
             if ( mod(i, 10) == 10 )
                 a2tip("gathering controls... " tookTime "`n" ctrl)
         }
-
-        menuName := Menu()
-        ; menuName := "getWinfoCtrlMenu" i
-        ; menuList.push(menuName)
+        ctrl_menu := Menu()
         thisCtrlID := ControlGetHwnd(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := ControlGetText(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := SubStr(thisCtrlText, 1, 250)
-
-        menuName.Add("name: " . ctrl, getWinfoMenuHandler)
-        menuName.Add("hwnd: " . thisCtrlID, getWinfoMenuHandler)
-        menuName.Add("text: " . thisCtrlText, getWinfoMenuHandler)
-
-        ctrlSubmenu.Add(i . ": " . ctrl, menuName)
+        ctrl_menu.Add("name: " . ctrl, getWinfoMenuHandler)
+        ctrl_menu.Add("hwnd: " . thisCtrlID, getWinfoMenuHandler)
+        ctrl_menu.Add("text: " . thisCtrlText, getWinfoMenuHandler)
+        ctrlSubmenu.Add(i . ": " . ctrl, ctrl_menu)
     }
-
-    ; Menu, wInfoMenu, Add, controls: %numCtrls%, :ctrlSubmenu
     ctrlSubmenu.Show()
 }
 
-getWinfoCopyCtrlsHandler(*) {
-    ctrlList := getWinfoCtrls()
-
-    texttmp := ""
+getWinfoCopyControlsHandler(*) {
+    ctrlList := getWinfoControls()
+    text_tmp := ""
     for i, ctrl in ctrlList {
         thisCtrlID := ControlGetHwnd(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := ControlGetText(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := SubStr(thisCtrlText, 1, 250)
-        texttmp .= ctrl . " " . thisCtrlID . " " . thisCtrlText "`n"
+        text_tmp .= ctrl . " " . thisCtrlID . " " . thisCtrlText "`n"
     }
-    A_Clipboard := texttmp
+    A_Clipboard := text_tmp
 }
 
 getWinfoGotoPath(*) {
-    global getWinfoID
     this_path := WinGetProcessPath("ahk_id " . getWinfoID)
     explorer_show(this_path)
 }
 
 getWinfoCmdLine(pid, this_path) {
-    for proc in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process WHERE ProcessID = '" . pid . "'") {
-        this_cmdline := string_strip(proc.CommandLine)
-        if this_cmdline = this_path
+    for proc in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process WHERE ProcessID = '" pid "'") {
+        cmd_line := string_strip(proc.CommandLine)
+        if cmd_line = this_path
             Continue
 
-        if string_unquote(this_cmdline) = this_path
+        if string_unquote(cmd_line) = this_path
             Continue
 
-        if string_startswith(this_cmdline, '"') {
+        if string_startswith(cmd_line, '"') {
             ; try to strip quoted executable path
-            qpos := InStr(this_cmdline, '"', false, 2, 1)
-            sub := SubStr(this_cmdline, 2, qpos - 2)
-            rest := string_unquote(string_strip(SubStr(this_cmdline, qpos + 2)))
+            pos := InStr(cmd_line, '"', false, 2, 1)
+            sub := SubStr(cmd_line, 2, pos - 2)
+            rest := string_unquote(string_strip(SubStr(cmd_line, pos + 2)))
             if rest
                 Return rest
 
-        } else if string_startswith(this_cmdline, this_path) {
-            rest := SubStr(this_cmdline, strlen(this_path) + 2)
+        } else if string_startswith(cmd_line, this_path) {
+            rest := SubStr(cmd_line, strlen(this_path) + 2)
             rest := string_strip(rest)
             if rest
                 Return rest
         }
-        Return this_cmdline
+        Return cmd_line
     }
 }
 
-_getWinfo_get_cmdline_path_from_id() {
-    global getWinfoID
+_getWinfo_get_cmd_line_path_from_id() {
     thisPID := WinGetPID("ahk_id " . getWinfoID)
     this_path := WinGetProcessPath("ahk_id " . getWinfoID)
     return getWinfoCmdLine(thisPID, this_path)
@@ -215,9 +198,9 @@ _getWinfo_get_cmdline_path_from_id() {
 
 
 getWinfoGotoCmdLinePath(*) {
-    explorer_show(_getWinfo_get_cmdline_path_from_id())
+    explorer_show(_getWinfo_get_cmd_line_path_from_id())
 }
 
 getWinfoCopyCmdLinePath(*) {
-    A_Clipboard := _getWinfo_get_cmdline_path_from_id()
+    A_Clipboard := _getWinfo_get_cmd_line_path_from_id()
 }
