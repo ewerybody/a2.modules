@@ -20,10 +20,10 @@ __gtranslation := ""
 __gtranslate_search := ""
 __gtranslate_langs := ""
 
-gtranslate(from:="en", to:="de") {
+gtranslate(from := "en", to := "de") {
     global __gtranslate_search, __gtranslate_langs, __gtranslation
     t := i18n_domain('general')
-    tg := i18n_locale(A_LineFile,'de')
+    tg := i18n_locale(A_LineFile, 'de')
     sel := clipboard_get()
 
     __gtranslate_search := trim(sel, " `n`t`r")
@@ -31,8 +31,7 @@ gtranslate(from:="en", to:="de") {
     __gtranslate_langs := from "|" to
 
     ; No Selection:
-    if (__gtranslate_search == "")
-    {
+    if (__gtranslate_search == "") {
         msg := tg['enter_something'] " (" from " > " to ") ..."
         result := a2dlg_input(msg, "gtranslate")
         if !result
@@ -42,7 +41,7 @@ gtranslate(from:="en", to:="de") {
     else if string_is_web_address(__gtranslate_search) {
         if gtranslate_ask_website_translate {
             msg := tg['ask_whole_page'] from . " > " . to . "?"
-            if !a2dlg_yes_no(msg , tg["translate_whole"])
+            if !a2dlg_yes_no(msg, tg["translate_whole"])
                 return
         }
 
@@ -52,8 +51,8 @@ gtranslate(from:="en", to:="de") {
 
     __gtranslation := gtranslate_fetch(__gtranslate_search, from, to)
     if (__gtranslation == "") {
-        a2dlg_error('No translation found for "' . __gtranslate_search . '".`nAre you connected to the internet?')
-        Return
+        a2dlg_error(Format(tg['error_nothing_found'], __gtranslate_search) "`n" t['ask_net_connection'])
+        return
     }
 
     __gtranslation := RegExReplace(__gtranslation, '\\r\\n', "`n")
@@ -88,7 +87,6 @@ gtranslate(from:="en", to:="de") {
     gtranslate_menu.Show()
 }
 
-
 gtranslate_fetch(srcTxt, srcLng, transLng) {
     global gtranslate_use_proxy
 
@@ -103,19 +101,19 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     ApiURi .= "&q=" encoded ;srcTxt
     a2log_debug("Calling URL:" ApiURi, "gtranslate")
 
-    a2tip("gtranslate: looking up '" SubStr(srcTxt, 1 , 32) "' ...", 2)
+    a2tip("gtranslate: looking up '" SubStr(srcTxt, 1, 32) "' ...", 2)
     whr := ComObject("WinHttp.WinHttpRequest.5.1")
     whr.Open("GET", ApiURi, true)
     whr.SetRequestHeader("Content-Type", "application/json")
     whr.SetRequestHeader("user-agent", "Mozilla/5.0")
     whr.Send()
     ; Using 'true' above and the call below allows the script to remain responsive.
-    Try
+    try
         whr.WaitForResponse()
-    Catch {
+    catch {
         a2tip("WinHttpRequest Failed!")
         a2log_error("WinHttpRequest Failed!", "gtranslate")
-        Return
+        return
     }
 
     response := whr.ResponseText
@@ -128,18 +126,15 @@ gtranslate_fetch(srcTxt, srcLng, transLng) {
     return match[1]
 }
 
-
 gtranslate_insert(*) {
     global __gtranslation
     clipboard_paste(__gtranslation)
 }
 
-
 gtranslate_copy(*) {
     global __gtranslation
     A_Clipboard := __gtranslation
 }
-
 
 gtranslate_open_website(*) {
     lng_from_to := StrSplit(__gtranslate_langs, "|",, MaxArraySize := 2)
@@ -149,13 +144,13 @@ gtranslate_open_website(*) {
     Run(url)
 }
 
-gtranslate_any(){
+gtranslate_any() {
     icon_path := path_neighbor(A_LineFile, "a2icon24.png")
     user_cfg_str := a2.db.find(A_LineFile, "user_cfg")
     user_cfg := Jxon_Load(&user_cfg_str)
     languages := Jxon_Read(path_neighbor(A_LineFile, "languages.json"))
     last_selected_any := a2.db.find(A_LineFile, "last_selected_any")
-    tg := i18n_locale(A_LineFile,'de')
+    tg := i18n_locale(A_LineFile, 'de')
 
     gtranslate_any_menu := Menu()
     for name, data in user_cfg["gtranslate_lister"] {
@@ -164,16 +159,14 @@ gtranslate_any(){
     }
 
     gtranslate_submenu := Menu()
-    for lang, short in languages
-    {
+    for lang, short in languages {
         gtranslate_submenu.Add(lang . ":" . short, _gtranslate_any_lang_handler)
         ; NOPE! Adding icons to ALL of the languages takes a couple seconds!!
         ; Menu, gtranslate_submenu, Icon, %lang%: %short%, %icon_path%,, 0
     }
     gtranslate_any_menu.Add(tg['all_languages'], gtranslate_submenu)
-    gtranslate_any_menu.SetIcon(tg['all_languages'], icon_path,, 0)
-    if (last_selected_any)
-    {
+    gtranslate_any_menu.SetIcon(tg['all_languages'], icon_path, , 0)
+    if (last_selected_any) {
         gtranslate_any_menu.Add(last_selected_any, _gtranslate_any_lang_handler)
         gtranslate_any_menu.SetIcon(last_selected_any, icon_path,, 0)
     }
@@ -181,13 +174,13 @@ gtranslate_any(){
     gtranslate_any_menu.Show()
 }
 
-_gtranslate_any_lang_handler(sel, *){
+_gtranslate_any_lang_handler(sel, *) {
     parts := StrSplit(sel, ":")
     a2.db.find_set(A_LineFile, "last_selected_any", sel)
     gtranslate("auto", Trim(parts[2]))
 }
 
-_gtranslate_any_handler(sel, *){
+_gtranslate_any_handler(sel, *) {
     parts := StrSplit(sel, " > ")
     gtranslate(parts[1], parts[2])
 }
@@ -206,7 +199,7 @@ gtranslate_audio(*) {
 
     if (whr.Status != 200) {
         a2tip("Error! Status: " . whr.Status . "`n`n" . whr.responseBody)
-        Return
+        return
     }
 
     tmp_path := A_Temp . "\__translate_tts.mp3"
@@ -223,7 +216,6 @@ gtranslate_audio(*) {
     FileDelete(tmp_path)
     a2tip()
 }
-
 
 gtranslate_website(from, to) {
     url_parts := StrSplit(__gtranslate_search, "://",, MaxArraySize := 2)
