@@ -21,7 +21,8 @@ comfort_resize_main() {
     ; remember the current mouse cursor
     current_cursor := A_Cursor
 
-    window_get_rect(&win_x1, &win_y1, &win_w, &win_h, window_id)
+    geo := window_get_geometry(window_id)
+    win_x1 := geo.x, win_y1 := geo.y, win_w := geo.w, win_h := geo.h
     _cr_set_region(&zone_horizontal, &zone_vertical, mouse_x, mouse_y, win_x1, win_y1, win_w, win_h)
 
     if ((!(window_is_resizable(window_id)) AND cr_ResizeFixedWindows = 0) OR cr_AlwaysMoveNonActive AND !WinActive(
@@ -38,8 +39,6 @@ comfort_resize_main() {
         is_center := false
 
     distance_x := 0, distance_y := 0
-    ; TODO: can we deprecate these?
-    cr_SlowMovement := 0
 
     work_area := screen_get_work_area()
     cursor_handle := 0
@@ -71,7 +70,6 @@ comfort_resize_main() {
 
         MouseGetPos &x2, &y2
         x3 := x2, y3 := y2
-        window_get_rect(&win_x1, &win_y1, &win_w, &win_h, window_id)
 
         ; Precompute Raster
         shift_state := GetKeyState("Shift", "P")
@@ -93,8 +91,7 @@ comfort_resize_main() {
         }
 
         offset_x := x3 - mouse_x, offset_y := y3 - mouse_y
-        distance_x := distance_x + offset_x
-        distance_y := distance_y + offset_y
+        distance_x := distance_x + offset_x, distance_y := distance_y + offset_y
 
         if (Abs(distance_x) < 4 AND Abs(distance_y) < 4 AND !double_click) {
             mouse_x := x3, mouse_y := y3
@@ -199,17 +196,17 @@ comfort_resize_main() {
         }
 
         ; Redraw when standing still to avoid ghosting
-        if (last_x != win_x1 OR last_y != win_y1 OR last_w != win_w OR last_h != win_h) {
-            if cr_SlowMovement == 1
-                SetWinDelay 30
-            else
-                SetWinDelay -1
-        }
+        if (last_x != win_x1 OR last_y != win_y1 OR last_w != win_w OR last_h != win_h)
+            SetWinDelay(-1)
         else
-            SetWinDelay 5
+            SetWinDelay(5)
 
         ; Apply calculated values to the window
-        window_set_rect(win_x1, win_y1, win_w, win_h, window_id)
+        WinMove(
+            win_x1 - geo.frame.left, win_y1 - geo.frame.top,
+            win_w + geo.frame.left + geo.frame.right, win_h + geo.frame.top + geo.frame.bottom,
+            ahk_id
+        )
 
         ; Set mouse position for next loop
         mouse_x := x2, mouse_y := y2
@@ -287,7 +284,7 @@ _cr_set_cursor(to_id, current_cursor) {
 }
 
 ; Get window zones. The nine areas are 3x3:
-; horizontal * vertikal = (left,center,right)*(up,center,down)
+; horizontal * vertical = (left,center,right)*(up,center,down)
 _cr_set_region(&zone_horizontal, &zone_vertical, mouse_x, mouse_y, x, y, w, h) {
     if (mouse_x < x + w / 4)
         zone_horizontal := "Left"
