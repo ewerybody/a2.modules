@@ -2,14 +2,14 @@
 ; gathers title, process Id, handle, class, size, position and controls information
 ; in a menu that you can click to get the item in your clipboard
 #include <jxon>
+#include <i18n>
 #include <window>
 
 
 getWinfo() {
     module_data := jxon_read(path_neighbor(A_LineFile, "a2module.json"))
     title := "getWinfo " module_data[1]["version"]
-    icon_copy := path_join(a2.paths.resources, "copy.ico")
-    icon_folder := path_join(a2.paths.resources, "folder2.ico")
+    t := i18n_locale(A_LineFile)
     a2tip(title . "...")
 
     global getWinfoID
@@ -23,7 +23,7 @@ getWinfo() {
     try
         this_ver := FileGetVersion(this_path)
     catch
-        this_ver := "- No Data -"
+        this_ver := t["no_data"]
 
     wInfoMenu := Menu()
     wInfoMenu.Add(title, getWinfoMenuHandler)
@@ -45,7 +45,7 @@ getWinfo() {
     add_action("process: " this_process)
     add_action("version: " this_ver)
     add_action("path: " this_path)
-    add_action("Explore to path", A2Icons.folder,, getWinfoGotoPath)
+    add_action(t["explore"], A2Icons.folder,, getWinfoGotoPath)
 
     ; "The names of menus and menu items can be up to 260 characters long."
     ; https://www.autohotkey.com/docs/commands/Menu.htm#Remarks ...260 is a lot!
@@ -60,17 +60,17 @@ getWinfo() {
 
         add_action("commandline: " display_line,,, getWinfoCopyCmdLinePath)
         if FileExist(cmd_line)
-            add_action("Explore to Command line path", A2Icons.folder,, getWinfoGotoCmdLinePath)
+            add_action(t["explore_cmd_line"], A2Icons.folder,, getWinfoGotoCmdLinePath)
     }
 
     ctrl_list := getWinfoControls()
     if (ctrl_list.Length) {
-        wInfoMenu.Add("Controls: " . ctrl_list.Length . " ( click to show ... )", getWinfoControlsHandler)
-        add_action("Copy All Control Info",,, getWinfoCopyControlsHandler)
+        wInfoMenu.Add("Controls: " ctrl_list.Length " ( " t["click_to_show"] " ... )", getWinfoControlsHandler)
+        add_action(t["copy_ctrl_info"],,, getWinfoCopyControlsHandler)
     }
     else {
-        wInfoMenu.Add("No Controls Here", getWinfoMenuHandler)
-        wInfoMenu.Disable("No Controls Here")
+        wInfoMenu.Add(, getWinfoMenuHandler)
+        wInfoMenu.Disable()
     }
 
     geo := window_get_geometry(getWinfoID)
@@ -91,7 +91,7 @@ getWinfo() {
 
     wInfoMenu.Add("Pos: " geo.x " x " geo.y " Size: " geo.w " x " geo.h "...", wInfoPosMenu)
     wInfoMenu.Add()
-    add_action("Cancel", A2Icons.clear,, getWinfoMenuHandler)
+    add_action(t["cancel"], A2Icons.clear,, (*) => 0)
 
     CoordMode "Menu", "Screen"
     a2tip()
@@ -100,8 +100,6 @@ getWinfo() {
 
 ; standard handler gets the menu item, cuts away the name, puts it to the clipboard
 getWinfoMenuHandler(menu_text, *) {
-    if (menu_text == "Cancel")
-        Return
     menu_text := SubStr(menu_text, InStr(menu_text, A_Space) + 1)
     A_Clipboard := menu_text
     a2tip(menu_text, 0.5)
@@ -181,7 +179,7 @@ getWinfoCmdLine(pid, this_path) {
                 Return rest
 
         } else if string_startswith(cmd_line, this_path) {
-            rest := SubStr(cmd_line, strlen(this_path) + 2)
+            rest := SubStr(cmd_line, StrLen(this_path) + 2)
             rest := string_strip(rest)
             if rest
                 Return rest
