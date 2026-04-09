@@ -10,6 +10,7 @@ volume_control_switcher_menu(*) {
     current_id := audio_get_default_output()
     prev_id    := _volume_control_switcher_load_prev(current_id, devices)
 
+    t := i18n_domain('general')
     switcher_menu := Menu()
 
     ; Top section: current (greyed) + previous as one-click toggle
@@ -22,12 +23,15 @@ volume_control_switcher_menu(*) {
             prev_name := d.name
     }
 
-    switcher_menu.Add("✔ " current_name " (current)", (*) => 0)
-    switcher_menu.Disable("✔ " current_name " (current)")
+    label := current_name " (" t['current'] ")"
+    switcher_menu.Add(label, (*) => 0)
+    switcher_menu.SetIcon(label, A2Icons.check)
+    switcher_menu.Disable(label)
 
     if prev_id != "" && prev_id != current_id {
-        switcher_menu.Add("⇄ " prev_name, _volume_control_switcher_to.Bind(prev_id, current_id))
-        switcher_menu.Default := "⇄ " prev_name
+        switcher_menu.Add(prev_name, _volume_control_switcher_to.Bind(prev_id, current_id))
+        switcher_menu.SetIcon(prev_name, A2Icons.switch)
+        switcher_menu.Default := prev_name
     }
 
     ; Separator + all other active devices
@@ -38,9 +42,13 @@ volume_control_switcher_menu(*) {
         if !other_count
             switcher_menu.Add()  ; separator
         switcher_menu.Add(d.name, _volume_control_switcher_to.Bind(d.id, current_id))
+        switcher_menu.SetIcon(d.name, A2Icons.arrow_right)
         other_count++
     }
 
+    switcher_menu.Add()
+    switcher_menu.Add(t['cancel'], (*) => 0)
+    switcher_menu.SetIcon(t['cancel'], A2Icons.clear)
     switcher_menu.Show()
 }
 
