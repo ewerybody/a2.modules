@@ -33,7 +33,7 @@ getWinfo() {
     add_action(title, icon := "", to_menu := "", handler := "") {
         to_menu := to_menu ? to_menu : wInfoMenu
         handler := handler ? handler : getWinfoMenuHandler
-        icon := icon ? icon : A2Icons.copy
+        icon := icon ? icon : A2Icons.to_clipboard
         to_menu.Add(title, handler)
         to_menu.SetIcon(title, icon)
     }
@@ -69,8 +69,8 @@ getWinfo() {
         add_action(t["copy_ctrl_info"],,, getWinfoCopyControlsHandler)
     }
     else {
-        wInfoMenu.Add(, getWinfoMenuHandler)
-        wInfoMenu.Disable()
+        wInfoMenu.Add(t['no_ctrl'], getWinfoMenuHandler)
+        wInfoMenu.Disable(t['no_ctrl'])
     }
 
     geo := window_get_geometry(getWinfoID)
@@ -136,10 +136,11 @@ getWinfoControlsHandler(*) {
         thisCtrlID := ControlGetHwnd(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := ControlGetText(ctrl, "ahk_id " . getWinfoID)
         thisCtrlText := SubStr(thisCtrlText, 1, 250)
-        ctrl_menu.Add("name: " . ctrl, getWinfoMenuHandler)
-        ctrl_menu.Add("hwnd: " . thisCtrlID, getWinfoMenuHandler)
-        ctrl_menu.Add("text: " . thisCtrlText, getWinfoMenuHandler)
-        ctrlSubmenu.Add(i . ": " . ctrl, ctrl_menu)
+        for label in ["name: " ctrl, "hwnd: " thisCtrlID, "text: " thisCtrlText] {
+            ctrl_menu.Add(label, getWinfoMenuHandler)
+            ctrl_menu.SetIcon(label, A2Icons.to_clipboard)
+        }
+        ctrlSubmenu.Add(i ": " ctrl, ctrl_menu)
     }
     ctrlSubmenu.Show()
 }
