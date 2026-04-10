@@ -23,7 +23,7 @@ __gtranslate_langs := ""
 gtranslate(from := "en", to := "de") {
     global __gtranslate_search, __gtranslate_langs, __gtranslation
     t := i18n_domain('general')
-    tg := i18n_locale(A_LineFile, 'de')
+    tg := i18n_locale(A_LineFile)
     sel := clipboard_get()
 
     __gtranslate_search := trim(sel, " `n`t`r")
