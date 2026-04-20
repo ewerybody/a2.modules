@@ -1,9 +1,10 @@
 {
-    "cancel": "Abbrechen",
-    "no_data": "- Keine Daten! -",
-    "explore": "In Explorer anzeigen",
-    "explore_cmd_line": "Command line Pfad in Explorer anzeigen",
-    "copy_ctrl_info": "Control Info kopieren",
-    "no_ctrl": "Keine Controls Hier",
-    "click_to_show": "klicken zum anzeigen"
+    "cancel":"Abbrechen",
+    "click_to_show":"klicken zum anzeigen",
+    "copy_ctrl_info":"Control Info kopieren",
+    "explore":"In Explorer anzeigen",
+    "explore_cmd_line":"Command line Pfad in Explorer anzeigen",
+    "explore_path":"Pfad im Explorer anzeigen",
+    "no_ctrl":"Keine Controls Hier",
+    "no_data":"- Keine Daten! -"
 }
