@@ -1,9 +1,10 @@
 ﻿# a2 menu item script "import_hotstrings"
+import a2log
 import a2core
 import a2mod
 from PySide6 import QtWidgets
 
-log = a2core.get_logger(__name__)
+log = a2log.get(__name__)
 SUCCESS_MSG = (
     'Importing {file_name} there were {num_hotstrings} Hotstrings '
     'in {num_groups} groups:\n {groups}\n'
