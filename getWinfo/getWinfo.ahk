@@ -45,7 +45,7 @@ getWinfo() {
     add_action("process: " this_process)
     add_action("version: " this_ver)
     add_action("path: " this_path)
-    add_action(t["explore"], A2Icons.folder,, getWinfoGotoPath)
+    add_action(t["explore_path"], A2Icons.folder,, getWinfoGotoPath)
 
     ; "The names of menus and menu items can be up to 260 characters long."
     ; https://www.autohotkey.com/docs/commands/Menu.htm#Remarks ...260 is a lot!
