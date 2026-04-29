@@ -1,10 +1,13 @@
 """Autohotkey 2 Hotstrings stuff."""
+
 import enum
+
+import a2log
 import a2util
 import a2core
 
 
-log = a2core.get_logger(__name__)
+log = a2log.get(__name__)
 
 
 # for the on/off options
@@ -13,6 +16,7 @@ class Options(enum.Enum):
     ignore = 'O'
     inside = '?'
     append = 'B0'
+
 
 class Args:
     enabled = 'enabled'
@@ -23,15 +27,15 @@ class Args:
     scope_type = 'scope_type'
     default = 'global'
 
+
 # for the dropdown menus
-OPTION_LISTS = {
-    'case': ['C', 'C1'],
-    'send': ['SI', 'SP', 'SE']}
+OPTION_LISTS = {'case': ['C', 'C1'], 'send': ['SI', 'SP', 'SE']}
 
 RAW_MODES = {
     'X': 1,  # code
     'R': 3,  # raw
-    'T': 4}  # text
+    'T': 4,
+}  # text
 
 DIRECTIVE = '#HotIf'
 DIRECTIVE_INCL = DIRECTIVE + ' WinActive('
@@ -109,7 +113,7 @@ def _make_hotstrings_line(hotstring, data):
         for char in '!+#^':
             text = text.replace(char, '{%s}' % char)
         text = text.replace(':', '`:')
-    elif mode == 1: # execute code mode
+    elif mode == 1:  # execute code mode
         if '`n' in text:
             text = '\n{\n' + text.replace('`n', '\n')
             text += '\n}'
@@ -168,6 +172,7 @@ class HotstringsParser:
 
          'scope_excl': {...}
     """
+
     def __init__(self, path):
         self.hs_dict = {'': {}}
 
@@ -210,9 +215,7 @@ class HotstringsParser:
                             # collect code from un-stripped line
                             self.hs_buffer.append(line.rstrip())
 
-                    log.info(
-                        'Read file for hotstrings parsing with encoding "%s"\n  %s', encoding, path
-                    )
+                    log.info('Read file for hotstrings parsing with encoding "%s"\n  %s', encoding, path)
                 break
             except UnicodeDecodeError:
                 continue
@@ -227,7 +230,7 @@ class HotstringsParser:
         elif low_line.startswith(_DIR_EXCL):
             self.this_directive = DIRECTIVE_EXCL
 
-        scope = line[len(self.this_directive):].strip()
+        scope = line[len(self.this_directive) :].strip()
         scope = scope.rstrip(')')
         scope = scope.strip('"')
         if scope.startswith(','):
@@ -270,8 +273,8 @@ class HotstringsParser:
             if pos == -1:
                 print('Not a hotstring? "%s"' % line)
                 return
-            self.this_shortcut = rest[:pos + i]
-            text = rest[pos + i + 2:]
+            self.this_shortcut = rest[: pos + i]
+            text = rest[pos + i + 2 :]
 
         if not text.strip():
             self.gather_lines = True
@@ -300,8 +303,7 @@ class HotstringsParser:
 
         if self.this_scope:
             mode = KEY_EXCL if self.this_directive == DIRECTIVE_EXCL else KEY_INCL
-            self.hs_dict.setdefault(mode, {}).setdefault(
-                self.this_scope, {})[self.this_shortcut] = self.this_hs
+            self.hs_dict.setdefault(mode, {}).setdefault(self.this_scope, {})[self.this_shortcut] = self.this_hs
         else:
             self.hs_dict[''][self.this_shortcut] = self.this_hs
         self.this_hs = {}
@@ -357,4 +359,5 @@ def _move_group(cfg: dict, old_name: str, new_name: str) -> str:
 if __name__ == '__main__':
     import unittest
     import test.test_hotstrings
+
     unittest.main(test.test_hotstrings, verbosity=2)
