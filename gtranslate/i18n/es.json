@@ -1,9 +1,9 @@
 {
-    "all_languages":"",
-    "ask_whole_page":"",
-    "enter_something":"",
-    "error_nothing_found":"",
-    "identical":"",
-    "play_audio":"",
-    "translate_whole":""
+    "all_languages":"Todos los idiomas",
+    "ask_whole_page":"Abra translate.google.com con la URL seleccionada\npara tener la página completa traducida\n",
+    "enter_something":"Introduzca algo para traducir",
+    "error_nothing_found":"Ninguna traducción encontrada para «{}».",
+    "identical":"¡Traducción resuelta en salida idéntica!",
+    "play_audio":"Reproducir Sonido",
+    "translate_whole":"¿Traduzco la página web completa?"
 }
