@@ -1,9 +1,9 @@
 {
     "cancel":"Cancelar",
-    "click_to_show":"",
-    "copy_ctrl_info":"",
-    "explore_cmd_line":"",
-    "explore_path":"",
-    "no_ctrl":"",
-    "no_data":""
+    "click_to_show":"pulse para mostrar",
+    "copy_ctrl_info":"Copiar Toda la Información del Control",
+    "explore_cmd_line":"Explorar a la ruta de línea de comando",
+    "explore_path":"Explorar a ruta",
+    "no_ctrl":"Sin Controles Aquí",
+    "no_data":"- ¡No hay Datos! -"
 }
