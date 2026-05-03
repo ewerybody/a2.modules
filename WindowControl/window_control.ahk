@@ -1,6 +1,7 @@
 ; WindowControl - window_control.ahk
 ; author: Wolfgang Reszel, Jack Tissen
 ; created: 2021 2 23
+#Include <a2dlg>
 
 /**
  * Minimize the active window.
@@ -41,7 +42,7 @@ window_control_toggle_always_on_top() {
         if (!state)
             a2tip("AlwaysOnTop: OFF")
         Else
-            msgbox_error("Setting AOT OFF didn't work!!!`nstate: " state)
+            a2dlg_error("Setting AOT OFF didn't work!!!`n" "state: " state)
     } Else {
         window_set_aot(1, win_id)
 
@@ -49,7 +50,7 @@ window_control_toggle_always_on_top() {
         if (state)
             a2tip("AlwaysOnTop: ON")
         Else
-            msgbox_error("Setting AOT OFF didn't work!!!`nstate: " state)
+            a2dlg_error("Setting AOT OFF didn't work!!!`n" "state: " state)
     }
 }
 
