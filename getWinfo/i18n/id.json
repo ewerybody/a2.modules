@@ -1,9 +1,9 @@
 {
-    "cancel":"",
-    "click_to_show":"",
-    "copy_ctrl_info":"",
-    "explore_cmd_line":"",
-    "explore_path":"",
-    "no_ctrl":"",
-    "no_data":""
+    "cancel":"Batal",
+    "click_to_show":"klik untuk menampilkan",
+    "copy_ctrl_info":"Salin Semua Info Kontrol",
+    "explore_cmd_line":"Jelajahi ke jalur Command line",
+    "explore_path":"Jelajahi ke jalur",
+    "no_ctrl":"Tidak Ada Kontrol Di Sini",
+    "no_data":"- Tidak Ada Data! -"
 }
