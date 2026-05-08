@@ -1,9 +1,9 @@
 {
-    "all_languages":"",
-    "ask_whole_page":"",
-    "enter_something":"",
-    "error_nothing_found":"",
-    "identical":"",
-    "play_audio":"",
-    "translate_whole":""
+    "all_languages":"Semua Bahasa",
+    "ask_whole_page":"Buka translate.google.com dengan URL yang dipilih\nuntuk menerjemahkan seluruh halaman\n",
+    "enter_something":"Masukkan sesuatu untuk diterjemahkan",
+    "error_nothing_found":"Tidak ditemukan terjemahan untuk \"{}\".",
+    "identical":"Terjemahan menghasilkan keluaran yang identik!",
+    "play_audio":"Putar Audio",
+    "translate_whole":"Terjemahkan seluruh halaman web?"
 }
