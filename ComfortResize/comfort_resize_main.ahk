@@ -5,17 +5,19 @@
 
 comfort_resize_main() {
     ; get mouse position relative to screen
-    CoordMode "Mouse", "Screen"
-    MouseGetPos &mouse_x, &mouse_y, &window_id
+    CoordMode("Mouse", "Screen")
+    MouseGetPos(&mouse_x, &mouse_y, &window_id)
+    if window_id == 0
+        return
 
-    ahk_id := "ahk_id " . window_id
+    ahk_id := "ahk_id " window_id
     win_class := WinGetClass(ahk_id)
     ; Ignore desktop and taskbar area
     if (win_class ~= "(WorkerW|Shell_TrayWnd)")
         return
 
-    if (win_class == "Putty")
-        SendMessage "WM_ENTERSIZEMOVE", , , , ahk_id
+    if (win_class = "Putty")
+        SendMessage("WM_ENTERSIZEMOVE",,,, ahk_id)
 
     double_click := _comfort_resize_get_doubleclick(mouse_x, mouse_y)
     ; remember the current mouse cursor
@@ -68,7 +70,7 @@ comfort_resize_main() {
             break
         }
 
-        MouseGetPos &x2, &y2
+        MouseGetPos(&x2, &y2)
         x3 := x2, y3 := y2
 
         ; Precompute Raster
@@ -226,16 +228,16 @@ comfort_resize_main() {
         last_x := win_x1, last_y := win_y1
         last_w := win_w, last_h := win_h
 
-        Sleep 10
+        Sleep(10)
     } ; loop end
 
     if (win_class = "Putty")
-        SendMessage "WM_EXITSIZEMOVE", , , , ahk_id
+        SendMessage("WM_EXITSIZEMOVE",,,, ahk_id)
 
     cursor_reset()
 }
 
-_comfort_resize_get_doubleclick(mx, my) {
+_comfort_resize_get_doubleclick(mx,  my) {
     if (!IsSet(cr_pixel_threshold) OR !cr_pixel_threshold OR !IsSet(cr_time_threshold) OR !cr_time_threshold)
         return 0
 
