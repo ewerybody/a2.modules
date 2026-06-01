@@ -1,7 +1,7 @@
 {
-    "cancel":"",
-    "click_to_show":"",
-    "copy_ctrl_info":"",
+    "cancel":"Отменить",
+    "click_to_show":"кликните чтобы показать",
+    "copy_ctrl_info":"Копировать всю информацию об управлении",
     "explore_cmd_line":"",
     "explore_path":"",
     "no_ctrl":"",
