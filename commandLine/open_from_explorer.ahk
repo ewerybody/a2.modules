@@ -12,11 +12,11 @@ open_from_explorer() {
     Sleep 100
 
     win_id := WinExist("ahk_pid " pid)
-    ; Probably due to the new Terminal stuff the initial pid is no longer pointing to a valid window
-    ; its handed to the terminal multi-tab-window and the process is gone.
+    ; Probably due to new Terminal stuff the initial pid is no longer pointing
+    ; to a valid window it's handed to the terminal multi-tab-window and the process is gone.
     if (win_id != 0) {
         a2tip("commandLine from Explorer: (pid: " pid " hwnd: " win_id ")`n" path)
-        msgbox_info("win_id: " . win_id)
+        a2dlg_info("win_id: " . win_id)
         window_activate(win_id, 1)
         return
     }

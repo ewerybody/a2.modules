@@ -19,7 +19,7 @@ ExplorerDiff() {
         paths.Push(explorer_get_path())
 
     if (paths.Length != 1) {
-        msgbox_error("Please select 2 files OR 2 folders exactly!"
+        a2dlg_error("Please select 2 files OR 2 folders exactly!"
             , "ExplorerDiff: Too many paths!")
         Return
     }
@@ -50,7 +50,7 @@ _ExplorerDiff(files) {
         Return
     }
 
-    msgbox_error("Please select 2 files OR 2 folders exactly!"
+    a2dlg_error("Please select 2 files OR 2 folders exactly!"
         , "ExplorerDiff: File/Folder Mismatch")
 }
 
@@ -129,7 +129,7 @@ ExplorerDiff_Files(files) {
         }
     }
 
-    msgbox_info("ExplorerDiff: Files are identical!")
+    a2dlg_info("ExplorerDiff: Files are identical!")
 }
 
 
@@ -141,13 +141,13 @@ ExplorerDiff_Run(files) {
 
 _ExplorerDiff_CheckDiffApp() {
     if (ExplorerDiff_Path == "" OR ExplorerDiff_Path == ".") {
-        msgbox_error("No Diff app set! Please open the dialog and set one!"
+        a2dlg_error("No Diff app set! Please open the dialog and set one!"
             , "ExplorerDiff: No Diff app")
         Return true
     }
 
     if (!FileExist(ExplorerDiff_Path)) {
-        msgbox_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
+        a2dlg_error("Unable to find set diff app! The path seems to be invalid!`n`n" ExplorerDiff_Path "`n??"
             , "ExplorerDiff: Diff app path invalid")
         Return true
     }

@@ -7,6 +7,7 @@
 ; is for sure. Furthermore that also means that the Close-hotkeys we wanna setup in a2ui will need
 ; win-version and language specific scope identifyers. In the end such a function will be quite
 ; nice to have in a2 anyway.
+#Include <a2dlg>
 
 calculAid_open() {
     ; TODO fix the selected number to calculator-thing:
@@ -30,7 +31,7 @@ calculAid_open() {
     a2tip("CalculAid: Calling new ...")
     Run "calc.exe"
     if A_LastError
-        msgbox_error("Could not open up 'calc.exe'!")
+        a2dlg_error("Could not open up 'calc.exe'!")
 
     ; We'll have to wait a moment for it to be available
     new_id := calculAid_wait_for_new(found_ids)

@@ -2,6 +2,7 @@
 ; author: eric
 ; created: 2021 1 31
 ; #include <teadrinkerocr>
+#include <a2dlg>
 #include <OCR>
 #include <dimmer>
 #include <dragtangle>
@@ -65,6 +66,6 @@ _orc_tool_call(rect, lang) {
     sleep 200
     stderr := exec.StdErr.ReadAll()
     if stderr
-        msgbox_error(stderr)
+        a2dlg_error(stderr)
     return exec.StdOut.ReadAll()
 }
