@@ -1,5 +1,9 @@
 commandLine_invoke() {
     path := explorer_get_path()
+    hwnd := ControlGetFocus("A")
+    if hwnd == 0
+        Return
+
     cl_control := ControlGetClassNN(ControlGetFocus("A"))
     if (cl_control != "Edit1")
         Return
