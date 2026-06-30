@@ -1,3 +1,5 @@
+#include <i18n>
+
 details_popup_menu() {
     global _details_handled_entries
     _details_handled_entries := []
@@ -9,6 +11,7 @@ details_popup_menu() {
 
     for name, _data in details_popup_data {
         DetailsMenu.Add(name, details_popup_handler)
+        DetailsMenu.SetIcon(name, A2Icons.to_clipboard)
         count++
     }
     if (count == 0) {
@@ -17,7 +20,9 @@ details_popup_menu() {
     }
 
     DetailsMenu.Add()
-    DetailsMenu.Add("Cancel", details_popup_handler)
+    t := i18n_domain("general")
+    DetailsMenu.Add(t["cancel"], details_popup_handler)
+    DetailsMenu.SetIcon(t["cancel"], A2Icons.clear)
     DetailsMenu.Show()
 }
 
@@ -26,6 +31,7 @@ details_popup_handler(menu_name, *) {
         return
 
     global _details_popup_menu_name, _details_handled_entries
+    t := i18n_domain("general")
     _details_popup_menu_name := menu_name
     if !details_popup_data[menu_name].Has("data") {
         a2dlg_info("There is nothing to popup! Apparently there was no data added to '" menu_name "' yet?", "DetailsPopup")
@@ -37,7 +43,7 @@ details_popup_handler(menu_name, *) {
     else
         single_item := false
 
-    if (menu_name == "Cancel" and !these_entries)
+    if (menu_name == t["cancel"] and !these_entries)
         Return
 
     if (single_item AND _details_handled_entries.Length) {
@@ -53,13 +59,16 @@ details_popup_handler(menu_name, *) {
 
     DetailsSubMenu := Menu()
     for name, _data in these_entries {
-        if (!string_is_in_array(name, _details_handled_entries))
+        if (!string_is_in_array(name, _details_handled_entries)) {
             DetailsSubMenu.Add(name, details_entry_handler)
+            DetailsSubMenu.SetIcon(name, A2Icons.to_clipboard)
+        }
     }
 
     if (!_details_handled_entries.Length)
         DetailsSubMenu.Add()
-    DetailsSubMenu.Add("Cancel", details_entry_handler)
+    DetailsSubMenu.Add(t["cancel"], details_entry_handler)
+    DetailsSubMenu.SetIcon(t["cancel"], A2Icons.clear)
     DetailsSubMenu.Show()
 }
 

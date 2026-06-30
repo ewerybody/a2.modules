@@ -1,6 +1,7 @@
 ﻿Persistent
 SendMode "Input"
 #include <a2tip>
+#include <a2dlg>
 #include <string>
 #include <msgbox>
 #include <clipboard>
