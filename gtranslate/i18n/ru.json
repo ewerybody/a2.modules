@@ -1,9 +1,9 @@
 {
-    "all_languages":"",
-    "ask_whole_page":"",
-    "enter_something":"",
-    "error_nothing_found":"",
-    "identical":"",
-    "play_audio":"",
-    "translate_whole":""
+    "all_languages":"Все языки",
+    "ask_whole_page":"Открыть translate.google.com с выбранным URL\nдля перевода всей страницы целиком\n",
+    "enter_something":"Введите текст для перевода",
+    "error_nothing_found":"Перевод для \"{}\" не найден.",
+    "identical":"Результат перевода совпадает с исходным текстом!",
+    "play_audio":"Воспроизвести аудио",
+    "translate_whole":"Перевести всю веб-страницу?"
 }
