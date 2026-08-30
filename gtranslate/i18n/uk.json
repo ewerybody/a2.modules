@@ -1,9 +1,9 @@
 {
-    "all_languages":"",
-    "ask_whole_page":"",
-    "enter_something":"",
-    "error_nothing_found":"",
-    "identical":"",
-    "play_audio":"",
-    "translate_whole":""
+    "all_languages":"Усі мови",
+    "ask_whole_page":"Відкрийте translate.google.com із вказаною URL-адресою,\nщоб перекласти всю сторінку\n",
+    "enter_something":"Введіть текст для перекладу",
+    "error_nothing_found":"Переклад для «{}» не знайдено.",
+    "identical":"В результаті перекладу отримано ідентичний результат!",
+    "play_audio":"Відтворити аудіо",
+    "translate_whole":"Перекласти всю веб-сторінку?"
 }
