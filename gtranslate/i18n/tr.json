@@ -1,9 +1,9 @@
 {
-    "all_languages":"",
-    "ask_whole_page":"",
-    "enter_something":"",
-    "error_nothing_found":"",
-    "identical":"",
-    "play_audio":"",
-    "translate_whole":""
+    "all_languages":"Tüm Diller",
+    "ask_whole_page":"Tüm sayfayı çevirmek için seçili URL'yi translate.google.com ile aç\n",
+    "enter_something":"Çevirmek için birşeyler girin",
+    "error_nothing_found":"\"{}\" için çeviri bulunamadı.",
+    "identical":"Çeviri sonucu kaynak metinle aynı!",
+    "play_audio":"Sesi oynat",
+    "translate_whole":"Tüm sayfa çevrilsin mi?"
 }
