@@ -1,9 +1,9 @@
 {
-    "cancel":"",
-    "click_to_show":"",
-    "copy_ctrl_info":"",
-    "explore_cmd_line":"",
-    "explore_path":"",
-    "no_ctrl":"",
-    "no_data":""
+    "cancel":"İptal",
+    "click_to_show":"Göstermek için tıklayın",
+    "copy_ctrl_info":"Tüm kontrol bilgilerini kopyala",
+    "explore_cmd_line":"Komut satırı yolunu dosyalarda aç",
+    "explore_path":"Dosya yolunu aç",
+    "no_ctrl":"Burada herhangi bir kontrol yok",
+    "no_data":"- Veri Yok! -"
 }
